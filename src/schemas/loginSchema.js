@@ -6,4 +6,4 @@ export const loginSchema = yup.object().shape({
     password: yup.string().min(7, 'Password must be at least 7 characters').max(30, 'Password must be at most 30 characters').required('Password is required'),
 });
 
-// Kişi 3 login işlemi için bu şemayı kullanacak
+// Kişi 3 login işlemi için bu şemayı kullanabilir :)
