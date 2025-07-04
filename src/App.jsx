@@ -1,26 +1,17 @@
-import {useSelector } from "react-redux";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import PrivateRoute from "./routes/PrivateRoute";
 import PublicRoute from "./routes/PublicRoute";
 import Loader from "./components/Loader"; 
-import Currency from "./components/Currency/Currency";
-import { Provider } from 'react-redux';
-import store from './redux/store'; // store doğru yoldan import
-
-<Provider store={store}>
-  <App />
-</Provider>
-
-// import LoginPage from "./features/auth/LoginPage";
-// import RegistrationPage from "./features/auth/RegistrationPage";
-// import DashboardPage from "./pages/DashboardPage";
-
+import LoginPage from "../src/assets/components/LoginPage.jsx";
+import RegistrationPage from "./features/auth/RegistrationPage.jsx";
+import DashboardPage from "./pages/DashboardPage";
+import { useSelector } from "react-redux";
 function App() {
- habibe
+
 const isLoading = useSelector((state) => state.global.isLoading);
 
 
- main
+
   return (
      <div>
     <Currency />
@@ -29,12 +20,12 @@ const isLoading = useSelector((state) => state.global.isLoading);
     <BrowserRouter>
       <Routes>
         <Route element={<PublicRoute />}>
-          <Route path="/register" element={<div>Registration Page Placeholder</div>} />
-          <Route path="/login" element={<div>Login Page Placeholder</div>} />
+          <Route path="/register" element={<RegistrationPage />} />
+          <Route path="/login" element={<div>{LoginPage}</div>} />
         </Route>
 
         <Route element={<PrivateRoute />}>
-          <Route path="/" element={<div>Dash Board Page Placeholder</div>} />
+          <Route path="/" element={<div>{DashboardPage}</div>} />
         </Route>
       </Routes>
     </BrowserRouter>
