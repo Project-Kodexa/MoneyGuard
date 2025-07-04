@@ -8,13 +8,13 @@ const LoginPage = () => {
       <div className={styles.login}>
         <div className={styles.loginLogo}>
           <img src="../img/loginImg.png" alt="logo" />
-          <h2>Money Guard</h2>
+          <p className={styles.loginTitle}>Money Guard</p>
         </div>
         <div className={styles.loginInputGroup}>
           <FaEnvelope className={styles.loginIcon} />
           <input
             type="email"
-            placeholder="Email"
+            placeholder="E-mail"
             className={styles.loginInput}
           />
         </div>
@@ -26,8 +26,8 @@ const LoginPage = () => {
             className={styles.loginInput}
           />
         </div>
-        <button className={styles.loginBtn}>Log In</button>
-        <button className={styles.registerBtn}>Register</button>
+        <button className={styles.loginBtn}>LOG IN</button>
+        <button className={styles.registerBtn}>REGİSTER</button>
       </div>
     </div>
   );
