@@ -1,0 +1,78 @@
+.loginModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 10, 25, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+  }
+  
+  .login {
+    background: linear-gradient(to bottom, #1e1f2f, #2a2d50);
+    border-radius: 12px;
+    padding: 40px;
+    width: 320px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    color: white;
+    text-align: center;
+  }
+  
+  .loginLogo img {
+    width: 40px;
+    margin-bottom: 10px;
+  }
+  
+  .loginLogo h2 {
+    margin-bottom: 30px;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .loginInputGroup {
+    display: flex;
+    align-items: center;
+    background-color: #2e2f4f;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+  
+  .loginIcon {
+    margin-right: 10px;
+    color: #ccc;
+  }
+  
+  .loginInput {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: white;
+    flex: 1;
+  }
+  
+  .loginBtn {
+    background: linear-gradient(to right, #fbbc05, #e91e63);
+    border: none;
+    padding: 12px;
+    width: 100%;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    margin-bottom: 10px;
+    cursor: pointer;
+  }
+  
+  .registerBtn {
+    background: white;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    border-radius: 8px;
+    color: #333;
+    font-weight: bold;
+    cursor: pointer;
+  }
