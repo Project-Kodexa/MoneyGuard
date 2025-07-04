@@ -1,3 +1,8 @@
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchTransactions, fetchCategories } from './transactionsOperations';
+import TransactionsList from './TransactionsList';
+import Loader from '../Loader/Loader';
 
 const HomeTab = () => {
   const dispatch = useDispatch();
