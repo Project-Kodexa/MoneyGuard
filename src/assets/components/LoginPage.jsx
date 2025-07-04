@@ -7,7 +7,7 @@ const LoginPage = () => {
     <div className={styles.loginModal}>
       <div className={styles.login}>
         <div className={styles.loginLogo}>
-          <img src="../img/loginImg.png" alt="logo" />
+          <img src="../../../public/moneyGuard.svg" alt="logo" />
           <p className={styles.loginTitle}>Money Guard</p>
         </div>
         <div className={styles.loginInputGroup}>

@@ -1,10 +1,11 @@
+import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import PrivateRoute from "./routes/PrivateRoute";
 import PublicRoute from "./routes/PublicRoute";
-import Loader from "./components/Loader"; 
-import LoginPage from "../src/assets/components/LoginPage.jsx";
-import RegistrationPage from "./features/auth/RegistrationPage.jsx";
-import DashboardPage from "./pages/DashboardPage";
+import LoginPage from "./assets/components/LoginPage";
+// import LoginPage from "./features/auth/LoginPage";
+// import RegistrationPage from "./features/auth/RegistrationPage";
+// import DashboardPage from "./pages/DashboardPage";
 
 import Loader from "./components/Loader"; 
 import LoginPage from "../src/assets/components/LoginPage.jsx";
@@ -22,11 +23,15 @@ const isLoading = useSelector((state) => state.global.isLoading);
     <Currency />
 
       {isLoading && <Loader />}
+      
     <BrowserRouter>
       <Routes>
         <Route element={<PublicRoute />}>
-          <Route path="/register" element={<RegistrationPage />} />
-          <Route path="/login" element={<div>{LoginPage}</div>} />
+          <Route
+            path="/register"
+            element={<div>Registration Page Placeholder</div>}
+          />
+          <Route path="/login" element={<LoginPage />} />
         </Route>
 
         <Route element={<PrivateRoute />}>
