@@ -1,9 +1,15 @@
+import React from 'react';
+import TransactionsItem from './TransactionsItem';
+import './TransactionsList.css';
 
 const TransactionsList = ({ transactions }) => {
   if (!transactions || transactions.length === 0) {
     return (
       <div className="transactions-list-empty">
-        <p>No transactions found. Add your first transaction to get started!</p>
+        <div className="empty-state">
+          <p>No transactions found. Add your first transaction to get started!</p>
+          <div className="empty-icon">💰</div>
+        </div>
       </div>
     );
   }
