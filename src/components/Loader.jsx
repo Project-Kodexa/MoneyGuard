@@ -1,18 +1,18 @@
-import {Circles} from 'react-loader-spinner';
-import React from 'react';
+import styles from './Loader.module.css'; // Adjust the path as necessary
+
 
 export default function Loader() {
+    console.log("Loader component rendered");
     return (
-        <div className="flex items-center justify-center h-screen">
-        <Circles
-            height="80"
-            width="80"
-            color="#4fa94d"
-            ariaLabel="circles-loading"
-            wrapperStyle={{}}
-            wrapperClass=""
-            visible={true}
-        />
-        </div>
+        <div className={styles.overlay}>
+      <div className={styles['bar-wave']}>
+        <div className={styles.bar}></div>
+        <div className={styles.bar}></div>
+        <div className={styles.bar}></div>
+        <div className={styles.bar}></div>
+        <div className={styles.bar}></div>
+      </div>
+    </div>
     );
+   
     }

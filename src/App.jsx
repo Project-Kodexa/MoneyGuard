@@ -1,15 +1,20 @@
-import { useState } from 'react'
+import {useSelector } from "react-redux";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import PrivateRoute from "./routes/PrivateRoute";
 import PublicRoute from "./routes/PublicRoute";
+import Loader from "./components/Loader"; 
 // import LoginPage from "./features/auth/LoginPage";
 // import RegistrationPage from "./features/auth/RegistrationPage";
 // import DashboardPage from "./pages/DashboardPage";
 
 function App() {
-  const [count, setCount] = useState(0)
+const isLoading = useSelector((state) => state.global.isLoading);
+
 
   return (
+     <div>
+
+      {isLoading && <Loader />}
     <BrowserRouter>
       <Routes>
         <Route element={<PublicRoute />}>
@@ -22,6 +27,7 @@ function App() {
         </Route>
       </Routes>
     </BrowserRouter>
+    </div>
   );
 }
 
