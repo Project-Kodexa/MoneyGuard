@@ -1,11 +1,10 @@
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { registerSchema } from '../../schemas/registerSchema';
-import styles from './RegistrationForm.module.css'; // Stil dosyasını import etmeyi unutmayın
-import { useDispatch } from 'react-redux'; // Sadece useDispatch yeterli
-import { useNavigate } from 'react-router-dom'; // useNavigate import et
-
-
+import styles from './RegistrationForm.module.css';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { setCredentials } from '../../features/auth/authSlice'; 
 
 function RegistrationForm() {
   const dispatch = useDispatch();
@@ -15,36 +14,48 @@ function RegistrationForm() {
     register,
     handleSubmit,
     formState: { errors },
-    reset // Formu temizlemek için reset fonksiyonunu ekle
+    reset,
   } = useForm({
     resolver: yupResolver(registerSchema),
   });
 
   const onSubmit = (data) => {
-    // Backend olmadığı için confirmPassword'ı ayırmaya gerek yok,
+    // Form verilerini al ve confirmPassword hariç diğerlerini kullan
+    const { confirmPassword, ...userData } = data;
 
-    console.log("Kayıt başarılı!", data);
-    alert('Kayıt başarılı!'); // Kullanıcıya geri bildirim
+    // Backend olmadığı için mockToken kullandım
+    const userToSave = {
+      token: `mock_token_${Date.now()}`,
+      user: {
+        name: userData.username,
+        email: userData.email,
+        balance: 0, // Başlangıçta 0 bakiye
+      },
+    };
+    // Redux store'a kullanıcı bilgilerini kaydet
+    dispatch(setCredentials(userToSave));
 
-    // Kayıt başarılıysa kullanıcıyı Anasayfaya yönlendir
+    console.log("Kayıt başarılı ve Redux güncellendi!", userToSave);
+    alert('Kayıt başarılı! Şimdi giriş yapabilirsiniz.');
+
+    // Kayıt başarılıysa kullanıcıyı Giriş sayfasına yönlendir
     navigate('/login');
     reset();
   };
 
   return (
-    // Form elemanlarına CSS modüllerini uygulayın
     <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
       <input
         className={styles.input}
         {...register('username')}
-        placeholder="Kullanıcı Adı"
+        placeholder="Username"
       />
       {errors.username && <p className={styles.errorMessage}>{errors.username.message}</p>}
 
       <input
         className={styles.input}
         {...register('email')}
-        placeholder="E-posta"
+        placeholder="E-mail"
       />
       {errors.email && <p className={styles.errorMessage}>{errors.email.message}</p>}
 
@@ -52,7 +63,7 @@ function RegistrationForm() {
         type="password"
         className={styles.input}
         {...register('password')}
-        placeholder="Parola"
+        placeholder="Password"
       />
       {errors.password && <p className={styles.errorMessage}>{errors.password.message}</p>}
 
@@ -60,15 +71,13 @@ function RegistrationForm() {
         type="password"
         className={styles.input}
         {...register('confirmPassword')}
-        placeholder="Parola Tekrar"
+        placeholder="Confirm Password"
       />
       {errors.confirmPassword && <p className={styles.errorMessage}>{errors.confirmPassword.message}</p>}
 
       <button type="submit" className={styles.button_reg}>
-        Kaydol
+        Register
       </button>
-
-      {/* Backend olmadığı için isLoading ve error state'lerine burada doğrudan ihtiyaç yok */}
     </form>
   );
 }
