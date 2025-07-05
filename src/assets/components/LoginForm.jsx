@@ -8,16 +8,16 @@ import { loginThunk } from "../../features/auth/authOperations";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { FaEnvelope, FaLock } from "react-icons/fa";
-import styles from "./LoginPage.module.css"; // LoginPage stil dosyasını kullanıyoruz
+import styles from "./LoginPage.module.css"; 
 
 // Validasyon kuralları
 const schema = Yup.object().shape({
   email: Yup.string()
-    .email("Geçerli e-posta giriniz")
-    .required("E-posta zorunlu"),
+    .email("Please enter a valid email")
+    .required("E-mail is required"),
   password: Yup.string()
-    .min(6, "Şifre en az 6 karakter")
-    .required("Şifre zorunlu"),
+    .min(6, "Password must be at least 6 characters")
+    .required("Password is required"),
 });
 
 export default function LoginForm() {
@@ -39,7 +39,7 @@ export default function LoginForm() {
     if (loginThunk.fulfilled.match(result)) {
       navigate("/dashboard");
     } else {
-      setLoginError("E-posta veya şifre hatalı.");
+      setLoginError("Email or password is incorrect.");
     }
   };
 
