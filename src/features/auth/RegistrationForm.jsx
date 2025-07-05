@@ -1,31 +1,74 @@
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { registerSchema } from '../../schemas/registerSchema';
-import './RegistrationForm.module.css';
+import styles from './RegistrationForm.module.css'; // Stil dosyasını import etmeyi unutmayın
+import { useDispatch } from 'react-redux'; // Sadece useDispatch yeterli
+import { useNavigate } from 'react-router-dom'; // useNavigate import et
+
 
 
 function RegistrationForm() {
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset // Formu temizlemek için reset fonksiyonunu ekle
+  } = useForm({
     resolver: yupResolver(registerSchema),
   });
 
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = (data) => {
+    // Backend olmadığı için confirmPassword'ı ayırmaya gerek yok,
+
+    console.log("Kayıt başarılı!", data);
+    alert('Kayıt başarılı!'); // Kullanıcıya geri bildirim
+
+    // Kayıt başarılıysa kullanıcıyı Anasayfaya yönlendir
+    navigate('/login');
+    reset();
+  };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <input {...register('username')} placeholder="Kullanıcı Adı" />
-      {errors.username && <p>{errors.username.message}</p>}
+    // Form elemanlarına CSS modüllerini uygulayın
+    <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+      <input
+        className={styles.input}
+        {...register('username')}
+        placeholder="Kullanıcı Adı"
+      />
+      {errors.username && <p className={styles.errorMessage}>{errors.username.message}</p>}
 
-      <input {...register('email')} placeholder="E-posta" />
-      {errors.email && <p>{errors.email.message}</p>}
+      <input
+        className={styles.input}
+        {...register('email')}
+        placeholder="E-posta"
+      />
+      {errors.email && <p className={styles.errorMessage}>{errors.email.message}</p>}
 
-      <input type="password" {...register('password')} placeholder="Parola" />
-      {errors.password && <p>{errors.password.message}</p>}
+      <input
+        type="password"
+        className={styles.input}
+        {...register('password')}
+        placeholder="Parola"
+      />
+      {errors.password && <p className={styles.errorMessage}>{errors.password.message}</p>}
 
-      <input type="password" {...register('confirmPassword')} placeholder="Parola Tekrar" />
-      {errors.confirmPassword && <p>{errors.confirmPassword.message}</p>}
+      <input
+        type="password"
+        className={styles.input}
+        {...register('confirmPassword')}
+        placeholder="Parola Tekrar"
+      />
+      {errors.confirmPassword && <p className={styles.errorMessage}>{errors.confirmPassword.message}</p>}
 
-      <button type="submit">Kaydol</button>
+      <button type="submit" className={styles.button_reg}>
+        Kaydol
+      </button>
+
+      {/* Backend olmadığı için isLoading ve error state'lerine burada doğrudan ihtiyaç yok */}
     </form>
   );
 }
