@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { registerSchema } from '../../schemas/registerSchema';
+import './RegistrationForm.module.css';
 
 
 function RegistrationForm() {
