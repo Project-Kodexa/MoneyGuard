@@ -5,12 +5,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import PrivateRoute from "./routes/PrivateRoute";
 import PublicRoute from "./routes/PublicRoute";
 
-import Currency from "./components/Currency/Currency";
 import Loader from "./components/Loader";
-
-import LoginPage from "./components/Login/LoginPage";
-import RegistrationPage from "./features/auth/RegistrationPage";
-import DashboardPage from "./pages/Dashboard";
+import LoginPage from "./assets/components/LoginPage.jsx"; // Yolun doğru olduğuna emin ol
+import RegistrationPage from "./features/auth/RegistrationPage.jsx";
+import DashboardPage from "./pages/DashboardPage";
+import Currency from "./components/Currency/Currency"; // eksik olan bu
 
 function App() {
   const isLoading = useSelector((state) => state.global.isLoading);
