@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./LoginPage.module.css";
-import LoginForm from "./LoginForm"; // 👈 formu çağırıyoruz
+import LoginForm from "./LoginForm"; 
 
 const LoginPage = () => {
   return (
