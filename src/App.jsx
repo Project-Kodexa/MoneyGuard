@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import PrivateRoute from "./routes/PrivateRoute";
 import PublicRoute from "./routes/PublicRoute";
 // import LoginPage from "./features/auth/LoginPage";
-//import RegistrationPage from "./features/auth/RegistrationPage";
+import RegistrationPage from "./features/auth/RegistrationPage.jsx";
 // import DashboardPage from "./pages/DashboardPage";
 
 function App() {
@@ -12,7 +12,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route element={<PublicRoute />}>
-          <Route path="/register" element={<div>Registration Page Placeholder</div>} />
+          <Route path="/register" element={<RegistrationPage />} />
           <Route path="/login" element={<div>Login Page Placeholder</div>} />
         </Route>
 
