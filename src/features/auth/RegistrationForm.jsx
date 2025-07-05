@@ -22,8 +22,8 @@ function RegistrationForm() {
       <input type="password" {...register('password')} placeholder="Parola" />
       {errors.password && <p>{errors.password.message}</p>}
 
-      <input type="password" {...register('passwordConfirm')} placeholder="Parola Tekrar" />
-      {errors.passwordConfirm && <p>{errors.passwordConfirm.message}</p>}
+      <input type="password" {...register('confirmPassword')} placeholder="Parola Tekrar" />
+      {errors.confirmPassword && <p>{errors.confirmPassword.message}</p>}
 
       <button type="submit">Kaydol</button>
     </form>
