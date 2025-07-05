@@ -4,7 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import styles from './AddTransactionForm.module.css'; // CSS Module kullanıyoruz
+import styles from './AddTransactionForm.module.css';
 
 
 //Schema
