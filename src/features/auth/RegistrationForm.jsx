@@ -20,8 +20,7 @@ function RegistrationForm() {
   });
 
   const onSubmit = (data) => {
-    // Form verilerini al ve confirmPassword hariç diğerlerini kullan
-    const { confirmPassword, ...userData } = data;
+    const { ...userData } = data;
 
     // Backend olmadığı için mockToken kullandım
     const userToSave = {
