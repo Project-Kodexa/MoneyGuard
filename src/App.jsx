@@ -8,9 +8,11 @@ import Loader from "./components/Loader";
 // import DashboardPage from "./pages/DashboardPage";
 
 function App() {
+ habibe
 const isLoading = useSelector((state) => state.global.isLoading);
 
 
+ main
   return (
      <div>
 
@@ -31,4 +33,4 @@ const isLoading = useSelector((state) => state.global.isLoading);
   );
 }
 
-export default App
+export default App;
