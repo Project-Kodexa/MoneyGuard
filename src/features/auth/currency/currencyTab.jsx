@@ -1,0 +1,1 @@
+//sayfaya karşılık gelen currency tab componenti

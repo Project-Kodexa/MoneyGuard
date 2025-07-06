@@ -1,0 +1,76 @@
+.transactions-list-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.transactions-list {
+  max-height: 500px;
+  overflow-y: auto;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Custom scrollbar */
+.transactions-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.transactions-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.transactions-list::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.transactions-list::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+.transactions-list-empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  padding: 40px;
+}
+
+.empty-state {
+  text-align: center;
+  color: #666;
+}
+
+.empty-state p {
+  margin-bottom: 16px;
+  font-size: 16px;
+  color: #888;
+}
+
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .transactions-list-container {
+    padding: 10px;
+  }
+  
+  .transactions-list {
+    max-height: 400px;
+  }
+  
+  .empty-state p {
+    font-size: 14px;
+  }
+  
+  .empty-icon {
+    font-size: 36px;
+  }
+} 

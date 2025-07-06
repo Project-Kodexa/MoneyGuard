@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { deleteTransaction } from './transactionsOperations';
+import { deleteTransactionThunk } from '../../features/transactions/transactionsOperations';
 import './TransactionsItem.css';
 
 const TransactionsItem = ({ transaction }) => {
@@ -11,7 +11,7 @@ const TransactionsItem = ({ transaction }) => {
     if (window.confirm('Are you sure you want to delete this transaction?')) {
       setIsDeleting(true);
       try {
-        await dispatch(deleteTransaction(transaction.id)).unwrap();
+        await dispatch(deleteTransactionThunk(transaction.id)).unwrap();
       } catch (error) {
         alert(`Failed to delete transaction: ${error.message}`);
       } finally {
@@ -21,7 +21,11 @@ const TransactionsItem = ({ transaction }) => {
   };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString();
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
   };
 
   const formatAmount = (amount) => {
@@ -31,23 +35,50 @@ const TransactionsItem = ({ transaction }) => {
     }).format(amount);
   };
 
+  const getTypeIcon = (type) => {
+    return type === 'income' ? '📈' : '📉';
+  };
+
+  const getCategoryIcon = (category) => {
+    const icons = {
+      'Salary': '💰',
+      'Freelance': '💼',
+      'Investment': '📊',
+      'Food': '🍽️',
+      'Transport': '🚗',
+      'Entertainment': '🎬',
+      'Shopping': '🛍️',
+      'Bills': '📄',
+      'Healthcare': '🏥',
+      'Education': '📚'
+    };
+    return icons[category] || '📋';
+  };
+
   return (
     <div className={`transaction-item ${transaction.type === 'expense' ? 'expense' : 'income'}`}>
       <div className="transaction-info">
-        <div className="transaction-date">
-          {formatDate(transaction.date)}
+        <div className="transaction-header">
+          <div className="transaction-type-icon">
+            {getTypeIcon(transaction.type)}
+          </div>
+          <div className="transaction-date">
+            {formatDate(transaction.date)}
+          </div>
         </div>
-        <div className="transaction-type">
-          {transaction.type === 'expense' ? 'Expense' : 'Income'}
+        
+        <div className="transaction-details">
+          <div className="transaction-category">
+            <span className="category-icon">{getCategoryIcon(transaction.category)}</span>
+            {transaction.category}
+          </div>
+          <div className="transaction-description">
+            {transaction.description}
+          </div>
         </div>
-        <div className="transaction-category">
-          {transaction.category}
-        </div>
-        <div className="transaction-comment">
-          {transaction.comment}
-        </div>
+        
         <div className="transaction-amount">
-          {formatAmount(transaction.sum)}
+          {formatAmount(transaction.amount)}
         </div>
       </div>
       
@@ -55,18 +86,20 @@ const TransactionsItem = ({ transaction }) => {
         <button 
           className="edit-button"
           onClick={() => {
-            
             console.log('Edit transaction:', transaction.id);
+            // TODO: Implement edit functionality
           }}
+          title="Edit transaction"
         >
-          Edit
+          ✏️ Edit
         </button>
         <button 
           className="delete-button"
           onClick={handleDelete}
           disabled={isDeleting}
+          title="Delete transaction"
         >
-          {isDeleting ? 'Deleting...' : 'Delete'}
+          {isDeleting ? '🗑️ Deleting...' : '🗑️ Delete'}
         </button>
       </div>
     </div>
