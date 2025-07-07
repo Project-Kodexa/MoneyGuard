@@ -6,7 +6,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import styles from './EditTransactionForm.module.css';
 import { useDispatch } from 'react-redux';
-import { updateTransaction } from '../redux/transactionsOperations';
+// import { updateTransaction } from '../redux/transactionsOperations';
 
 // Yup validasyon şeması
 const schema = yup.object().shape({

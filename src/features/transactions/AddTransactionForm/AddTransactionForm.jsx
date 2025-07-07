@@ -6,7 +6,7 @@ import * as yup from 'yup';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import styles from './AddTransactionForm.module.css';
-import { addTransaction } from '../redux/transactionsOperations';
+// import { addTransaction } from '../redux/transactionsOperations';
 
 // Yup schema
 const schema = yup.object().shape({

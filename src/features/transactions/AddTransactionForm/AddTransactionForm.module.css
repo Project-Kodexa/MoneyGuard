@@ -1,0 +1,128 @@
+.addTransactionForm__container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.addTransactionForm__title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #333;
+  text-align: center;
+}
+
+/* Type toggle (income / expense) */
+.addTransactionForm__typeToggle {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.addTransactionForm__typeToggleButton {
+  padding: 8px 22px;
+  border-radius: 30px;
+  border: 2px solid #ccc;
+  background-color: #f7f7f7;
+  color: #555;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  user-select: none;
+}
+
+.addTransactionForm__typeToggleButtonActive {
+  background-color: #ff6b08;
+  color: white;
+  border-color: #ff6b08;
+}
+
+/* Form group */
+.addTransactionForm__formGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.addTransactionForm__select,
+.addTransactionForm__input {
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1.5px solid #ccc;
+  font-size: 1rem;
+  outline-offset: 2px;
+  transition: border-color 0.2s ease;
+}
+
+.addTransactionForm__select:focus,
+.addTransactionForm__input:focus {
+  border-color: #ff6b08;
+}
+
+/* Error message styling */
+.addTransactionForm__errorMessage {
+  color: #e63946;
+  font-size: 0.85rem;
+  margin-top: 4px;
+  min-height: 18px;
+}
+
+/* DatePicker wrapper (react-datepicker input) */
+.addTransactionForm__datePickerWrapper input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Button group */
+.addTransactionForm__buttonGroup {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+  gap: 10px;
+}
+
+.addTransactionForm__buttonSubmit,
+.addTransactionForm__buttonCancel {
+  flex: 1;
+  padding: 10px 0;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s ease;
+  user-select: none;
+}
+
+.addTransactionForm__buttonSubmit {
+  background-color: #ff6b08;
+  color: white;
+}
+
+.addTransactionForm__buttonSubmit:hover,
+.addTransactionForm__buttonSubmit:focus {
+  background-color: #e65a00;
+  outline: none;
+}
+
+.addTransactionForm__buttonCancel {
+  background-color: #e0e0e0;
+  color: #555;
+}
+
+.addTransactionForm__buttonCancel:hover,
+.addTransactionForm__buttonCancel:focus {
+  background-color: #c7c7c7;
+  outline: none;
+}
+
+/* Responsive: küçük ekranlarda buttonlar alt alta */
+@media (max-width: 480px) {
+  .addTransactionForm__buttonGroup {
+    flex-direction: column;
+  }
+  .addTransactionForm__buttonSubmit,
+  .addTransactionForm__buttonCancel {
+    width: 100%;
+  }
+}
