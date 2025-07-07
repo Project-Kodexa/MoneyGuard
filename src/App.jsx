@@ -10,9 +10,11 @@ import LoginPage from "./components/Login/LoginPage";
 
 import Loader from "./components/Loader"; 
 import RegistrationPage from "./features/auth/RegistrationPage.jsx";
-import DashboardPage from "./pages/DashboardPage";
+// import DashboardPage from "./pages/DashboardPage";
+
 function App() {
-  const isLoading = useSelector((state) => state.global.isLoading);
+
+const isLoading = useSelector((state) => state.global.isLoading);
 
   return (
     <div>
