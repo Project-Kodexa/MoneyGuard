@@ -6,9 +6,9 @@ import * as yup from 'yup';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import styles from './AddTransactionForm.module.css';
-// import { addTransaction } from '../redux/transactionsOperations';
+import { addTransactionThunk } from '../../../redux/transactionsOperations';
 
-// Yup schema
+// Yup şeması
 const schema = yup.object().shape({
   type: yup.string().oneOf(['income', 'expense']).required(),
   sum: yup.number().typeError('Enter a valid number').positive('Must be positive').required('Sum is required'),
@@ -43,9 +43,10 @@ const AddTransactionForm = ({ onClose }) => {
   });
 
   const onSubmit = (data) => {
-    dispatch(addTransaction(data))
+    dispatch(addTransactionThunk(data))
+      .unwrap()
       .then(() => onClose())
-      .catch(err => alert('Transaction eklenirken hata oluştu: ' + err.message));
+      .catch(err => alert('Transaction eklenirken hata oluştu: ' + err));
   };
 
   const handleTypeChange = (selectedType) => {
@@ -57,7 +58,6 @@ const AddTransactionForm = ({ onClose }) => {
     <form onSubmit={handleSubmit(onSubmit)} className={styles.addTransactionForm__container}>
       <h2 className={styles.addTransactionForm__title}>Add transaction</h2>
 
-      {/* Type selector */}
       <div className={styles.addTransactionForm__typeToggle}>
         <button
           type="button"
@@ -75,20 +75,17 @@ const AddTransactionForm = ({ onClose }) => {
         </button>
       </div>
 
-      {/* Category - only for expense */}
       {type === 'expense' && (
         <div className={styles.addTransactionForm__formGroup}>
           <select className={styles.addTransactionForm__select} {...register('category')}>
             <option value="">Select a category</option>
             <option value="food">Food</option>
             <option value="transport">Transport</option>
-            {/* Backend’den gelecek kategori seçenekleri buraya eklenebilir */}
           </select>
           <p className={styles.addTransactionForm__errorMessage}>{errors.category?.message}</p>
         </div>
       )}
 
-      {/* Sum */}
       <div className={styles.addTransactionForm__formGroup}>
         <input
           type="number"
@@ -100,7 +97,6 @@ const AddTransactionForm = ({ onClose }) => {
         <p className={styles.addTransactionForm__errorMessage}>{errors.sum?.message}</p>
       </div>
 
-      {/* Date */}
       <div className={`${styles.addTransactionForm__formGroup} ${styles.addTransactionForm__datePickerWrapper}`}>
         <DatePicker
           selected={watch('date')}
@@ -111,7 +107,6 @@ const AddTransactionForm = ({ onClose }) => {
         <p className={styles.addTransactionForm__errorMessage}>{errors.date?.message}</p>
       </div>
 
-      {/* Comment */}
       <div className={styles.addTransactionForm__formGroup}>
         <input
           type="text"
@@ -122,7 +117,6 @@ const AddTransactionForm = ({ onClose }) => {
         <p className={styles.addTransactionForm__errorMessage}>{errors.comment?.message}</p>
       </div>
 
-      {/* Buttons */}
       <div className={styles.addTransactionForm__buttonGroup}>
         <button type="submit" className={styles.addTransactionForm__buttonSubmit}>
           Add
