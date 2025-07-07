@@ -7,7 +7,7 @@ import PublicRoute from "./routes/PublicRoute";
 // import DashboardPage from "./pages/DashboardPage";
 
 function App() {
-  const [count, setCount] = useState(0)
+
 
   return (
     <BrowserRouter>
