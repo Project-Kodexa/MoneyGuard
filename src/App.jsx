@@ -1,31 +1,31 @@
-import { useSelector } from "react";
+import { useSelector } from "react-redux";
+
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import PrivateRoute from "./routes/PrivateRoute";
 import PublicRoute from "./routes/PublicRoute";
-import Loader from "./components/Loader"; 
+import Loader from "./components/Loader";
 import LoginPage from "../src/components/Login/LoginPage.jsx";
 import RegistrationPage from "./features/auth/RegistrationPage.jsx";
-// import DashboardPage from "./pages/DashboardPage";
+import DashboardPage from "../src/pages/Dashboard.jsx";
 
 function App() {
-
-const isLoading = useSelector((state) => state.global.isLoading);
+  const isLoading = useSelector((state) => state.global.isLoading);
 
   return (
     <div>
       {isLoading && <Loader />}
-    <BrowserRouter>
-      <Routes>
-        <Route element={<PublicRoute />}>
-          <Route path="/register" element={<RegistrationPage />} />
-          <Route path="/login" element={<LoginPage />} />
-        </Route>
+      <BrowserRouter>
+        <Routes>
+          <Route element={<PublicRoute />}>
+            <Route path="/register" element={<RegistrationPage />} />
+            <Route path="/login" element={<LoginPage />} />
+          </Route>
 
-        <Route element={<PrivateRoute />}>
-          <Route path="/" element={<DashboardPage />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+          <Route element={<PrivateRoute />}>
+            <Route path="/" element={<DashboardPage />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
