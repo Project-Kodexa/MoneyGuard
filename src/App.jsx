@@ -1,20 +1,24 @@
+import React from "react";
 import { useSelector } from "react-redux";
-
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import PrivateRoute from "./routes/PrivateRoute";
 import PublicRoute from "./routes/PublicRoute";
+
+import Currency from "./components/Currency/Currency";
 import Loader from "./components/Loader";
-import LoginPage from "../src/components/Login/LoginPage.jsx";
-import RegistrationPage from "./features/auth/RegistrationPage.jsx";
-import DashboardPage from "../src/pages/Dashboard.jsx";
+
+import LoginPage from "./components/Login/LoginPage";
+import RegistrationPage from "./features/auth/RegistrationPage";
+import DashboardPage from "./pages/Dashboard";
 
 function App() {
   const isLoading = useSelector((state) => state.global.isLoading);
 
   return (
-    <div>
+    <>
       {isLoading && <Loader />}
+
       <BrowserRouter>
         <Routes>
           <Route element={<PublicRoute />}>
@@ -24,10 +28,11 @@ function App() {
 
           <Route element={<PrivateRoute />}>
             <Route path="/" element={<DashboardPage />} />
+            <Route path="/currency" element={<Currency />} />
           </Route>
         </Routes>
       </BrowserRouter>
-    </div>
+    </>
   );
 }
 
