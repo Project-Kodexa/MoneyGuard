@@ -2,7 +2,7 @@ import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import PrivateRoute from "./routes/PrivateRoute";
 import PublicRoute from "./routes/PublicRoute";
-import LoginPage from "./assets/components/LoginPage";
+import LoginPage from "./components/Login/LoginPage";
 // import LoginPage from "./features/auth/LoginPage";
 // import RegistrationPage from "./features/auth/RegistrationPage";
 // import DashboardPage from "./pages/DashboardPage";
