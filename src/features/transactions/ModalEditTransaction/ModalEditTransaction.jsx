@@ -33,7 +33,7 @@ function ModalEditTransaction({ transaction, onClose }) {
          className={Styles.modalEditTransaction__content}
         onClick={handleContentClick}
       >
-        <h2 className={Styles.modalEditTransaction__title}>Edit transaction</h2>
+        {/* <h2 className={Styles.modalEditTransaction__title}>Edit transaction</h2> */}
 
         
         <EditTransactionForm transaction={transaction} onClose={onClose} />
