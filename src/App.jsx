@@ -3,16 +3,16 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import PrivateRoute from "./routes/PrivateRoute";
 import PublicRoute from "./routes/PublicRoute";
 import Loader from "./components/Loader"; 
-// import LoginPage from "./features/auth/LoginPage";
+import LoginPage from "../src/assets/components/LoginPage.jsx";
 import RegistrationPage from "./features/auth/RegistrationPage.jsx";
-// import DashboardPage from "./pages/DashboardPage";
+import DashboardPage from "./pages/DashboardPage";
 
 function App() {
- habibe
+
 const isLoading = useSelector((state) => state.global.isLoading);
 
 
- main
+
   return (
      <div>
 
@@ -21,11 +21,11 @@ const isLoading = useSelector((state) => state.global.isLoading);
       <Routes>
         <Route element={<PublicRoute />}>
           <Route path="/register" element={<RegistrationPage />} />
-          <Route path="/login" element={<div>Login Page Placeholder</div>} />
+          <Route path="/login" element={<div>{LoginPage}</div>} />
         </Route>
 
         <Route element={<PrivateRoute />}>
-          <Route path="/" element={<div>Dash Board Page Placeholder</div>} />
+          <Route path="/" element={<div>{DashboardPage}</div>} />
         </Route>
       </Routes>
     </BrowserRouter>
