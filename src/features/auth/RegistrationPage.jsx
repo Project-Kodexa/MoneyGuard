@@ -1,34 +1,22 @@
-import { useDispatch } from 'react-redux';
-import { toast } from 'react-toastify';
+import React from 'react';
 
-import { registerSchema } from '../schemas/registerSchema.js';
+import { Link } from 'react-router-dom';
+import RegistrationForm from '../auth/RegistrationForm.jsx';
+import styles from './RegistrationPage.module.css'; 
 
-import { registerThunk } from '../features/auth/authOperations.js';
-
-const initialValues = {
-    username: '',
-    password: '',
-    email: '',
-    confirmPassword: '',
-};
-
-const RegistrationPage = () => {
-    const dispatch = useDispatch();
-
-    const handleSubmit = ({ username, email, password }, { resetForm }) => {
-        dispatch(registerThunk({ username, email, password }))
-            .unwrap()
-            .then(data => {
-                toast.success(`Successfully registered ${data.user.name}, welcome!`);
-            })
-            .catch(() => {
-                toast.error('Invalid credentials');
-            });
-
-        resetForm();
-    };
-
-    return <AuthForm type="register" title="Registration" onSubmit={handleSubmit} validationSchema={registerSchema} initialValues={initialValues} />;
-};
+function RegistrationPage() {
+  return (
+    <div className={styles.pageContainer}>
+      <h1 className={styles.title}>Register Account</h1>
+      <RegistrationForm /> {RegistrationForm}
+      <p className={styles.loginText}>
+        Already have an account?
+        <Link to="/login" className={styles.loginLink}>
+          Login
+        </Link>
+      </p>
+    </div>
+  );
+}
 
 export default RegistrationPage;
