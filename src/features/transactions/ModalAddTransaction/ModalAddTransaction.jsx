@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import AddTransactionForm from './AddTransactionForm';
+import AddTransactionForm from '../AddTransactionForm/AddTransactionForm';
 import styles from './ModalAddTransaction.module.css';
 
 const ModalAddTransaction = ({ isOpen, onClose }) => {
