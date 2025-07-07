@@ -6,6 +6,7 @@ const rootReducer = combineReducers({
   auth: authReducer,
   transactions: transactionsReducer,
   // diğer slicelari buraya eklicez
+ main
 });
 
 export default rootReducer;

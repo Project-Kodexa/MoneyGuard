@@ -8,7 +8,15 @@ import LoginPage from "./components/Login/LoginPage";
 // import DashboardPage from "./pages/DashboardPage";
 
 function App() {
+ habibe
+const isLoading = useSelector((state) => state.global.isLoading);
+
+
+ main
   return (
+     <div>
+
+      {isLoading && <Loader />}
     <BrowserRouter>
       <Routes>
         <Route element={<PublicRoute />}>
@@ -24,6 +32,7 @@ function App() {
         </Route>
       </Routes>
     </BrowserRouter>
+    </div>
   );
 }
 
