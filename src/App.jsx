@@ -19,21 +19,18 @@ function App() {
   return (
     <div>
       {isLoading && <Loader />}
-      <BrowserRouter>
-        <Routes>
-          <Route element={<PublicRoute />}>
-            <Route
-              path="/register"
-              element={<div>Registration Page Placeholder</div>}
-            />
-            <Route path="/login" element={<LoginPage />} />
-          </Route>
+    <BrowserRouter>
+      <Routes>
+        <Route element={<PublicRoute />}>
+          <Route path="/register" element={<RegistrationPage />} />
+          <Route path="/login" element={<LoginPage />} />
+        </Route>
 
-          <Route element={<PrivateRoute />}>
-            <Route path="/" element={<div>Dash Board Page Placeholder</div>} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+        <Route element={<PrivateRoute />}>
+          <Route path="/" element={<DashboardPage />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
     </div>
   );
 }
