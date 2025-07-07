@@ -20,11 +20,11 @@ const isLoading = useSelector((state) => state.global.isLoading);
       <Routes>
         <Route element={<PublicRoute />}>
           <Route path="/register" element={<RegistrationPage />} />
-          <Route path="/login" element={<div>{LoginPage}</div>} />
+          <Route path="/login" element={<LoginPage />} />
         </Route>
 
         <Route element={<PrivateRoute />}>
-          <Route path="/" element={<div>{DashboardPage}</div>} />
+          <Route path="/" element={<DashboardPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
