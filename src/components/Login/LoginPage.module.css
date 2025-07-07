@@ -20,10 +20,10 @@
   color: white;
   text-align: center;
 }
+
 .loginTitle {
   height: 40px;
   font-weight: 400;
-  font-style: regular;
   line-height: 100%;
   font-size: 26px;
 }
@@ -61,18 +61,33 @@
   flex: 1;
 }
 
+.loginBtnContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  justify-content: center;
+  width: 70%;
+  max-width: 280px;
+  margin: 20px auto 0;
+  gap: 10px;
+}
+
 .loginBtn {
   height: 50px;
   background: linear-gradient(to right, #ffc727, #9e40ba, #7000ff);
   border: none;
-  padding: 12px;
+  padding: 10px;
   width: 100%;
   border-radius: 20px;
   color: white;
   font-weight: 400;
-  margin-bottom: 10px;
   cursor: pointer;
   font-size: 14px;
+  transition: background 0.3s ease;
+}
+
+.loginBtn:hover {
+  opacity: 0.9;
 }
 
 .registerBtn {
@@ -80,18 +95,22 @@
   color: #623f8b;
   background: white;
   border: none;
-  padding: 12px;
+  padding: 10px;
   width: 100%;
   border-radius: 20px;
   font-weight: 400;
   cursor: pointer;
-  line-height: 100%;
   font-size: 14px;
+  transition: 0.3s ease;
+}
+
+.registerBtn:hover {
+  background-color: #f1f1f1;
 }
 
 .error {
   color: red;
-  font-size: 14px;
+  font-size: 13px;
   margin-top: 4px;
   margin-bottom: 10px;
 }

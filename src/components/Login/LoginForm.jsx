@@ -6,7 +6,7 @@ import { loginThunk } from "../../features/auth/authOperations";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { FaEnvelope, FaLock } from "react-icons/fa";
-import styles from "./LoginPage.module.css"; 
+import styles from "./LoginPage.module.css";
 
 // Validasyon kuralları
 const schema = Yup.object().shape({
@@ -68,17 +68,18 @@ export default function LoginForm() {
       )}
 
       {loginError && <p className={styles.error}>{loginError}</p>}
-
-      <button type="submit" className={styles.loginBtn}>
-        LOG IN
-      </button>
-      <button
-        type="button"
-        onClick={() => navigate("/register")}
-        className={styles.registerBtn}
-      >
-        REGISTER
-      </button>
+      <div className={styles.loginBtnContainer}>
+        <button type="submit" className={styles.loginBtn}>
+          LOG IN
+        </button>
+        <button
+          type="button"
+          onClick={() => navigate("/register")}
+          className={styles.registerBtn}
+        >
+          REGISTER
+        </button>
+      </div>
     </form>
   );
 }
