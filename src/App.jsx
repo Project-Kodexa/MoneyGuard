@@ -1,4 +1,4 @@
-import {useSelector } from "react-redux";
+import { useState, useSelector } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import PrivateRoute from "./routes/PrivateRoute";
 import PublicRoute from "./routes/PublicRoute";
@@ -14,8 +14,7 @@ const isLoading = useSelector((state) => state.global.isLoading);
 
 
   return (
-     <div>
-
+    <div>
       {isLoading && <Loader />}
     <BrowserRouter>
       <Routes>

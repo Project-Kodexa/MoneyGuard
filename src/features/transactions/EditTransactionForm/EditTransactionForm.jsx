@@ -5,6 +5,8 @@ import * as yup from 'yup';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import styles from './EditTransactionForm.module.css';
+import { useDispatch } from 'react-redux';
+// import { updateTransaction } from '../redux/transactionsOperations';
 
 // Yup validasyon şeması
 const schema = yup.object().shape({
@@ -24,6 +26,7 @@ const schema = yup.object().shape({
 });
 
 const EditTransactionForm = ({ transaction, onClose }) => {
+  const dispatch = useDispatch();
   const [type, setType] = useState(transaction?.type || 'expense');
 
   const {
@@ -44,9 +47,11 @@ const EditTransactionForm = ({ transaction, onClose }) => {
   });
 
   const onSubmit = (data) => {
-    console.log('Updated transaction:', data);
-    // Burada güncelleme işlemi yapılacak (API çağrısı, dispatch vs.)
-    onClose(); // işlem bitince modal kapat
+    dispatch(updateTransaction(transaction.id, data))
+      .then(() => onClose())
+      .catch((err) =>
+        alert('Güncelleme sırasında bir hata oluştu: ' + err.message)
+      );
   };
 
   const handleTypeChange = (selectedType) => {
