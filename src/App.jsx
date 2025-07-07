@@ -1,4 +1,4 @@
-import { useState, useSelector } from "react";
+import { useSelector } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import PrivateRoute from "./routes/PrivateRoute";
 import PublicRoute from "./routes/PublicRoute";
