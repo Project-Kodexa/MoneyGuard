@@ -1,3 +1,4 @@
+import { useSelector } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import PrivateRoute from "./routes/PrivateRoute";
@@ -11,8 +12,6 @@ import LoginPage from "./components/Login/LoginPage";
 import Loader from "./components/Loader"; 
 import RegistrationPage from "./features/auth/RegistrationPage.jsx";
 import DashboardPage from "./pages/DashboardPage";
-
-import { useSelector } from "react-redux";
 function App() {
   const isLoading = useSelector((state) => state.global.isLoading);
 
