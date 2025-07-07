@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import EditTransactionForm from './EditTransactionForm';
+import EditTransactionForm from '../EditTransactionForm/EditTransactionForm';
 import Styles from './ModalEditTransaction.module.css';
 
 const modalRoot = document.getElementById('modal-root');
