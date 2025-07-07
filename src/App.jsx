@@ -3,15 +3,13 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import PrivateRoute from "./routes/PrivateRoute";
 import PublicRoute from "./routes/PublicRoute";
 import Loader from "./components/Loader"; 
-import LoginPage from "../src/assets/components/LoginPage.jsx";
+import LoginPage from "../src/components/Login/LoginPage.jsx";
 import RegistrationPage from "./features/auth/RegistrationPage.jsx";
-import DashboardPage from "./pages/DashboardPage";
+// import DashboardPage from "./pages/DashboardPage";
 
 function App() {
 
 const isLoading = useSelector((state) => state.global.isLoading);
-
-
 
   return (
     <div>
