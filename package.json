@@ -20,8 +20,13 @@
     "react-dom": "^19.1.0",
     "react-hook-form": "^7.60.0",
     "react-hot-toast": "^2.5.2",
+<<<<<<< HEAD
     "react-icons": "^5.5.0",
     "react-loader-spinner": "^6.1.6",
+=======
+    "react-loader-spinner": "^6.1.6",
+    "react-icons": "^5.5.0",
+>>>>>>> 93cb302c28852ebff140e6e0a25914f4c2b9d33b
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.6.3",
     "redux-persist": "^6.0.0",
