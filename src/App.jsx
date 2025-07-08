@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import PrivateRoute from "./routes/PrivateRoute";
 import PublicRoute from "./routes/PublicRoute";
-import Loader from "./components/Loader";
+import Loader from "./components/Loader/Loader.jsx";
 import LoginPage from "../src/components/Login/LoginPage.jsx";
 import RegistrationPage from "./features/auth/RegistrationPage.jsx";
 import DashboardPage from "../src/pages/Dashboard.jsx";
