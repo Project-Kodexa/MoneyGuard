@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import PrivateRoute from "./routes/PrivateRoute";
 import PublicRoute from "./routes/PublicRoute";
 import Loader from "./components/Loader";
