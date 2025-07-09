@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import styles from './AddTransactionForm.module.css';
+// import { addTransaction } from '../redux/transactionsOperations';
 
-
-//Schema
+// Yup schema
 const schema = yup.object().shape({
   type: yup.string().oneOf(['income', 'expense']).required(),
   sum: yup.number().typeError('Enter a valid number').positive('Must be positive').required('Sum is required'),
@@ -21,7 +22,9 @@ const schema = yup.object().shape({
 });
 
 const AddTransactionForm = ({ onClose }) => {
+  const dispatch = useDispatch();
   const [type, setType] = useState('expense');
+
   const {
     register,
     handleSubmit,
@@ -40,8 +43,9 @@ const AddTransactionForm = ({ onClose }) => {
   });
 
   const onSubmit = (data) => {
-    console.log('Form data:', data);
-    // İleride burada dispatch vs. olacak
+    dispatch(addTransaction(data))
+      .then(() => onClose())
+      .catch(err => alert('Transaction eklenirken hata oluştu: ' + err.message));
   };
 
   const handleTypeChange = (selectedType) => {
@@ -57,32 +61,28 @@ const AddTransactionForm = ({ onClose }) => {
       <div className={styles.addTransactionForm__typeToggle}>
         <button
           type="button"
-          className={`${styles.addTransactionForm__typeToggleButton} ${
-            type === 'income' ? styles.addTransactionForm__typeToggleButtonActive : ''
-          }`}
+          className={`${styles.addTransactionForm__typeToggleButton} ${type === 'income' ? styles.addTransactionForm__typeToggleButtonActive : ''}`}
           onClick={() => handleTypeChange('income')}
         >
           Income
         </button>
         <button
           type="button"
-          className={`${styles.addTransactionForm__typeToggleButton} ${
-            type === 'expense' ? styles.addTransactionForm__typeToggleButtonActive : ''
-          }`}
+          className={`${styles.addTransactionForm__typeToggleButton} ${type === 'expense' ? styles.addTransactionForm__typeToggleButtonActive : ''}`}
           onClick={() => handleTypeChange('expense')}
         >
           Expense
         </button>
       </div>
 
-      {/* Category - sadece expense ise */}
+      {/* Category - only for expense */}
       {type === 'expense' && (
         <div className={styles.addTransactionForm__formGroup}>
           <select className={styles.addTransactionForm__select} {...register('category')}>
             <option value="">Select a category</option>
             <option value="food">Food</option>
             <option value="transport">Transport</option>
-            {/* Backend’den gelecek kategori seçenekleri burada genişler */}
+            {/* Backend’den gelecek kategori seçenekleri buraya eklenebilir */}
           </select>
           <p className={styles.addTransactionForm__errorMessage}>{errors.category?.message}</p>
         </div>

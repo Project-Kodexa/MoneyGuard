@@ -7,8 +7,14 @@ const TransactionsList = ({ transactions }) => {
     return (
       <div className="transactions-list-empty">
         <div className="empty-state">
-          <p>No transactions found. Add your first transaction to get started!</p>
           <div className="empty-icon">💰</div>
+          <h3>No transactions found</h3>
+          <p>Add your first transaction to get started!</p>
+          <div className="empty-actions">
+            <button className="add-first-transaction-btn">
+              Add Transaction
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -24,6 +30,14 @@ const TransactionsList = ({ transactions }) => {
           />
         ))}
       </div>
+      
+      {/* Scroll indicator */}
+      {transactions.length > 5 && (
+        <div className="scroll-indicator">
+          <p>Scroll to see more transactions</p>
+          <div className="scroll-arrow">↓</div>
+        </div>
+      )}
     </div>
   );
 };
