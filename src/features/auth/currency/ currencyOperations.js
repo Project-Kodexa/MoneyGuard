@@ -1,1 +1,0 @@
-//create async thunk for fetching currency data
