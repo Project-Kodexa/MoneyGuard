@@ -4,9 +4,9 @@ import PrivateRoute from "./routes/PrivateRoute";
 import PublicRoute from "./routes/PublicRoute";
 import LoginPage from "./components/Login/LoginPage";
 import { useSelector } from "react-redux";
-// import LoginPage from "./features/auth/LoginPage";
-// import RegistrationPage from "./features/auth/RegistrationPage";
-// import DashboardPage from "./pages/DashboardPage";
+import LoginPage from "./features/auth/LoginPage";
+import RegistrationPage from "./features/auth/RegistrationPage";
+import DashboardPage from "./pages/DashboardPage";
 
 function App() {
   const isLoading = useSelector((state) => state.global.isLoading);
