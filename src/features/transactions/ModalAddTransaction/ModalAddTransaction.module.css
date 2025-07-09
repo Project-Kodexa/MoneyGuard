@@ -1,4 +1,7 @@
-/* Overlay tüm ekranı kaplar, yarı saydam siyah */
+body {
+  background: rgba(10, 10, 25, 0.7);
+} /*kodla birleşince kalkacak */
+
 .modalAddTransaction__overlay {
   position: fixed;
   top: 0;
@@ -9,49 +12,53 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-/* Modal pencere içeriği */
-.modalAddTransaction__content {
-  background-color: #fff;
-  border-radius: 12px;
-  width: 100%;
-  max-width: 480px;
-  max-height: 90vh;
+  z-index: 9999;
+  padding: 1rem;
   overflow-y: auto;
-  padding: 30px 25px 25px;
-  position: relative;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Kapatma çarpısı butonu */
+.modalAddTransaction__content {
+  background-color: rgba(255, 255, 255, 0.1); /* yarı şeffaf beyaz */
+  border-radius: 8px;
+  width: 540px; /* max-width yerine sabit genişlik */
+  height: 589px;
+  padding: 1.5rem 2rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.modalAddTransaction__title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-align: center;
+  color: #333;
+}
+
 .modalAddTransaction__closeButton {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 1rem;
+  right: 1rem;
   background: transparent;
   border: none;
-  font-size: 28px;
-  font-weight: 700;
-  color: #333;
+  font-size: 1.25rem;
   cursor: pointer;
-  line-height: 1;
-  transition: color 0.2s ease-in-out;
+  color: #666;
+  transition: color 0.3s ease;
 }
 
-.modalAddTransaction__closeButton:hover,
-.modalAddTransaction__closeButton:focus {
+.modalAddTransaction__closeButton:hover {
   color: #ff6b08;
-  outline: none;
 }
 
-/* Responsive ayar */
-@media (max-width: 600px) {
+/* Responsive */
+@media (max-width: 768px) {
   .modalAddTransaction__content {
-    padding: 20px 15px 15px;
-    max-width: 90vw;
+    max-width: 90%;
+    padding: 1rem 1.5rem;
+  }
+
+  .modalAddTransaction__title {
+    font-size: 1.25rem;
   }
 }
