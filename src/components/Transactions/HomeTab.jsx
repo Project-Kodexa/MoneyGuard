@@ -4,7 +4,7 @@ import {
   fetchTransactions, 
   fetchCategories,
   fetchTransactionsByCategory 
-} from '../../features/transactions/transactionsOperations';
+} from '../../redux/transactionsOperations';
 import { 
   filterTransactionsByCategory, 
   clearFilter 

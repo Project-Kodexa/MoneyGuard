@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { deleteTransactionThunk } from '../../features/transactions/transactionsOperations';
+import { deleteTransactionThunk } from '../../redux/transactionsOperations';
 import ModalEditTransaction from '../../features/transactions/ModalEditTransaction/ModalEditTransaction';
 import './TransactionsItem.css';
 
