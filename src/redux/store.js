@@ -19,3 +19,8 @@ export const store = configureStore({
 });
 
 export const persistor = persistStore(store);
+
+// Development ortamında store'u global olarak erişilebilir hale getir
+if (process.env.NODE_ENV === 'development') {
+  window.store = store;
+}

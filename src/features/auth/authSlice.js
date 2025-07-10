@@ -1,6 +1,3 @@
-// Bu içerik  store.js ve rootReducer.js dosyaların hata vermemesi için eklendi. Sonra Kişi 2 ve 3 kendi login/register işlemlerini buraya entegre edecekler.
-
-
 import { createSlice } from "@reduxjs/toolkit";
 
 
