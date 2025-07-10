@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import authReducer from "../features/auth/authSlice";
-import transactionsReducer from "./transactionsSlice";
+import transactionsReducer from "../features/transactions/transactionsSlice";
 import globalReducer from "../redux/globalSlice";
 const rootReducer = combineReducers({
   auth: authReducer,

@@ -5,10 +5,6 @@ import {
   fetchCategories,
   fetchTransactionsByCategory 
 } from '../../redux/transactionsOperations';
-import { 
-  filterTransactionsByCategory, 
-  clearFilter 
-} from '../../features/transactions/transactionsSlice';
 import TransactionsList from './TransactionsList';
 import './HomeTab.css';
 
@@ -16,12 +12,11 @@ const HomeTab = () => {
   const dispatch = useDispatch();
   const { 
     transactions, 
-    filteredTransactions,
     categories, 
     isLoading, 
-    error,
-    currentFilter 
+    error 
   } = useSelector(state => state.transactions);
+  
   const [selectedCategory, setSelectedCategory] = useState('');
 
   useEffect(() => {
@@ -31,18 +26,11 @@ const HomeTab = () => {
 
   const handleCategoryFilter = (category) => {
     setSelectedCategory(category);
-    if (category) {
-      dispatch(filterTransactionsByCategory(category));
-    } else {
-      dispatch(clearFilter());
-    }
-  };
 
-  const handleCategoryFetch = async (category) => {
     if (category) {
-      await dispatch(fetchTransactionsByCategory(category));
+      dispatch(fetchTransactionsByCategory(category));
     } else {
-      await dispatch(fetchTransactions());
+      dispatch(fetchTransactions());
     }
   };
 
@@ -96,7 +84,7 @@ const HomeTab = () => {
             ))}
           </select>
           
-          {currentFilter && (
+          {selectedCategory && (
             <button
               className="clear-filter-button"
               onClick={() => handleCategoryFilter('')}
@@ -110,13 +98,13 @@ const HomeTab = () => {
       {/* Transaction Count */}
       <div className="transaction-count">
         <p>
-          Showing {filteredTransactions.length} of {transactions.length} transactions
-          {currentFilter && ` in category: ${currentFilter}`}
+          Showing {transactions.length} transaction{transactions.length !== 1 ? 's' : ''}
+          {selectedCategory && ` in category: ${selectedCategory}`}
         </p>
       </div>
 
       {/* Transactions List */}
-      <TransactionsList transactions={filteredTransactions} />
+      <TransactionsList transactions={transactions} />
     </div>
   );
 };
