@@ -7,8 +7,9 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import styles from "./AddTransactionForm.module.css";
 import { addTransactionThunk } from "../../../redux/transactionsOperations";
+import categories from "../modalCategory"; 
 
-// Yup validation schema
+// Validasyon şeması
 const schema = yup.object().shape({
   type: yup.string().oneOf(["income", "expense"]).required(),
   sum: yup
@@ -57,7 +58,11 @@ const AddTransactionForm = ({ onClose }) => {
   const handleTypeChange = (selectedType) => {
     setType(selectedType);
     setValue("type", selectedType);
+    if (selectedType === "income") {
+      setValue("category", "");
+    }
   };
+
 
   return (
     <form
@@ -67,9 +72,7 @@ const AddTransactionForm = ({ onClose }) => {
     >
       <h2 className={styles.addTransactionForm__title}>Add transaction</h2>
 
-      {/* Type toggle with separate clickable texts */}
       <div className={styles.addTransactionForm__typeToggle}>
-
         <div
           className={`${styles.addTransactionForm__typeToggleText} ${
             type === "income" ? styles.active : styles.inactive
@@ -131,8 +134,11 @@ const AddTransactionForm = ({ onClose }) => {
             {...register("category")}
           >
             <option value="">Select a category</option>
-            <option value="food">Food</option>
-            <option value="transport">Transport</option>
+            {categories.map((category, index) => (
+              <option key={index} value={category}>
+                {category}
+              </option>
+            ))}
           </select>
           <p className={styles.addTransactionForm__errorMessage}>
             {errors.category?.message}
