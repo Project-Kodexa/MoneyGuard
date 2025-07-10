@@ -4,7 +4,8 @@ import { registerSchema } from '../../schemas/registerSchema';
 import styles from './RegistrationForm.module.css';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { setCredentials } from '../../features/auth/authSlice'; 
+import { setCredentials } from '../../features/auth/authSlice';
+import { setAuthToken } from '../../services/api'; // ✅ token'ı ayarlamak için
 
 function RegistrationForm() {
   const dispatch = useDispatch();
@@ -22,22 +23,26 @@ function RegistrationForm() {
   const onSubmit = (data) => {
     const { ...userData } = data;
 
-    // Backend olmadığı için mockToken kullandım
+    // ✅ Sahte token oluşturuluyor
     const userToSave = {
       token: `mock_token_${Date.now()}`,
       user: {
         name: userData.username,
         email: userData.email,
-        balance: 0, // Başlangıçta 0 bakiye
+        balance: 0, // Başlangıç bakiyesi
       },
     };
-    // Redux store'a kullanıcı bilgilerini kaydet
+
+    // ✅ Token'ı hem Axios'a ekle hem localStorage'a kaydet
+    setAuthToken(userToSave.token);
+    localStorage.setItem("token", userToSave.token); // ✨ EKLENDİ
+
+    // ✅ Redux store'a kullanıcıyı kaydet
     dispatch(setCredentials(userToSave));
 
-    console.log("Kayıt başarılı ve Redux güncellendi!", userToSave);
+    console.log("✅ Kayıt başarılı ve Redux güncellendi!", userToSave);
     alert('Kayıt başarılı! Şimdi giriş yapabilirsiniz.');
 
-    // Kayıt başarılıysa kullanıcıyı Giriş sayfasına yönlendir
     navigate('/login');
     reset();
   };
