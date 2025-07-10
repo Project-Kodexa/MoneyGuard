@@ -1,19 +1,19 @@
-import React, { useEffect } from 'react';
-import ReactDOM from 'react-dom';
-import EditTransactionForm from '../EditTransactionForm/EditTransactionForm';
-import Styles from './ModalEditTransaction.module.css';
+import React, { useEffect } from "react";
+import ReactDOM from "react-dom";
+import EditTransactionForm from "../EditTransactionForm/EditTransactionForm";
+import Styles from "./ModalEditTransaction.module.css";
 
-const modalRoot = document.getElementById('modal-root');
+const modalRoot = document.getElementById("modal-root");
 
 function ModalEditTransaction({ transaction, onClose }) {
   useEffect(() => {
     function handleEsc(event) {
-      if (event.key === 'Escape') {
+      if (event.key === "Escape") {
         onClose();
       }
     }
-    window.addEventListener('keydown', handleEsc);
-    return () => window.removeEventListener('keydown', handleEsc);
+    window.addEventListener("keydown", handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
   }, [onClose]);
 
   function handleOverlayClick() {
@@ -30,12 +30,11 @@ function ModalEditTransaction({ transaction, onClose }) {
       onClick={handleOverlayClick}
     >
       <div
-         className={Styles.modalEditTransaction__content}
+        className={Styles.modalEditTransaction__content}
         onClick={handleContentClick}
       >
-        <h2 className={Styles.modalEditTransaction__title}>Edit transaction</h2>
+        {/* <h2 className={Styles.modalEditTransaction__title}>Edit transaction</h2> */}
 
-        
         <EditTransactionForm transaction={transaction} onClose={onClose} />
 
         <button
@@ -43,7 +42,7 @@ function ModalEditTransaction({ transaction, onClose }) {
           onClick={onClose}
           type="button"
         >
-          Close
+          ×
         </button>
       </div>
     </div>,
