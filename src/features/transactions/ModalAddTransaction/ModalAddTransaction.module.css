@@ -1,6 +1,7 @@
-body {
+/* body {
   background: rgba(10, 10, 25, 0.7);
-} /*kodla birleşince kalkacak */
+  Bu satır, eğer JS ile kaldırılacaksa buraya yazdım
+} */
 
 .modalAddTransaction__overlay {
   position: fixed;
@@ -20,11 +21,13 @@ body {
 .modalAddTransaction__content {
   background-color: rgba(255, 255, 255, 0.1); /* yarı şeffaf beyaz */
   border-radius: 8px;
-  width: 540px; /* max-width yerine sabit genişlik */
+  width: 540px; /* sabit genişlik masaüstü */
   height: 589px;
   padding: 1.5rem 2rem;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .modalAddTransaction__title {
@@ -51,14 +54,32 @@ body {
   color: #ff6b08;
 }
 
-/* Responsive */
+/* Responsive - Tablet ve Mobil */
 @media (max-width: 768px) {
   .modalAddTransaction__content {
-    max-width: 90%;
+    width: 90%;
+    height: auto; /* yüksekliği içeriğe bırak */
     padding: 1rem 1.5rem;
   }
 
   .modalAddTransaction__title {
     font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .modalAddTransaction__content {
+    width: 95%;
+    padding: 0.75rem 1rem;
+  }
+
+  .modalAddTransaction__title {
+    font-size: 1.1rem;
+  }
+
+  .modalAddTransaction__closeButton {
+    font-size: 1rem;
+    top: 0.5rem;
+    right: 0.5rem;
   }
 }

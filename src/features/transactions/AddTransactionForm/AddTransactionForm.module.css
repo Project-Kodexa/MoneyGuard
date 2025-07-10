@@ -1,7 +1,8 @@
+/* Genel Konteyner ve Başlık */
 .addTransactionForm__container {
   display: flex;
   flex-direction: column;
-  gap: 1rem; /* gap artırıldı, eski 0.7rem */
+  gap: 1rem;
   max-width: 420px;
   width: 100%;
   margin: auto;
@@ -10,7 +11,7 @@
   color: white;
   box-sizing: border-box;
 }
-/* Başlık */
+
 .addTransactionForm__title {
   font-size: 1.5rem;
   font-weight: 600;
@@ -19,52 +20,82 @@
   color: white;
 }
 
-/* Tür seçim butonları */
+/* Toggle (Type Seçimi) Alanı */
 .addTransactionForm__typeToggle {
   display: flex;
+  align-items: center;
   justify-content: center;
-  gap: 1rem;
-  margin-bottom: 1rem;
-  font-weight: 600;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  position: relative;
 }
 
-.addTransactionForm__typeToggleButton {
-  padding: 0.6rem 1.5rem;
-  border-radius: 20px;
-  border: 2px solid rgba(255, 255, 255, 0.4);
-  background-color: transparent;
-  color: rgba(255, 255, 255, 0.8);
-  font-weight: 600;
+.addTransactionForm__typeToggleText {
   cursor: pointer;
-  transition: all 0.3s ease;
   user-select: none;
+  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  font-weight: 600;
   font-family: "Poppins", sans-serif;
   font-size: 1rem;
+  color: rgba(255, 255, 255, 0.4);
+  transition: color 0.3s ease;
 }
 
-.addTransactionForm__typeToggleButtonActive {
-  background: linear-gradient(
-    to right,
-    rgba(255, 199, 39, 1),
-    rgba(158, 64, 186, 1),
-    rgba(112, 0, 255, 1)
-  );
-  color: white;
-  border-color: transparent;
+.addTransactionForm__typeToggleText:hover {
+  color: #555;
+}
+
+.addTransactionForm__typeToggleText.active {
+  color: #ff6b08;
   font-weight: 700;
 }
 
-.addTransactionForm__typeToggleButton:hover,
-.addTransactionForm__typeToggleButtonActive:hover {
-  filter: brightness(0.9);
+/* Toggle Switch (Anahtar) Stili */
+.addTransactionForm__switchTrack {
+  width: 70px;
+  height: 36px;
+  background-color: white;
+  border-radius: 18px;
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 4px;
+  transition: background-color 0.3s ease;
 }
 
-/* Form grupları */
+.addTransactionForm__switchThumb {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: #ff6b08;
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  transition: left 0.3s ease, background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+}
+
+.addTransactionForm__switchThumb.expense {
+  background-color: #ff6b6b;
+  left: 38px;
+}
+
+/*  Form Grupları ve Inputlar */
 .addTransactionForm__formGroup {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem; /* boşluk biraz artırıldı (önce 0.2rem) */
-  margin-bottom: 1.25rem; /* biraz daha fazla boşluk verdik */
+  gap: 0.3rem;
+  margin-bottom: 1.25rem;
 }
 
 .addTransactionForm__formGroup.commentGroup {
@@ -74,7 +105,6 @@
   gap: 0.15rem;
 }
 
-/* Yan yana inputlar container */
 .addTransactionForm__rowInputs {
   display: flex;
   gap: 0.75rem;
@@ -86,7 +116,6 @@
 .addTransactionForm__select {
   flex: 1;
   padding: 0.5rem 0.75rem;
-  border-radius: 6px;
   border: none;
   border-bottom: 2px solid rgba(255, 255, 255, 0.4);
   background-color: transparent;
@@ -96,6 +125,27 @@
   transition: border-color 0.3s ease;
   outline: none;
   box-shadow: none;
+  border-radius: 6px;
+}
+
+/* Select özel arka plan ve ok ikonu */
+.addTransactionForm__select {
+  background-color: transparent; 
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem;
+  cursor: pointer;
+  color: white;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.4);
+}
+
+.addTransactionForm__select option {
+  background-color: transparent; 
+  color: white;
 }
 
 .addTransactionForm__input::placeholder,
@@ -109,12 +159,12 @@
   box-shadow: none;
 }
 
-/* Tam genişlik comment inputu */
+/* Tam genişlik input */
 .addTransactionForm__fullWidthInput {
   width: 100%;
 }
 
-/* Hata mesajları */
+/* Hata Mesajları */
 .addTransactionForm__errorMessage {
   color: #e74c3c;
   font-size: 0.85rem;
@@ -128,7 +178,7 @@
   display: none;
 }
 
-/* Buton grubu */
+/* Butonlar */
 .addTransactionForm__buttonGroup {
   display: flex;
   justify-content: space-between;
@@ -137,7 +187,6 @@
   flex-direction: column;
 }
 
-/* Butonlar */
 .addTransactionForm__buttonSubmit,
 .addTransactionForm__buttonCancel {
   font-size: 1.1rem;
@@ -183,13 +232,61 @@
   outline: none;
 }
 
-/* Responsive: küçük ekranlarda */
-@media (max-width: 480px) {
-  .addTransactionForm__buttonGroup {
-    flex-direction: column;
+/* Responsive (Tablet Uyumlu) */
+@media (max-width: 768px) {
+  .addTransactionForm__typeToggle {
+    gap: 1rem;
+  }
+
+  .addTransactionForm__typeToggleText {
+    font-size: 0.9rem;
+    padding: 0 6px;
   }
 
   .addTransactionForm__rowInputs {
     flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .addTransactionForm__buttonGroup {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .addTransactionForm__buttonSubmit,
+  .addTransactionForm__buttonCancel {
+    width: 100%;
+    padding: 0.6rem 0;
+    font-size: 1rem;
+  }
+}
+
+/* Responsive (Mobil Uyumlu) */
+@media (max-width: 480px) {
+  .addTransactionForm__typeToggle {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .addTransactionForm__typeToggleText {
+    font-size: 0.85rem;
+    padding: 0 5px;
+  }
+
+  .addTransactionForm__rowInputs {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .addTransactionForm__buttonGroup {
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .addTransactionForm__buttonSubmit,
+  .addTransactionForm__buttonCancel {
+    width: 100%;
+    padding: 0.55rem 0;
+    font-size: 0.95rem;
   }
 }
