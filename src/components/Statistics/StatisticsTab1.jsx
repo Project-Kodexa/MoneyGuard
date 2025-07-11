@@ -1,6 +1,6 @@
 import StatisticsDashboard from "./StatisticsDashboard";
 import Chart from "./Chart";
-import StatisticsTable from "./StatisticsTable";
+import StatisticsTable from "../StatisticsTable";
 import styles from "./Statistics.module.css";
 
 export default function StatisticsTab() {
