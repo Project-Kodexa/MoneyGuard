@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setAuthToken } from "../../services/api";
 import { registerThunk } from "../../features/auth/authOperations";
+import { setCredentials } from "../auth/authSlice";
 
 export default function RegistrationForm() {
   const dispatch = useDispatch();

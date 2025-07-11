@@ -5,10 +5,19 @@ export const registerThunk = createAsyncThunk(
   'auth/sign-up',
   async (userData, thunkAPI) => {
     try {
-      console.log("Kayıt için gönderilen data:", userData);
-      const response = await API.post('/auth/sign-up', userData);
+      const { confirmPassword, name, ...rest } = userData;
 
-      const token = response.data.token; // ✅ Doğru tanım
+      // name -> username dönüştür
+      const signupData = {
+        ...rest,
+        username: name, // ✅ name yerine username gönderiyoruz
+      };
+
+      console.log("Kayıt için gönderilen data:", signupData);
+
+      const response = await API.post('/auth/sign-up', signupData);
+
+      const token = response.data.token;
       setAuthToken(token);
       localStorage.setItem('token', token);
 

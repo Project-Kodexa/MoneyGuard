@@ -1,12 +1,17 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
+import Loader from "../components/Loader/Loader"; // varsa
 
 const PublicRoute = () => {
-  const tokenFromState = useSelector((state) => state.auth.token);
-  const token = tokenFromState || localStorage.getItem("token");
+  const { token, isLoggedIn, isRefreshing } = useSelector((state) => state.auth);
 
-  // Giriş yapılmışsa dashboard'a yönlendir, değilse erişime izin ver
-  return token ? <Navigate to="/" /> : <Outlet />;
+  // Refresh sırasında boş sayfa göstermemek için
+  if (isRefreshing) {
+    return <Loader />;
+  }
+
+  // Eğer giriş yapılmışsa anasayfaya yönlendir
+  return token && isLoggedIn ? <Navigate to="/" /> : <Outlet />;
 };
 
 export default PublicRoute;
