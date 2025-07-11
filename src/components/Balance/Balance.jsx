@@ -1,9 +1,10 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { selectBalance } from '../../features/transactions/transactionsSlice';
 import styles from './Balance.module.css';
 
 const Balance = () => {
-  const balance = useSelector(state => state.auth.user?.balance || 0);
+  const balance = useSelector(selectBalance);
   
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-US', {

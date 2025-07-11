@@ -12,6 +12,36 @@ const initialState = {
   currentFilter: null
 };
 
+// Selector to calculate balance from transactions
+export const selectBalance = (state) => {
+  const transactions = state.transactions.transactions;
+  return transactions.reduce((total, transaction) => {
+    const amount = parseFloat(transaction.amount) || 0;
+    if (transaction.type === 'income') {
+      return total + amount;
+    } else if (transaction.type === 'expense') {
+      return total - amount;
+    }
+    return total;
+  }, 0);
+};
+
+// Selector to get total income
+export const selectTotalIncome = (state) => {
+  const transactions = state.transactions.transactions;
+  return transactions
+    .filter(transaction => transaction.type === 'income')
+    .reduce((total, transaction) => total + (parseFloat(transaction.amount) || 0), 0);
+};
+
+// Selector to get total expenses
+export const selectTotalExpenses = (state) => {
+  const transactions = state.transactions.transactions;
+  return transactions
+    .filter(transaction => transaction.type === 'expense')
+    .reduce((total, transaction) => total + (parseFloat(transaction.amount) || 0), 0);
+};
+
 const transactionsSlice = createSlice({
   name: 'transactions',
   initialState,

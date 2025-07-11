@@ -7,7 +7,7 @@ import rootReducer from "./rootReducer";
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["auth"], // sadece auth slice persist edilecek
+  whitelist: ["auth", "transactions", "statistics", "currency"], // auth, transactions, statistics ve currency slice'ları persist edilecek
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
