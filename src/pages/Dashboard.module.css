@@ -1,52 +1,56 @@
-.dashboard {
+.dashboardContainer {
   min-height: 100vh;
+  background: linear-gradient(120deg, #2d1457 0%, #3a2067 100%);
   display: flex;
   flex-direction: column;
 }
 
-.content {
-  flex: 1;
+.dashboardContent {
   display: flex;
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
+  gap: 32px;
+  padding: 32px 0;
 }
 
-.sidebar {
-  width: 280px;
-  background: #f8f9fa;
-  padding: 20px;
-  border-right: 1px solid #e9ecef;
-}
-
-.main {
-  flex: 1;
-  padding: 20px;
-  overflow-y: auto;
-}
-
-.loadingContainer {
+.leftPanel {
+  width: 320px;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 400px;
-  font-size: 18px;
-  color: #666;
+  flex-direction: column;
+  gap: 32px;
 }
 
-@media (max-width: 768px) {
-  .content {
+.rightPanel {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+@media (max-width: 900px) {
+  .dashboardContent {
     flex-direction: column;
+    gap: 24px;
+    padding: 16px 0;
   }
-  
-  .sidebar {
+  .leftPanel {
     width: 100%;
-    border-right: none;
-    border-bottom: 1px solid #e9ecef;
-    padding: 16px;
+    flex-direction: row;
+    gap: 16px;
   }
-  
-  .main {
-    padding: 16px;
+  .rightPanel {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboardContent {
+    padding: 8px 0;
+  }
+  .leftPanel {
+    flex-direction: column;
+    gap: 12px;
   }
 } 

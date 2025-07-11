@@ -1,6 +1,8 @@
-body {
+/* body {
   background: rgba(10, 10, 25, 0.7);
-} /* Kodlar birleşirken çıkarılacak*/
+  Kodlar birleşirken çıkarılacak
+} */
+
 .modalEditTransaction__overlay {
   position: fixed;
   top: 0;
@@ -17,13 +19,15 @@ body {
 }
 
 .modalEditTransaction__content {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.1); /* Yarı şeffaf beyaz */
   border-radius: 8px;
   max-width: 480px;
   width: 100%;
   padding: 1.5rem 2rem;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .modalEditTransaction__title {
@@ -50,7 +54,7 @@ body {
   color: #ff6b08;
 }
 
-/* Responsive */
+/* Responsive - Tablet ve Mobil */
 @media (max-width: 768px) {
   .modalEditTransaction__content {
     max-width: 90%;
@@ -59,5 +63,22 @@ body {
 
   .modalEditTransaction__title {
     font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .modalEditTransaction__content {
+    max-width: 95%;
+    padding: 0.75rem 1rem;
+  }
+
+  .modalEditTransaction__title {
+    font-size: 1.1rem;
+  }
+
+  .modalEditTransaction__closeBtn {
+    font-size: 1rem;
+    top: 0.5rem;
+    right: 0.5rem;
   }
 }

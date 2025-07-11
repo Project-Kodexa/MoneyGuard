@@ -57,6 +57,7 @@
 
 /* Tarih ve sum inputlarını yan yana koymak için */
 .rowInputs {
+  display: flex;
   flex-direction: row;
   gap: 0.75rem;
 }
@@ -68,7 +69,7 @@
   background-color: transparent;
   border: none;
   border-bottom: 2px solid rgba(255, 255, 255, 0.4);
-  border-radius: 0;
+  border-radius: 6px;
   padding: 0.5rem 0;
   font-size: 1rem;
   color: rgba(251, 251, 251, 1);
@@ -91,6 +92,7 @@
 .editTransactionForm__inputDate {
   text-align: center;
 }
+
 /* Hata mesajları */
 .editTransactionForm__errorMessage {
   font-size: 0.85rem;
@@ -125,8 +127,8 @@
   cursor: pointer;
   border: none;
   user-select: none;
-
   padding: 0.7rem 1rem;
+  transition: background-color 0.3s ease;
 }
 
 .editTransactionForm__buttonSubmit {
@@ -139,8 +141,10 @@
   color: white;
 }
 
-.editTransactionForm__buttonSubmit:hover {
+.editTransactionForm__buttonSubmit:hover,
+.editTransactionForm__buttonSubmit:focus {
   background-color: #e05500;
+  outline: none;
 }
 
 .editTransactionForm__buttonCancel {
@@ -148,20 +152,46 @@
   color: #555;
 }
 
-.editTransactionForm__buttonCancel:hover {
+.editTransactionForm__buttonCancel:hover,
+.editTransactionForm__buttonCancel:focus {
   background-color: #bbb;
+  outline: none;
 }
 
-/* Responsive: Dar ekranlarda tarih ve sum inputları alt alta geçer */
+/* Responsive: Tablet Uyumlu */
+@media (max-width: 768px) {
+  .rowInputs {
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .editTransactionForm__buttonGroup {
+    gap: 0.75rem;
+  }
+
+  .editTransactionForm__buttonSubmit,
+  .editTransactionForm__buttonCancel {
+    font-size: 1.1rem;
+    padding: 0.65rem 1rem;
+  }
+}
+
+/* Responsive: Mobil Uyumlu */
 @media (max-width: 480px) {
   .rowInputs {
     flex-direction: column;
+    gap: 0.5rem;
   }
+
   .editTransactionForm__buttonGroup {
     flex-direction: column;
+    gap: 0.6rem;
   }
+
   .editTransactionForm__buttonSubmit,
   .editTransactionForm__buttonCancel {
     width: 100%;
+    font-size: 1rem;
+    padding: 0.6rem 1rem;
   }
 }
