@@ -17,10 +17,26 @@ export const clearAuthToken = () => {
 // Request interceptor - her istekte token kontrolü
 API.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    // Önce localStorage'dan token'ı dene
+    let token = localStorage.getItem('token');
+    
+    // Eğer localStorage'da yoksa, Redux store'dan al
+    if (!token && window.store) {
+      const authState = window.store.getState().auth;
+      if (authState.token) {
+        token = authState.token;
+        // localStorage'a da kaydet
+        localStorage.setItem('token', token);
+      }
+    }
+    
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+      console.log('Token added to request:', token.substring(0, 20) + '...'); // DEBUG
+    } else {
+      console.log('No token found for request'); // DEBUG
     }
+    
     return config;
   },
   (error) => {

@@ -3,6 +3,9 @@ import TransactionsItem from './TransactionsItem';
 import './TransactionsList.css';
 
 const TransactionsList = ({ transactions }) => {
+  console.log('TransactionsList - Received transactions:', transactions); // DEBUG
+  console.log('TransactionsList - Transactions length:', transactions?.length); // DEBUG
+  
   if (!transactions || transactions.length === 0) {
     return (
       <div className="transactions-list-empty">
@@ -22,6 +25,15 @@ const TransactionsList = ({ transactions }) => {
 
   return (
     <div className="transactions-list-container">
+      {/* Tablo başlıkları */}
+      <div className="transactions-table-header">
+        <div>Date</div>
+        <div>Type</div>
+        <div>Category</div>
+        <div>Comment</div>
+        <div>Sum</div>
+        <div></div> {/* Sadece Delete butonu için boş hücre */}
+      </div>
       <div className="transactions-list">
         {transactions.map(transaction => (
           <TransactionsItem 
@@ -30,7 +42,6 @@ const TransactionsList = ({ transactions }) => {
           />
         ))}
       </div>
-      
       {/* Scroll indicator */}
       {transactions.length > 5 && (
         <div className="scroll-indicator">

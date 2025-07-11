@@ -29,24 +29,19 @@ export default function RegistrationForm() {
     console.log("Kayıt için gönderilen payload:", payload); // Kontrol amaçlı
     const result = await dispatch(registerThunk(payload));
 
-    console.log("Thunk sonucu:", result);
+          // ✅ Token'ı hem Axios'a ekle hem localStorage'a kaydet
+      setAuthToken(userToSave.token);
+      localStorage.setItem("token", userToSave.token); // ✨ EKLENDİ
 
-    if (registerThunk.fulfilled.match(result)) {
-      const token = result.payload.token;
-      localStorage.setItem("token", token);
-      setAuthToken(token);
-      dispatch(setCredentials(result.payload));
-      alert("Kayıt başarılı!");
-      navigate("/login");
+      // ✅ Redux store'a kullanıcıyı kaydet
+      dispatch(setCredentials(userToSave));
+
+      console.log("✅ Kayıt başarılı ve Redux güncellendi!", userToSave);
+      alert('Kayıt başarılı! Şimdi giriş yapabilirsiniz.');
+
+      navigate('/login');
       reset();
-    } else {
-      alert(result.payload || "Kayıt başarısız. Lütfen tekrar deneyin.");
-    }
-  } catch (err) {
-    console.error("Kayıt sırasında hata:", err);
-    alert("Bir hata oluştu.");
-  }
-};
+  };
 
 
   return (
