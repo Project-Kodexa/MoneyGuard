@@ -90,7 +90,7 @@
   left: 38px;
 }
 
-/*  Form Grupları ve Inputlar */
+/* Form Grupları ve Inputlar */
 .addTransactionForm__formGroup {
   display: flex;
   flex-direction: column;
@@ -130,7 +130,7 @@
 
 /* Select özel arka plan ve ok ikonu */
 .addTransactionForm__select {
-  background-color: transparent; 
+  background-color: transparent;
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -143,8 +143,16 @@
   border-bottom: 2px solid rgba(255, 255, 255, 0.4);
 }
 
+/* **Burada seçeneklerin arka planını açıyoruz** */
 .addTransactionForm__select option {
-  background-color: transparent; 
+  background-color: #2c2c54;
+  color: white;
+}
+
+.addTransactionForm__select option:hover,
+.addTransactionForm__select option:focus,
+.addTransactionForm__select option:checked {
+  background-color: #ff6b08;
   color: white;
 }
 
@@ -186,7 +194,9 @@
   gap: 1rem;
   flex-direction: column;
 }
-
+.addTransactionForm__buttonCancel {
+  margin-bottom: 15px;
+}
 .addTransactionForm__buttonSubmit,
 .addTransactionForm__buttonCancel {
   font-size: 1.1rem;
@@ -201,6 +211,7 @@
   border: none;
   user-select: none;
   padding: 0.7rem 1rem;
+
   width: 100%;
   transition: background-color 0.3s ease;
 }
