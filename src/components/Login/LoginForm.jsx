@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { FaEnvelope, FaLock } from "react-icons/fa";
 import styles from "./LoginPage.module.css";
+import { setAuthToken } from "../../services/api";
 
 // Validasyon kuralları
 const schema = Yup.object().shape({
@@ -31,18 +32,26 @@ export default function LoginForm() {
 
   const onSubmit = async (data) => {
     setLoginError(null);
+    try {
+      const result = await dispatch(loginThunk(data));
 
-    const result = await dispatch(loginThunk(data));
+      if (loginThunk.fulfilled.match(result)) {
+        const token = result.payload.token;
 
-    if (loginThunk.fulfilled.match(result)) {
-      navigate("/dashboard");
-    } else {
-      setLoginError("Email or password is incorrect.");
+        setAuthToken(token); // ✅ axios'a token set edildi
+        localStorage.setItem("token", token); // ✅ localStorage'a da kaydedildi
+
+        navigate("/"); // ✅ yönlendirme
+      } else {
+        setLoginError("Email or password is incorrect.");
+      }
+    } catch (error) {
+      setLoginError("Something went wrong. Please try again.");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
       <div className={styles.loginInputGroup}>
         <FaEnvelope className={styles.loginIcon} />
         <input
@@ -63,15 +72,12 @@ export default function LoginForm() {
           className={styles.loginInput}
         />
       </div>
-      {errors.password && (
-        <p className={styles.error}>{errors.password.message}</p>
-      )}
+      {errors.password && <p className={styles.error}>{errors.password.message}</p>}
 
       {loginError && <p className={styles.error}>{loginError}</p>}
+
       <div className={styles.loginBtnContainer}>
-        <button type="submit" className={styles.loginBtn}>
-          LOG IN
-        </button>
+        <button type="submit" className={styles.loginBtn}>LOG IN</button>
         <button
           type="button"
           onClick={() => navigate("/register")}

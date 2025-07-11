@@ -8,34 +8,54 @@ import Loader from "./components/Loader/Loader.jsx";
 import LoginPage from "../src/components/Login/LoginPage.jsx";
 import RegistrationPage from "./features/auth/RegistrationPage.jsx";
 import DashboardPage from "../src/pages/Dashboard.jsx";
-// import HomeTab from "./components/Transactions/HomeTab.jsx"
+import { refreshThunk } from "./features/auth/authOperations.js"
 
-import { setLoading } from "./redux/globalSlice"; // doğru dosya yoluna göre ayarla
-import { setAuthToken } from "./services/api"; // ✅ token'ı Axios'a tanıtmak için
+import  { setAuthToken, clearAuthToken } from "./services/api"; // Axios ve token ayarlama
+import { fetchTransactions, fetchCategories } from "./redux/transactionsOperations";
 
 function App() {
-  const isLoading = useSelector((state) => state.global.isLoading);
   const dispatch = useDispatch();
+  const isLoading = useSelector((state) => state.global.isLoading);
 
   useEffect(() => {
-    // ✅ Sayfa ilk yüklendiğinde localStorage'dan token'ı al ve Axios'a ekle
+    // Sayfa yüklendiğinde token'ı al
+    
     const savedToken = localStorage.getItem("token");
+
     if (savedToken) {
+      console.log("TOKEN FROM LOCAL:", savedToken);
+
+      // Token'ı axios header'a ekle
       setAuthToken(savedToken);
-      dispatch(refreshThunk());
-    }
+
+      dispatch(refreshThunk()).then((result) => {
+      if (refreshThunk.fulfilled.match(result)) {
+        // Token yenilendiyse ya da doğrulandıysa diğer işlemleri yap
+        dispatch(fetchTransactions());
+        dispatch(fetchCategories());
+      } else {
+        // Token geçersizse temizle
+        localStorage.removeItem("token");
+        clearAuthToken();
+      }
+    });
+  }
   }, [dispatch]);
 
   return (
     <div>
+      {/* Yükleniyorsa loader göster */}
       {isLoading && <Loader />}
+
       <BrowserRouter>
         <Routes>
+          {/* Genel erişim için sayfalar */}
           <Route element={<PublicRoute />}>
             <Route path="/register" element={<RegistrationPage />} />
             <Route path="/login" element={<LoginPage />} />
           </Route>
 
+          {/* Giriş yapılması gereken sayfalar */}
           <Route element={<PrivateRoute />}>
             <Route path="/" element={<DashboardPage />} />
           </Route>

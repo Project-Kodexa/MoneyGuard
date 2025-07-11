@@ -20,8 +20,8 @@ const HomeTab = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
 
   useEffect(() => {
-    dispatch(fetchTransactions());
-    dispatch(fetchCategories());
+    // dispatch(fetchTransactions());
+    // dispatch(fetchCategories());
   }, [dispatch]);
 
   const handleCategoryFilter = (category) => {
@@ -78,7 +78,7 @@ const HomeTab = () => {
           >
             <option value="">All Categories</option>
             {categories.map(category => (
-              <option key={category.id} value={category.name}>
+              <option key={category.id} value={category.id}>
                 {category.name}
               </option>
             ))}

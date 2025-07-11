@@ -120,8 +120,8 @@ export const fetchCategories = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const { data } = await API.get("/transaction-categories");
-      thunkAPI.dispatch(setCategories(data.categories));
-      return data.categories;
+      thunkAPI.dispatch(setCategories(data));
+      return data;
     } catch (error) {
       const errorMessage =
         error.response?.data?.message ||
@@ -162,12 +162,12 @@ export const fetchStatistics = createAsyncThunk(
 // Kategoriye göre işlemleri getir
 export const fetchTransactionsByCategory = createAsyncThunk(
   "transactions/fetchTransactionsByCategory",
-  async (category, thunkAPI) => {
+  async (categoryId, thunkAPI) => {
     try {
       thunkAPI.dispatch(setLoading(true));
       thunkAPI.dispatch(setTransactionsLoading(true));
 
-      const { data } = await API.get(`/transactions?category=${category}`);
+      const { data } = await API.get(`/transactions?categoryId=${categoryId}`);
 
       thunkAPI.dispatch(setTransactions(data.transactions));
       return data.transactions;
@@ -254,6 +254,9 @@ export const fetchCurrencyRates = createAsyncThunk(
     }
   }
 );
+
+
+
 
 // Hata temizle
 export const clearError = () => (dispatch) => {
