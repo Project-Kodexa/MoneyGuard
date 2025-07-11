@@ -20,8 +20,12 @@ const HomeTab = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
 
   useEffect(() => {
+    // Token kontrolü yap
+    const token = localStorage.getItem('token');
+    if (token) {
     dispatch(fetchTransactions());
     dispatch(fetchCategories());
+    }
   }, [dispatch]);
 
   const handleCategoryFilter = (category) => {
@@ -105,6 +109,11 @@ const HomeTab = () => {
 
       {/* Transactions List */}
       <TransactionsList transactions={transactions} />
+
+      {/* Add Transaction Button */}
+      <button className="add-transaction-btn">
+        <span className="plus-icon">+</span>
+      </button>
     </div>
   );
 };

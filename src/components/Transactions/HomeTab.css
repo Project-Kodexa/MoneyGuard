@@ -155,6 +155,40 @@
   background-color: #e05500;
 }
 
+.add-transaction-btn {
+  position: fixed;
+  width: 44px;
+  height: 44px;
+  bottom: 32px;
+  right: 32px;
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(96.76deg, #FFC727 -16.42%, #9E40BA 97.04%, #7000FF 150.71%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(44, 16, 69, 0.15);
+  cursor: pointer;
+  opacity: 1;
+  z-index: 100;
+  transition: box-shadow 0.2s;
+}
+.add-transaction-btn:hover {
+  box-shadow: 0 8px 24px rgba(44, 16, 69, 0.25);
+}
+.plus-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  font-size: 24px;
+  color: #fff;
+  font-weight: bold;
+  border-width: 2px;
+  opacity: 1;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .home-tab {
