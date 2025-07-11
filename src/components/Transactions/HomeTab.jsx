@@ -19,6 +19,11 @@ const HomeTab = () => {
   
   const [selectedCategory, setSelectedCategory] = useState('');
 
+  // Kategorileri normalize et (string veya obje olabilir)
+  const categoriesNormalized = categories.map((cat, idx) =>
+    typeof cat === "string" ? { id: idx, name: cat } : cat
+  );
+
   useEffect(() => {
     // Token kontrolü yap
     const token = localStorage.getItem('token');
@@ -81,7 +86,7 @@ const HomeTab = () => {
             className="category-select"
           >
             <option value="">All Categories</option>
-            {categories.map(category => (
+            {categoriesNormalized.map(category => (
               <option key={category.id} value={category.name}>
                 {category.name}
               </option>
