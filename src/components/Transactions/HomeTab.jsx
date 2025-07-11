@@ -6,6 +6,7 @@ import {
   fetchTransactionsByCategory 
 } from '../../redux/transactionsOperations';
 import TransactionsList from './TransactionsList';
+import ModalAddTransaction from '../../features/transactions/ModalAddTransaction/ModalAddTransaction';
 import './HomeTab.css';
 
 const HomeTab = () => {
@@ -17,7 +18,11 @@ const HomeTab = () => {
     error 
   } = useSelector(state => state.transactions);
   
+  console.log('HomeTab - Current transactions:', transactions); // DEBUG
+  console.log('HomeTab - Transactions length:', transactions?.length); // DEBUG
+  
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Kategorileri normalize et (string veya obje olabilir)
   const categoriesNormalized = categories.map((cat, idx) =>
@@ -41,6 +46,16 @@ const HomeTab = () => {
     } else {
       dispatch(fetchTransactions());
     }
+  };
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    // Modal kapandıktan sonra işlemleri tekrar çek (sadece gerekirse)
+    // dispatch(fetchTransactions());
   };
 
   if (isLoading) {
@@ -73,52 +88,19 @@ const HomeTab = () => {
 
   return (
     <div className="home-tab">
-      <div className="home-tab-header">
-        <h2>Transactions</h2>
-        
-        {/* Category Filter */}
-        <div className="category-filter">
-          <label htmlFor="category-select">Filter by Category:</label>
-          <select
-            id="category-select"
-            value={selectedCategory}
-            onChange={(e) => handleCategoryFilter(e.target.value)}
-            className="category-select"
-          >
-            <option value="">All Categories</option>
-            {categoriesNormalized.map(category => (
-              <option key={category.id} value={category.name}>
-                {category.name}
-              </option>
-            ))}
-          </select>
-          
-          {selectedCategory && (
-            <button
-              className="clear-filter-button"
-              onClick={() => handleCategoryFilter('')}
-            >
-              Clear Filter
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* Transaction Count */}
-      <div className="transaction-count">
-        <p>
-          Showing {transactions.length} transaction{transactions.length !== 1 ? 's' : ''}
-          {selectedCategory && ` in category: ${selectedCategory}`}
-        </p>
-      </div>
-
       {/* Transactions List */}
       <TransactionsList transactions={transactions} />
 
       {/* Add Transaction Button */}
-      <button className="add-transaction-btn">
+      <button className="add-transaction-btn" onClick={handleOpenModal}>
         <span className="plus-icon">+</span>
       </button>
+
+      {/* Modal */}
+      <ModalAddTransaction 
+        isOpen={isModalOpen} 
+        onClose={handleCloseModal} 
+      />
     </div>
   );
 };
