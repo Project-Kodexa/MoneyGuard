@@ -49,3 +49,22 @@
     gap: 7px;
   }
 }
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.logoImg {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  display: block;
+}
+.logoText {
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  font-family: 'Poppins', sans-serif;
+}

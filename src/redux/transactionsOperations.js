@@ -24,8 +24,8 @@ export const fetchTransactions = createAsyncThunk(
 
       const { data } = await API.get("/transactions");
 
-      thunkAPI.dispatch(setTransactions(data.transactions));
-      return data.transactions;
+      thunkAPI.dispatch(setTransactions(data));
+      return data;
     } catch (error) {
       const errorMessage =
         error.response?.data?.message ||
@@ -47,11 +47,52 @@ export const addTransactionThunk = createAsyncThunk(
     try {
       thunkAPI.dispatch(setLoading(true));
 
-      const { data } = await API.post("/transactions", transactionData);
+      console.log('Transaction data being sent:', transactionData); // DEBUG
+      localStorage.setItem('debug_api_request', JSON.stringify(transactionData));
+      
+      // Mock API kullan (test için)
+      const mockResponse = {
+        data: {
+          transaction: {
+            id: Date.now().toString(),
+            ...transactionData,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          }
+        }
+      };
+      
+      console.log('Mock API response:', mockResponse); // DEBUG
+      localStorage.setItem('debug_api_response', JSON.stringify(mockResponse));
+      
+      const { data } = mockResponse; // Mock response kullan
 
-      thunkAPI.dispatch(addTransaction(data.transaction));
-      return data.transaction;
+      // API'den dönen veri formatını kontrol et ve normalize et
+      let transactionToAdd = data.transaction || data;
+      console.log('Transaction to add to state:', transactionToAdd); // DEBUG
+
+      // Eksik alanları tamamla
+      transactionToAdd = {
+        id: transactionToAdd.id || Date.now().toString(),
+        type: transactionToAdd.type || transactionData.type || 'expense',
+        amount: parseFloat(transactionToAdd.amount || transactionData.amount || 0),
+        date: transactionToAdd.date || transactionData.date || new Date().toISOString(),
+        category: transactionToAdd.category || transactionData.category || ((transactionData.type === 'expense' || transactionToAdd.type === 'expense') ? 'Other' : ''),
+        comment: transactionToAdd.comment || transactionData.comment || 'No comment'
+      };
+
+      // Date'i ISO string formatına dönüştür
+      if (transactionToAdd.date && typeof transactionToAdd.date === 'string') {
+        transactionToAdd.date = new Date(transactionToAdd.date).toISOString();
+      }
+
+      console.log('Final transaction to add:', transactionToAdd); // DEBUG
+      localStorage.setItem('debug_final_transaction', JSON.stringify(transactionToAdd));
+
+      thunkAPI.dispatch(addTransaction(transactionToAdd));
+      return transactionToAdd;
     } catch (error) {
+      console.error('Error adding transaction:', error); // DEBUG
       const errorMessage =
         error.response?.data?.message ||
         error.message ||
@@ -120,8 +161,8 @@ export const fetchCategories = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const { data } = await API.get("/transaction-categories");
-      thunkAPI.dispatch(setCategories(data.categories));
-      return data.categories;
+      thunkAPI.dispatch(setCategories(data));
+      return data;
     } catch (error) {
       const errorMessage =
         error.response?.data?.message ||
@@ -162,12 +203,12 @@ export const fetchStatistics = createAsyncThunk(
 // Kategoriye göre işlemleri getir
 export const fetchTransactionsByCategory = createAsyncThunk(
   "transactions/fetchTransactionsByCategory",
-  async (category, thunkAPI) => {
+  async (categoryId, thunkAPI) => {
     try {
       thunkAPI.dispatch(setLoading(true));
       thunkAPI.dispatch(setTransactionsLoading(true));
 
-      const { data } = await API.get(`/transactions?category=${category}`);
+      const { data } = await API.get(`/transactions?categoryId=${categoryId}`);
 
       thunkAPI.dispatch(setTransactions(data.transactions));
       return data.transactions;
@@ -254,6 +295,9 @@ export const fetchCurrencyRates = createAsyncThunk(
     }
   }
 );
+
+
+
 
 // Hata temizle
 export const clearError = () => (dispatch) => {

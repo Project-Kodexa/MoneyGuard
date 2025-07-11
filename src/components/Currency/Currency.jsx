@@ -1,41 +1,58 @@
-import React, { useEffect } from "react"; 
-import { useDispatch, useSelector } from "react-redux";
-import { fetchCurrency } from "../../features/currencyFeatures/currencyOperation"; // Adjust the import path as necessary
+import { useEffect, useState } from 'react';
+import s from './Currency.module.css';
+import CurrencyChart from '../CurrencyChart/CurrencyChart';
 
-import styles from "./Currency.module.css";
-import Loader from "../Loader/Loader";
+import { useMedia } from '../../hooks/useMedia';
+import { getCurrency } from '../../services/getCurrency';
 
-export default function Currency() {
-  const dispatch = useDispatch();
-  const { rates, error } = useSelector(state => state.currency);
-   const isLoading = useSelector(state => state.global.isLoading);
-
-  useEffect(() => {
-    dispatch(fetchCurrency());
-  }, [dispatch]);
-
-  const filteredRates = rates.filter(
-    r => r.currencyCodeA === 840 || r.currencyCodeA === 978 // USD & EUR
+const Currency = () => {
+  const [currency, setCurrency] = useState(
+    () => JSON.parse(localStorage.getItem('currency')) || ''
   );
-
-  if (isLoading) return <Loader />;
-  if (error) return <p className={styles.error}>{error}</p>;
+  useEffect(() => {
+    const getData = async () => {
+      const data = await getCurrency();
+      setCurrency(data);
+    };
+    getData();
+  }, []);
+  const { isDesktop, isTablet } = useMedia();
 
   return (
-    <section className={styles.container}>
-      <h2 className={styles.title}>Currency Rates</h2>
-      <div className={styles.grid}>
-        {filteredRates.map(item => (
-          <div className={styles.card} key={item.currencyCodeA}>
-            <div className={styles.code}>
-              {item.currencyCodeA === 840 ? "USD" : "EUR"}
-            </div>
-            <div className={styles.value}>
-              Buy: {item.rateBuy?.toFixed(2)} | Sell: {item.rateSell?.toFixed(2)}
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
+    <>
+      {currency && (
+        <div className={s.wrapper}>
+          <table className={s.table}>
+            <thead>
+              <tr>
+                <td>Currency</td>
+                <td>Purchase</td>
+                <td>Sale</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>USD</td>
+                <td>{currency.usd.buy}</td>
+                <td>{currency.usd.sell}</td>
+              </tr>
+              <tr>
+                <td>EUR</td>
+                <td>{currency.eur.buy}</td>
+                <td>{currency.eur.sell}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <CurrencyChart
+            usd={currency.usd.buy}
+            eur={currency.eur.buy}
+            type={isDesktop ? 'desk' : isTablet ? 'tab' : 'mob'}
+          />
+        </div>
+      )}
+    </>
   );
-}
+};
+
+export default Currency;

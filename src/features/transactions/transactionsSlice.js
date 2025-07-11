@@ -21,8 +21,11 @@ const transactionsSlice = createSlice({
       state.filteredTransactions = action.payload;
     },
     addTransaction: (state, action) => {
+      console.log('Adding transaction to state:', action.payload); // DEBUG
+      console.log('Current transactions before:', state.transactions); // DEBUG
       state.transactions.push(action.payload);
       state.filteredTransactions.push(action.payload);
+      console.log('Current transactions after:', state.transactions); // DEBUG
     },
     updateTransaction: (state, action) => {
       const { id, transaction } = action.payload;
