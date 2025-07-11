@@ -8,10 +8,12 @@ import Loader from "./components/Loader/Loader.jsx";
 import LoginPage from "../src/components/Login/LoginPage.jsx";
 import RegistrationPage from "./features/auth/RegistrationPage.jsx";
 import DashboardPage from "../src/pages/Dashboard.jsx";
-// import HomeTab from "./components/Transactions/HomeTab.jsx"
+import StatisticsTab from "./components/Statistics/StatisticsTab.jsx";
+import HomeTab from "./components/Transactions/HomeTab.jsx"
 
 import { setLoading } from "./redux/globalSlice"; // doğru dosya yoluna göre ayarla
-import { setAuthToken } from "./services/api"; // ✅ token'ı Axios'a tanıtmak için
+import { setAuthToken, clearAuthToken } from "./services/api"; // ✅ token'ı Axios'a tanıtmak için
+import { refreshThunk } from "./features/auth/authOperations"; // ✅ refreshThunk import edildi
 
 function App() {
   const isLoading = useSelector((state) => state.global.isLoading);
@@ -22,7 +24,19 @@ function App() {
     const savedToken = localStorage.getItem("token");
     if (savedToken) {
       setAuthToken(savedToken);
-      dispatch(refreshThunk());
+      // Token'ı refresh et ve kullanıcı bilgilerini al
+      dispatch(refreshThunk())
+        .unwrap()
+        .then((data) => {
+          // Token geçerli, kullanıcı bilgileri güncellendi
+          console.log('Token refreshed successfully');
+        })
+        .catch((error) => {
+          // Token geçersiz, temizle
+          console.error('Token refresh failed:', error);
+          localStorage.removeItem('token');
+          clearAuthToken();
+        });
     }
   }, [dispatch]);
 
@@ -38,6 +52,7 @@ function App() {
 
           <Route element={<PrivateRoute />}>
             <Route path="/" element={<DashboardPage />} />
+            <Route path="/statistics" element={<StatisticsTab />} />
           </Route>
         </Routes>
       </BrowserRouter>

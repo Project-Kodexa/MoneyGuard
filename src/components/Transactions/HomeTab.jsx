@@ -19,9 +19,18 @@ const HomeTab = () => {
   
   const [selectedCategory, setSelectedCategory] = useState('');
 
+  // Kategorileri normalize et (string veya obje olabilir)
+  const categoriesNormalized = categories.map((cat, idx) =>
+    typeof cat === "string" ? { id: idx, name: cat } : cat
+  );
+
   useEffect(() => {
+    // Token kontrolü yap
+    const token = localStorage.getItem('token');
+    if (token) {
     dispatch(fetchTransactions());
     dispatch(fetchCategories());
+    }
   }, [dispatch]);
 
   const handleCategoryFilter = (category) => {
@@ -77,7 +86,7 @@ const HomeTab = () => {
             className="category-select"
           >
             <option value="">All Categories</option>
-            {categories.map(category => (
+            {categoriesNormalized.map(category => (
               <option key={category.id} value={category.name}>
                 {category.name}
               </option>
@@ -105,6 +114,11 @@ const HomeTab = () => {
 
       {/* Transactions List */}
       <TransactionsList transactions={transactions} />
+
+      {/* Add Transaction Button */}
+      <button className="add-transaction-btn">
+        <span className="plus-icon">+</span>
+      </button>
     </div>
   );
 };

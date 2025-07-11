@@ -24,8 +24,8 @@ export const fetchTransactions = createAsyncThunk(
 
       const { data } = await API.get("/transactions");
 
-      thunkAPI.dispatch(setTransactions(data.transactions));
-      return data.transactions;
+      thunkAPI.dispatch(setTransactions(data));
+      return data;
     } catch (error) {
       const errorMessage =
         error.response?.data?.message ||
