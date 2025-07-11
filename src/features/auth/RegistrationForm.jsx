@@ -33,18 +33,18 @@ function RegistrationForm() {
       },
     };
 
-    // ✅ Token'ı hem Axios'a ekle hem localStorage'a kaydet
-    setAuthToken(userToSave.token);
-    localStorage.setItem("token", userToSave.token); // ✨ EKLENDİ
+          // ✅ Token'ı hem Axios'a ekle hem localStorage'a kaydet
+      setAuthToken(userToSave.token);
+      localStorage.setItem("token", userToSave.token); // ✨ EKLENDİ
 
-    // ✅ Redux store'a kullanıcıyı kaydet
-    dispatch(setCredentials(userToSave));
+      // ✅ Redux store'a kullanıcıyı kaydet
+      dispatch(setCredentials(userToSave));
 
-    console.log("✅ Kayıt başarılı ve Redux güncellendi!", userToSave);
-    alert('Kayıt başarılı! Şimdi giriş yapabilirsiniz.');
+      console.log("✅ Kayıt başarılı ve Redux güncellendi!", userToSave);
+      alert('Kayıt başarılı! Şimdi giriş yapabilirsiniz.');
 
-    navigate('/login');
-    reset();
+      navigate('/login');
+      reset();
   };
 
   return (

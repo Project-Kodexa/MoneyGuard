@@ -5,10 +5,16 @@ import { toast } from 'react-toastify';
 
 const setAuthHeader = token => {
   walletAPI.defaults.headers.common.Authorization = `Bearer ${token}`;
+  // Token'ı localStorage'a da yaz
+  if (token) {
+    localStorage.setItem('token', token);
+  }
 };
 
 const clearAuthHeader = () => {
   walletAPI.defaults.headers.common.Authorization = '';
+  // localStorage'dan token'ı sil
+  localStorage.removeItem('token');
 };
 
 export const signUpThunk = createAsyncThunk(
@@ -78,6 +84,7 @@ export const refreshUserThunk = createAsyncThunk(
     }
   }
 );
+
 export const getBalanceThunk = createAsyncThunk(
   'auth/getBalance',
   async (_, thunkAPI) => {

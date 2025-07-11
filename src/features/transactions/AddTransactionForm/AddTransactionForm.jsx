@@ -48,11 +48,48 @@ const AddTransactionForm = ({ onClose }) => {
   });
 
   const onSubmit = (data) => {
-    dispatch(addTransactionThunk(data))
-      .then(() => onClose())
-      .catch((err) =>
-        alert("Transaction eklenirken hata oluştu: " + err.message)
-      );
+    // Kalıcı log için localStorage kullan
+    localStorage.setItem('debug_form_submit', 'true');
+    localStorage.setItem('debug_form_data', JSON.stringify(data));
+    
+    console.log('=== FORM SUBMIT BAŞLADI ==='); // DEBUG
+    console.log('Formdan gelen ham veri:', data); // DEBUG
+    
+    try {
+      // Form verilerini API formatına dönüştür
+      const transactionData = {
+        ...data,
+        amount: parseFloat(data.sum), // sum -> amount
+        date: data.date.toISOString(), // Date objesini ISO string'e dönüştür
+        sum: undefined // sum alanını kaldır
+      };
+      
+      localStorage.setItem('debug_transaction_data', JSON.stringify(transactionData));
+      
+      console.log('Formdan gönderilen veri:', data); // DEBUG
+      console.log('API\'ye gönderilen veri:', transactionData); // DEBUG
+      
+            console.log('addTransactionThunk dispatch ediliyor...'); // DEBUG
+      dispatch(addTransactionThunk(transactionData))
+        .then((res) => {
+          console.log('=== ADD TRANSACTION BAŞARILI ==='); // DEBUG
+          console.log('addTransactionThunk response:', res); // DEBUG
+          console.log('addTransactionThunk response payload:', res.payload); // DEBUG
+          localStorage.setItem('debug_success', JSON.stringify(res));
+          onClose();
+        })
+        .catch((err) => {
+          console.log('=== ADD TRANSACTION HATASI ==='); // DEBUG
+          console.log('addTransactionThunk error:', err); // DEBUG
+          localStorage.setItem('debug_error', JSON.stringify(err));
+          alert("Transaction eklenirken hata oluştu: " + err.message);
+        });
+    } catch (error) {
+      console.log('=== FORM SUBMIT HATASI ==='); // DEBUG
+      console.log('Form submit error:', error); // DEBUG
+      localStorage.setItem('debug_form_error', JSON.stringify(error));
+      alert("Form gönderilirken hata oluştu: " + error.message);
+    }
   };
 
   const handleTypeChange = (selectedType) => {
