@@ -24,7 +24,7 @@ function App() {
       setAuthToken(savedToken);
       dispatch(refreshThunk());
     }
-  }, [dispatch]);
+  }, []);
 
   return (
     <div>
