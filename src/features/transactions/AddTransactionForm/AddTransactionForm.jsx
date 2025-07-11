@@ -6,8 +6,10 @@ import * as yup from "yup";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import styles from "./AddTransactionForm.module.css";
- import { addTransactionThunk } from '../../../redux/transactionsOperations';
-// Yup validation schema
+import { addTransactionThunk } from "../../../redux/transactionsOperations";
+import categories from "../modalCategory"; 
+
+// Validasyon şeması
 const schema = yup.object().shape({
   type: yup.string().oneOf(["income", "expense"]).required(),
   sum: yup
@@ -46,7 +48,6 @@ const AddTransactionForm = ({ onClose }) => {
   });
 
   const onSubmit = (data) => {
-    // Eğer addTransaction imported ise kullanılır
     dispatch(addTransactionThunk(data))
       .then(() => onClose())
       .catch((err) =>
@@ -57,7 +58,11 @@ const AddTransactionForm = ({ onClose }) => {
   const handleTypeChange = (selectedType) => {
     setType(selectedType);
     setValue("type", selectedType);
+    if (selectedType === "income") {
+      setValue("category", "");
+    }
   };
+
 
   return (
     <form
@@ -67,33 +72,61 @@ const AddTransactionForm = ({ onClose }) => {
     >
       <h2 className={styles.addTransactionForm__title}>Add transaction</h2>
 
-      {/* Type selector */}
       <div className={styles.addTransactionForm__typeToggle}>
-        <button
-          type="button"
-          className={`${styles.addTransactionForm__typeToggleButton} ${
-            type === "income"
-              ? styles.addTransactionForm__typeToggleButtonActive
-              : ""
+        <div
+          className={`${styles.addTransactionForm__typeToggleText} ${
+            type === "income" ? styles.active : styles.inactive
           }`}
           onClick={() => handleTypeChange("income")}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              handleTypeChange("income");
+            }
+          }}
         >
           Income
-        </button>
-        <button
-          type="button"
-          className={`${styles.addTransactionForm__typeToggleButton} ${
-            type === "expense"
-              ? styles.addTransactionForm__typeToggleButtonActive
-              : ""
+        </div>
+
+        <div
+          className={styles.addTransactionForm__switchTrack}
+          onClick={() => handleTypeChange(type === "income" ? "expense" : "income")}
+          role="switch"
+          aria-checked={type === "income"}
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              handleTypeChange(type === "income" ? "expense" : "income");
+            }
+          }}
+        >
+          <div
+            className={`${styles.addTransactionForm__switchThumb} ${
+              type === "expense" ? styles.expense : ""
+            }`}
+          >
+            {type === "income" ? "+" : "−"}
+          </div>
+        </div>
+
+        <div
+          className={`${styles.addTransactionForm__typeToggleText} ${
+            type === "expense" ? styles.active : styles.inactive
           }`}
           onClick={() => handleTypeChange("expense")}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              handleTypeChange("expense");
+            }
+          }}
         >
           Expense
-        </button>
+        </div>
       </div>
 
-      {/* Category - only for expense */}
       {type === "expense" && (
         <div className={styles.addTransactionForm__formGroup}>
           <select
@@ -101,9 +134,11 @@ const AddTransactionForm = ({ onClose }) => {
             {...register("category")}
           >
             <option value="">Select a category</option>
-            <option value="food">Food</option>
-            <option value="transport">Transport</option>
-            {/* Backend’den gelecek kategori seçenekleri buraya eklenebilir */}
+            {categories.map((category, index) => (
+              <option key={index} value={category}>
+                {category}
+              </option>
+            ))}
           </select>
           <p className={styles.addTransactionForm__errorMessage}>
             {errors.category?.message}
@@ -111,17 +146,15 @@ const AddTransactionForm = ({ onClose }) => {
         </div>
       )}
 
-      {/* Sum ve Date yan yana */}
       <div className={styles.addTransactionForm__rowInputs}>
         <input
           type="text"
           placeholder="0.00"
           className={styles.addTransactionForm__input}
           {...register("sum")}
-          onInput={(e) => {
-            // Sadece rakam ve nokta izin ver, diğerlerini sil
-            e.target.value = e.target.value.replace(/[^0-9.]/g, "");
-          }}
+          onInput={(e) =>
+            (e.target.value = e.target.value.replace(/[^0-9.]/g, ""))
+          }
         />
         <DatePicker
           selected={watch("date")}
@@ -137,7 +170,6 @@ const AddTransactionForm = ({ onClose }) => {
         {errors.date?.message}
       </p>
 
-      {/* Comment */}
       <div className={styles.addTransactionForm__formGroup}>
         <input
           type="text"
@@ -150,7 +182,6 @@ const AddTransactionForm = ({ onClose }) => {
         </p>
       </div>
 
-      {/* Buttons */}
       <div className={styles.addTransactionForm__buttonGroup}>
         <button
           type="submit"
