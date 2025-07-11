@@ -24,11 +24,6 @@ const HomeTab = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Kategorileri normalize et (string veya obje olabilir)
-  const categoriesNormalized = categories.map((cat, idx) =>
-    typeof cat === "string" ? { id: idx, name: cat } : cat
-  );
-
   useEffect(() => {
     // Token kontrolü yap
     const token = localStorage.getItem('token');
