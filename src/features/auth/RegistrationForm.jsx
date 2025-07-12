@@ -11,7 +11,6 @@ import { setCredentials } from "../auth/authSlice";
 export default function RegistrationForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const {
     register,
     handleSubmit,
