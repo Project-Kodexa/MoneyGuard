@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./LoginPage.module.css";
-import LoginForm from "../Login/LoginForm"; // 🔑 Asıl işlem burada olacak
+import LoginForm from "../Login/LoginForm";
 
 const LoginPage = () => {
   return (
@@ -11,7 +11,7 @@ const LoginPage = () => {
           <p className={styles.loginTitle}>Money Guard</p>
         </div>
 
-        <LoginForm /> {/* 👈 Kullanıcının giriş yaptığı bileşen */}
+        <LoginForm />
       </div>
     </div>
   );
