@@ -19,7 +19,8 @@ const TransactionsItem = ({ transaction }) => {
       try {
         await dispatch(deleteTransactionThunk(transaction.id)).unwrap();
       } catch (error) {
-        alert(`Failed to delete transaction: ${error.message}`);
+        // Error handling - alert yerine console.error kullan
+        console.error('Failed to delete transaction:', error.message);
       } finally {
         setIsDeleting(false);
       }
@@ -33,7 +34,10 @@ const TransactionsItem = ({ transaction }) => {
   };
 
   // Sadece + veya - işareti
-  const getTypeSign = (type) => (type === 'income' ? '+' : '-');
+  const getTypeSign = (type) => {
+    const normalizedType = type?.toLowerCase();
+    return (normalizedType === 'income' ? '+' : '-');
+  };
 
   // Kategori adı
   const getCategory = (category) => category || '';
@@ -50,9 +54,9 @@ const TransactionsItem = ({ transaction }) => {
   };
 
   return (
-    <div className={`transaction-item ${transaction.type}`}> {/* grid satır */}
+    <div className={`transaction-item ${transaction.type?.toLowerCase()}`}> {/* grid satır */}
       <div className="transaction-date">{formatDate(transaction.date)}</div>
-      <div className={`transaction-type ${transaction.type}`}>{getTypeSign(transaction.type)}</div>
+      <div className={`transaction-type ${transaction.type?.toLowerCase()}`}>{getTypeSign(transaction.type)}</div>
       <div className="transaction-category">{getCategory(transaction.category)}</div>
       <div className="transaction-description">{getComment(transaction.comment)}</div>
       <div className="transaction-amount">{formatAmount(transaction.amount)}</div>

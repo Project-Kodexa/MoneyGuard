@@ -5,16 +5,16 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import PrivateRoute from "./routes/PrivateRoute";
 import PublicRoute from "./routes/PublicRoute";
 import Loader from "./components/Loader/Loader.jsx";
-import LoginPage from "../src/components/Login/LoginPage.jsx";
+import LoginPage from "./components/Login/LoginPage.jsx";
 import RegistrationPage from "./features/auth/RegistrationPage.jsx";
-import DashboardPage from "../src/pages/Dashboard.jsx";
+import DashboardPage from "./pages/Dashboard.jsx";
 import StatisticsTab from "./components/Statistics/StatisticsTab.jsx";
 import Currency from "./components/Currency/Currency.jsx";
 import HomeTab from "./components/Transactions/HomeTab.jsx";
 
-import { setLoading } from "./redux/globalSlice"; // doğru dosya yoluna göre ayarla
-import { setAuthToken, clearAuthToken } from "./services/api"; // ✅ token'ı Axios'a tanıtmak için
-import { refreshThunk } from "./features/auth/authOperations"; // ✅ refreshThunk import edildi
+import { setLoading } from "./redux/globalSlice";
+import { setAuthToken, clearAuthToken } from "./services/api";
+import { refreshThunk } from "./features/auth/authOperations";
 
 function App() {
   const dispatch = useDispatch();
@@ -26,8 +26,6 @@ function App() {
     const savedToken = localStorage.getItem("token");
 
     if (savedToken) {
-      console.log("TOKEN FROM LOCAL:", savedToken);
-
       // Token'ı axios header'a ekle
       setAuthToken(savedToken);
       // Token'ı refresh et ve kullanıcı bilgilerini al

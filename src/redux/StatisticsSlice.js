@@ -3,8 +3,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  selectedMonth: 'March',
-  selectedYear: '2023',
+  selectedMonth: new Date().toLocaleString('en-US', { month: 'long' }),
+  selectedYear: new Date().getFullYear().toString(),
   expenses: [
     { category: 'Car', amount: 1500, color: '#FF6384' },
     { category: 'Self care', amount: 800, color: '#36A2EB' },
