@@ -9,7 +9,8 @@ import LoginPage from "../src/components/Login/LoginPage.jsx";
 import RegistrationPage from "./features/auth/RegistrationPage.jsx";
 import DashboardPage from "../src/pages/Dashboard.jsx";
 import StatisticsTab from "./components/Statistics/StatisticsTab.jsx";
-import HomeTab from "./components/Transactions/HomeTab.jsx"
+import Currency from "./components/Currency/Currency.jsx";
+import HomeTab from "./components/Transactions/HomeTab.jsx";
 
 import { setLoading } from "./redux/globalSlice"; // doğru dosya yoluna göre ayarla
 import { setAuthToken, clearAuthToken } from "./services/api"; // ✅ token'ı Axios'a tanıtmak için
@@ -21,7 +22,7 @@ function App() {
 
   useEffect(() => {
     // Sayfa yüklendiğinde token'ı al
-    
+
     const savedToken = localStorage.getItem("token");
 
     if (savedToken) {
@@ -34,12 +35,12 @@ function App() {
         .unwrap()
         .then((data) => {
           // Token geçerli, kullanıcı bilgileri güncellendi
-          console.log('Token refreshed successfully');
+          console.log("Token refreshed successfully");
         })
         .catch((error) => {
           // Token geçersiz, temizle
-          console.error('Token refresh failed:', error);
-          localStorage.removeItem('token');
+          console.error("Token refresh failed:", error);
+          localStorage.removeItem("token");
           clearAuthToken();
         });
     }
@@ -60,8 +61,11 @@ function App() {
 
           {/* Giriş yapılması gereken sayfalar */}
           <Route element={<PrivateRoute />}>
-            <Route path="/" element={<DashboardPage />} />
-            <Route path="/statistics" element={<StatisticsTab />} />
+            <Route path="/" element={<DashboardPage />}>
+              <Route index element={<HomeTab />} />
+              <Route path="currency" element={<Currency />} />
+              <Route path="statistics" element={<StatisticsTab />} />
+            </Route>
           </Route>
         </Routes>
       </BrowserRouter>
