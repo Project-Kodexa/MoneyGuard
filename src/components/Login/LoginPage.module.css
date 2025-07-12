@@ -16,7 +16,7 @@
 }
 
 .login {
-  background: linear-gradient(to bottom, #1e1f2f, #2a2d50);
+  background: #FFFFFF1A;
   border-radius: 12px;
   padding: 40px;
   width: 320px;
@@ -123,4 +123,5 @@
 
 .form {
   width: 100%;
+ 
 }
