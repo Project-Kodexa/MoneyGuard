@@ -16,13 +16,18 @@ import { setAuthToken, clearAuthToken } from "./services/api"; // ✅ token'ı A
 import { refreshThunk } from "./features/auth/authOperations"; // ✅ refreshThunk import edildi
 
 function App() {
-  const isLoading = useSelector((state) => state.global.isLoading);
   const dispatch = useDispatch();
+  const isLoading = useSelector((state) => state.global.isLoading);
 
   useEffect(() => {
-    // ✅ Sayfa ilk yüklendiğinde localStorage'dan token'ı al ve Axios'a ekle
+    // Sayfa yüklendiğinde token'ı al
+    
     const savedToken = localStorage.getItem("token");
+
     if (savedToken) {
+      console.log("TOKEN FROM LOCAL:", savedToken);
+
+      // Token'ı axios header'a ekle
       setAuthToken(savedToken);
       // Token'ı refresh et ve kullanıcı bilgilerini al
       dispatch(refreshThunk())
@@ -42,14 +47,18 @@ function App() {
 
   return (
     <div>
+      {/* Yükleniyorsa loader göster */}
       {isLoading && <Loader />}
+
       <BrowserRouter>
         <Routes>
+          {/* Genel erişim için sayfalar */}
           <Route element={<PublicRoute />}>
             <Route path="/register" element={<RegistrationPage />} />
             <Route path="/login" element={<LoginPage />} />
           </Route>
 
+          {/* Giriş yapılması gereken sayfalar */}
           <Route element={<PrivateRoute />}>
             <Route path="/" element={<DashboardPage />} />
             <Route path="/statistics" element={<StatisticsTab />} />

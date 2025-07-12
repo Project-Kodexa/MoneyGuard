@@ -25,7 +25,7 @@ function RegistrationForm() {
 
     // ✅ Sahte token oluşturuluyor
     const userToSave = {
-      token: `mock_token_${Date.now()}`,
+      token: "mock_token_${Date.now()}",
       user: {
         name: userData.username,
         email: userData.email,
