@@ -11,6 +11,7 @@ const initialState = {
   isLoading: false,
   error: null,
   isLoggedIn: false,
+  isRefreshing: false,
 };
 
 const authSlice = createSlice({
@@ -30,10 +31,14 @@ const authSlice = createSlice({
         balance: null,
       };
       state.isLoggedIn = false;
-    },  
+      state.isRefreshing = false;
+    },
+    setRefreshing: (state, action) => {
+      state.isRefreshing = action.payload;
+    },
   },
 });
 
-export const { setCredentials, logout } = authSlice.actions;
+export const { setCredentials, logout, setRefreshing } = authSlice.actions;
 
 export default authSlice.reducer;

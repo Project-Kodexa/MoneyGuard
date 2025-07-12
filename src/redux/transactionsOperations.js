@@ -22,11 +22,31 @@ export const fetchTransactions = createAsyncThunk(
       thunkAPI.dispatch(setLoading(true));
       thunkAPI.dispatch(setTransactionsLoading(true));
 
-      const { data } = await API.get("/transactions");
+      const response = await API.get("/transactions");
+      
+      // API response formatını kontrol et ve normalize et
+      let transactionsData;
+      
+      if (response.data && Array.isArray(response.data)) {
+        // Format: { data: [...] }
+        transactionsData = response.data;
+      } else if (response.data && response.data.transactions && Array.isArray(response.data.transactions)) {
+        // Format: { data: { transactions: [...] } }
+        transactionsData = response.data.transactions;
+      } else if (response.data && response.data.result && Array.isArray(response.data.result)) {
+        // Format: { data: { result: [...] } }
+        transactionsData = response.data.result;
+      } else {
+        // Bilinmeyen format, boş array döndür
+        console.warn('Unknown API response format:', response.data);
+        transactionsData = [];
+      }
 
-      thunkAPI.dispatch(setTransactions(data));
-      return data;
+      thunkAPI.dispatch(setTransactions(transactionsData));
+      thunkAPI.dispatch(setError(null)); // Error state'ini temizle
+      return transactionsData;
     } catch (error) {
+      console.error('API Error:', error);
       const errorMessage =
         error.response?.data?.message ||
         error.message ||
@@ -47,37 +67,26 @@ export const addTransactionThunk = createAsyncThunk(
     try {
       thunkAPI.dispatch(setLoading(true));
 
-      console.log('Transaction data being sent:', transactionData); // DEBUG
-      localStorage.setItem('debug_api_request', JSON.stringify(transactionData));
-      
-      // Mock API kullan (test için)
-      const mockResponse = {
-        data: {
-          transaction: {
-            id: Date.now().toString(),
-            ...transactionData,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          }
-        }
-      };
-      
-      console.log('Mock API response:', mockResponse); // DEBUG
-      localStorage.setItem('debug_api_response', JSON.stringify(mockResponse));
-      
-      const { data } = mockResponse; // Mock response kullan
+      // Expense işlemleri için tutarı negatif yap
+      const apiData = { ...transactionData };
+      if (apiData.type === 'EXPENSE' && apiData.amount > 0) {
+        apiData.amount = -Math.abs(apiData.amount);
+      }
+
+      console.log('Sending to API:', apiData);
+      const { data } = await API.post("/transactions", apiData);
+      console.log('API Response:', data);
 
       // API'den dönen veri formatını kontrol et ve normalize et
       let transactionToAdd = data.transaction || data;
-      console.log('Transaction to add to state:', transactionToAdd); // DEBUG
 
       // Eksik alanları tamamla
       transactionToAdd = {
         id: transactionToAdd.id || Date.now().toString(),
         type: transactionToAdd.type || transactionData.type || 'expense',
         amount: parseFloat(transactionToAdd.amount || transactionData.amount || 0),
-        date: transactionToAdd.date || transactionData.date || new Date().toISOString(),
-        category: transactionToAdd.category || transactionData.category || ((transactionData.type === 'expense' || transactionToAdd.type === 'expense') ? 'Other' : ''),
+        date: transactionToAdd.transactionDate || transactionToAdd.date || transactionData.transactionDate || new Date().toISOString(),
+        category: transactionToAdd.category || transactionData.category || '',
         comment: transactionToAdd.comment || transactionData.comment || 'No comment'
       };
 
@@ -86,13 +95,22 @@ export const addTransactionThunk = createAsyncThunk(
         transactionToAdd.date = new Date(transactionToAdd.date).toISOString();
       }
 
-      console.log('Final transaction to add:', transactionToAdd); // DEBUG
-      localStorage.setItem('debug_final_transaction', JSON.stringify(transactionToAdd));
-
       thunkAPI.dispatch(addTransaction(transactionToAdd));
       return transactionToAdd;
     } catch (error) {
-      console.error('Error adding transaction:', error); // DEBUG
+      console.error('API Error:', error.response?.data || error);
+      console.error('API Error Details:', {
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        data: error.response?.data,
+        message: error.message
+      });
+      
+      // API error message array'ini detaylı göster
+      if (error.response?.data?.message && Array.isArray(error.response.data.message)) {
+        console.error('API Validation Errors:', error.response.data.message);
+      }
+      
       const errorMessage =
         error.response?.data?.message ||
         error.message ||
@@ -160,10 +178,13 @@ export const fetchCategories = createAsyncThunk(
   "transactions/fetchCategories",
   async (_, thunkAPI) => {
     try {
+      console.log('Fetching categories from API...');
       const { data } = await API.get("/transaction-categories");
+      console.log('Categories API response:', data);
       thunkAPI.dispatch(setCategories(data));
       return data;
     } catch (error) {
+      console.error('Categories API Error:', error.response?.data || error);
       const errorMessage =
         error.response?.data?.message ||
         error.message ||

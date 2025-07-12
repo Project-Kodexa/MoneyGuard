@@ -23,6 +23,11 @@ export const getCurrency = async () => {
     const eur = data.find(
       item => item.currencyCodeA === 978 && item.currencyCodeB === 980
     );
+    
+    if (!usd || !eur) {
+      throw new Error('Currency rates not found');
+    }
+    
     const currencyData = {
       date: now,
       usd: { buy: usd.rateBuy.toFixed(2), sell: usd.rateSell.toFixed(2) },

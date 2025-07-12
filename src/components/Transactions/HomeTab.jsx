@@ -20,8 +20,16 @@ const HomeTab = () => {
     error 
   } = useSelector(state => state.transactions);
   
-  console.log('HomeTab - Current transactions:', transactions); // DEBUG
-  console.log('HomeTab - Transactions length:', transactions?.length); // DEBUG
+  // Debug için kategorileri kontrol et
+  console.log('Categories from store:', categories);
+  if (categories && categories.length > 0) {
+    console.log('First category example:', categories[0]);
+    // INCOME ve EXPENSE kategorilerini ayır
+    const incomeCategories = categories.filter(cat => cat.type === 'INCOME');
+    const expenseCategories = categories.filter(cat => cat.type === 'EXPENSE');
+    console.log('Income categories:', incomeCategories);
+    console.log('Expense categories:', expenseCategories);
+  }
   
   const [selectedCategory, setSelectedCategory] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);

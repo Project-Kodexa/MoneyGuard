@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import API, { setAuthToken, clearAuthToken } from '../../services/api.js';
+import { setRefreshing } from './authSlice';
 
 export const registerThunk = createAsyncThunk(
   'auth/sign-up',
@@ -12,8 +13,6 @@ export const registerThunk = createAsyncThunk(
         ...rest,
         username: name, // ✅ name yerine username gönderiyoruz
       };
-
-      console.log("Kayıt için gönderilen data:", signupData);
 
       const response = await API.post('/auth/sign-up', signupData);
 
@@ -77,6 +76,9 @@ export const refreshThunk = createAsyncThunk(
     }
 
     setAuthToken(savedToken);
+    
+    // Refresh başladığında loading state'ini set et
+    thunkAPI.dispatch(setRefreshing(true));
 
     try {
       const { data } = await API.get('/users/current');
@@ -85,6 +87,9 @@ export const refreshThunk = createAsyncThunk(
       return thunkAPI.rejectWithValue(
         error.response?.data?.message || error.message
       );
+    } finally {
+      // Refresh bittiğinde loading state'ini kaldır
+      thunkAPI.dispatch(setRefreshing(false));
     }
   }
 );

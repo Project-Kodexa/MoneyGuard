@@ -17,10 +17,13 @@ export const selectBalance = (state) => {
   const transactions = state.transactions.transactions;
   return transactions.reduce((total, transaction) => {
     const amount = parseFloat(transaction.amount) || 0;
-    if (transaction.type === 'income') {
-      return total + amount;
-    } else if (transaction.type === 'expense') {
-      return total - amount;
+    // API'den gelen type'ları normalize et (büyük/küçük harf farkını gider)
+    const normalizedType = transaction.type?.toLowerCase();
+    
+    if (normalizedType === 'income') {
+      return total + Math.abs(amount); // Income için pozitif değer
+    } else if (normalizedType === 'expense') {
+      return total + amount; // Expense için zaten negatif değer geliyor
     }
     return total;
   }, 0);
@@ -30,16 +33,16 @@ export const selectBalance = (state) => {
 export const selectTotalIncome = (state) => {
   const transactions = state.transactions.transactions;
   return transactions
-    .filter(transaction => transaction.type === 'income')
-    .reduce((total, transaction) => total + (parseFloat(transaction.amount) || 0), 0);
+    .filter(transaction => transaction.type?.toLowerCase() === 'income')
+    .reduce((total, transaction) => total + Math.abs(parseFloat(transaction.amount) || 0), 0);
 };
 
 // Selector to get total expenses
 export const selectTotalExpenses = (state) => {
   const transactions = state.transactions.transactions;
   return transactions
-    .filter(transaction => transaction.type === 'expense')
-    .reduce((total, transaction) => total + (parseFloat(transaction.amount) || 0), 0);
+    .filter(transaction => transaction.type?.toLowerCase() === 'expense')
+    .reduce((total, transaction) => total + Math.abs(parseFloat(transaction.amount) || 0), 0);
 };
 
 const transactionsSlice = createSlice({
@@ -49,13 +52,11 @@ const transactionsSlice = createSlice({
     setTransactions: (state, action) => {
       state.transactions = action.payload;
       state.filteredTransactions = action.payload;
+      state.error = null; // Error state'ini temizle
     },
     addTransaction: (state, action) => {
-      console.log('Adding transaction to state:', action.payload); // DEBUG
-      console.log('Current transactions before:', state.transactions); // DEBUG
       state.transactions.push(action.payload);
       state.filteredTransactions.push(action.payload);
-      console.log('Current transactions after:', state.transactions); // DEBUG
     },
     updateTransaction: (state, action) => {
       const { id, transaction } = action.payload;

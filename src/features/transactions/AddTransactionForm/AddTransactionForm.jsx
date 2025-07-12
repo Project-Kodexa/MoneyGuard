@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -7,7 +7,6 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import styles from "./AddTransactionForm.module.css";
 import { addTransactionThunk } from "../../../redux/transactionsOperations";
-import categories from "../modalCategory"; 
 
 // Validasyon şeması
 const schema = yup.object().shape({
@@ -29,6 +28,9 @@ const schema = yup.object().shape({
 const AddTransactionForm = ({ onClose }) => {
   const dispatch = useDispatch();
   const [type, setType] = useState("expense");
+  
+  // Kategorileri Redux store'dan al
+  const { categories } = useSelector(state => state.transactions);
 
   const {
     register,
@@ -48,47 +50,43 @@ const AddTransactionForm = ({ onClose }) => {
   });
 
   const onSubmit = (data) => {
-    // Kalıcı log için localStorage kullan
-    localStorage.setItem('debug_form_submit', 'true');
-    localStorage.setItem('debug_form_data', JSON.stringify(data));
-    
-    console.log('=== FORM SUBMIT BAŞLADI ==='); // DEBUG
-    console.log('Formdan gelen ham veri:', data); // DEBUG
-    
     try {
+      // Date'i YYYY-MM-DD formatına dönüştür
+      const formattedDate = data.date.toISOString().split('T')[0];
+      
+      // INCOME için uygun categoryId bul
+      let categoryId = data.category;
+      if (data.type === 'income') {
+        // INCOME kategorilerini bul
+        const incomeCategories = categories.filter(cat => cat.type === 'INCOME');
+        if (incomeCategories.length > 0) {
+          categoryId = incomeCategories[0].id; // İlk INCOME kategorisini kullan
+        } else {
+          // INCOME kategorisi yoksa, varsayılan bir UUID kullan
+          categoryId = '00000000-0000-0000-0000-000000000001';
+        }
+      }
+      
       // Form verilerini API formatına dönüştür
       const transactionData = {
-        ...data,
         amount: parseFloat(data.sum), // sum -> amount
-        date: data.date.toISOString(), // Date objesini ISO string'e dönüştür
-        sum: undefined // sum alanını kaldır
+        transactionDate: formattedDate, // date -> transactionDate (YYYY-MM-DD format)
+        type: data.type === 'income' ? 'INCOME' : 'EXPENSE', // type enum değeri (büyük harf)
+        categoryId: categoryId, // Her zaman geçerli bir UUID
+        comment: data.comment
       };
       
-      localStorage.setItem('debug_transaction_data', JSON.stringify(transactionData));
+      console.log('Sending transaction data:', transactionData);
       
-      console.log('Formdan gönderilen veri:', data); // DEBUG
-      console.log('API\'ye gönderilen veri:', transactionData); // DEBUG
-      
-            console.log('addTransactionThunk dispatch ediliyor...'); // DEBUG
       dispatch(addTransactionThunk(transactionData))
         .then((res) => {
-          console.log('=== ADD TRANSACTION BAŞARILI ==='); // DEBUG
-          console.log('addTransactionThunk response:', res); // DEBUG
-          console.log('addTransactionThunk response payload:', res.payload); // DEBUG
-          localStorage.setItem('debug_success', JSON.stringify(res));
           onClose();
         })
         .catch((err) => {
-          console.log('=== ADD TRANSACTION HATASI ==='); // DEBUG
-          console.log('addTransactionThunk error:', err); // DEBUG
-          localStorage.setItem('debug_error', JSON.stringify(err));
-          alert("Transaction eklenirken hata oluştu: " + err.message);
+          console.error('Add transaction error:', err.message);
         });
     } catch (error) {
-      console.log('=== FORM SUBMIT HATASI ==='); // DEBUG
-      console.log('Form submit error:', error); // DEBUG
-      localStorage.setItem('debug_form_error', JSON.stringify(error));
-      alert("Form gönderilirken hata oluştu: " + error.message);
+      console.error('Form submit error:', error.message);
     }
   };
 
@@ -172,8 +170,8 @@ const AddTransactionForm = ({ onClose }) => {
           >
             <option value="">Select a category</option>
             {categories.map((category, index) => (
-              <option key={index} value={category}>
-                {category}
+              <option key={index} value={category.id}>
+                {category.name}
               </option>
             ))}
           </select>

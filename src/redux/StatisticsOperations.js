@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+import { setStatistics } from './StatisticsSlice';
 
 export const fetchStatistics = (month, year) => async (dispatch) => {
   try {

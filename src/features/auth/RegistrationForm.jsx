@@ -26,8 +26,6 @@ export default function RegistrationForm() {
       const { username, confirmPassword, ...rest } = data;
       const payload = { name: username, ...rest };
 
-      console.log("📤 Kayıt için gönderilen payload:", payload);
-
       const result = await dispatch(registerThunk(payload));
 
       if (registerThunk.fulfilled.match(result)) {
@@ -40,18 +38,13 @@ export default function RegistrationForm() {
         // ✅ Redux store'a kullanıcıyı kaydet
         dispatch(setCredentials(userToSave));
 
-        console.log("✅ Kayıt başarılı ve Redux güncellendi!", userToSave);
-        alert("Kayıt başarılı! Şimdi giriş yapabilirsiniz.");
-
         reset(); // yönlendirme öncesi formu temizle
         navigate("/login");
       } else {
-        console.error("❌ Kayıt başarısız oldu:", result.error);
-        alert("Kayıt başarısız. Lütfen tekrar deneyin.");
+        // Kayıt başarısız
       }
     } catch (error) {
-      console.error("❌ Kayıt işlemi sırasında bir hata oluştu:", error);
-      alert("Bir hata oluştu. Lütfen tekrar deneyin.");
+      // Bir hata oluştu
     }
   };
 

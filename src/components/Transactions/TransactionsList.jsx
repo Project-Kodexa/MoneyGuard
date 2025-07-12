@@ -3,9 +3,6 @@ import TransactionsItem from './TransactionsItem';
 import './TransactionsList.css';
 
 const TransactionsList = ({ transactions }) => {
-  console.log('TransactionsList - Received transactions:', transactions); // DEBUG
-  console.log('TransactionsList - Transactions length:', transactions?.length); // DEBUG
-  
   if (!transactions || transactions.length === 0) {
     return (
       <div className="transactions-list-empty">
