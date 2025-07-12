@@ -11,7 +11,6 @@ import { setCredentials } from "../auth/authSlice";
 export default function RegistrationForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const {
     register,
     handleSubmit,
@@ -39,6 +38,7 @@ export default function RegistrationForm() {
 
         // ✅ Redux store'a kullanıcıyı kaydet
         dispatch(setCredentials(userToSave));
+
         console.log("✅ Kayıt başarılı ve Redux güncellendi!", userToSave);
         alert("Kayıt başarılı! Şimdi giriş yapabilirsiniz.");
 
@@ -47,12 +47,10 @@ export default function RegistrationForm() {
       } else {
         console.error("❌ Kayıt başarısız oldu:", result.error);
         alert("Kayıt başarısız. Lütfen tekrar deneyin.");
-        // Kayıt başarısız
       }
     } catch (error) {
       console.error("❌ Kayıt işlemi sırasında bir hata oluştu:", error);
       alert("Bir hata oluştu. Lütfen tekrar deneyin.");
-      // Bir hata oluştu
     }
   };
 

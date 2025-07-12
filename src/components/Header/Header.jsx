@@ -1,8 +1,8 @@
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 import { logoutThunk } from '../../features/auth/authOperations';
-import s from './Header.module.css';
+import s from "./Header.module.css";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -34,7 +34,11 @@ const Header = () => {
   return (
     <header className={s.header}>
       <div className={s.logoContainer}>
-        <img src="/money-guard.svg" alt="Money Guard Logo" className={s.logoImg} />
+        <img
+          src="/money-guard.svg"
+          alt="Money Guard Logo"
+          className={s.logoImg}
+        />
         <span className={s.logoText}>Money Guard</span>
       </div>
       <div className={s.user}>
