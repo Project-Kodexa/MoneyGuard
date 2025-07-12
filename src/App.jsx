@@ -8,6 +8,7 @@ import Loader from "./components/Loader/Loader.jsx";
 import LoginPage from "../src/components/Login/LoginPage.jsx";
 import RegistrationPage from "./features/auth/RegistrationPage.jsx";
 import DashboardPage from "../src/pages/Dashboard.jsx";
+import StatisticsTab from "./components/Statistics/StatisticsTab.jsx";
 // import HomeTab from "./components/Transactions/HomeTab.jsx"
 
 import { setLoading } from "./redux/globalSlice"; // doğru dosya yoluna göre ayarla
@@ -39,6 +40,7 @@ function App() {
 
           <Route element={<PrivateRoute />}>
             <Route path="/" element={<DashboardPage />} />
+            <Route path="/statistics" element={<StatisticsTab />} />
           </Route>
         </Routes>
       </BrowserRouter>
