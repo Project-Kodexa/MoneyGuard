@@ -2,15 +2,26 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import API, { setAuthToken, clearAuthToken } from '../../services/api.js';
 
 export const registerThunk = createAsyncThunk(
-  'auth/register',
-  async (credentials, thunkAPI) => {
+  'auth/sign-up',
+  async (userData, thunkAPI) => {
     try {
-      const { data } = await API.post('/api/auth/sign-up', credentials);
+      const { confirmPassword, name, ...rest } = userData;
 
-      setAuthToken(data.token);
-      localStorage.setItem('token', data.token);
+      // name -> username dönüştür
+      const signupData = {
+        ...rest,
+        username: name, // ✅ name yerine username gönderiyoruz
+      };
 
-      return data;
+      console.log("Kayıt için gönderilen data:", signupData);
+
+      const response = await API.post('/auth/sign-up', signupData);
+
+      const token = response.data.token;
+      setAuthToken(token);
+      localStorage.setItem('token', token);
+
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data?.message || error.message
@@ -19,11 +30,12 @@ export const registerThunk = createAsyncThunk(
   }
 );
 
+
 export const loginThunk = createAsyncThunk(
   'auth/login',
   async (credentials, thunkAPI) => {
     try {
-      const { data } = await API.post('/api/auth/sign-in', credentials);
+      const { data } = await API.post('/auth/sign-in', credentials);
 
       setAuthToken(data.token);
       localStorage.setItem('token', data.token);
@@ -41,7 +53,7 @@ export const logoutThunk = createAsyncThunk(
   'auth/logout',
   async (_, thunkAPI) => {
     try {
-      const { data } = await API.delete('/api/auth/sign-out');
+      const { data } = await API.delete('/auth/sign-out');
 
       clearAuthToken();
       localStorage.removeItem('token');
@@ -58,8 +70,7 @@ export const logoutThunk = createAsyncThunk(
 export const refreshThunk = createAsyncThunk(
   'auth/refresh',
   async (_, thunkAPI) => {
-    const savedToken =
-      thunkAPI.getState().auth.token || localStorage.getItem('token');
+    const savedToken = localStorage.getItem('token');
 
     if (!savedToken) {
       return thunkAPI.rejectWithValue("Token doesn't exist");
@@ -68,7 +79,7 @@ export const refreshThunk = createAsyncThunk(
     setAuthToken(savedToken);
 
     try {
-      const { data } = await API.get('/api/users/current');
+      const { data } = await API.get('/users/current');
       return data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -83,7 +94,7 @@ export const getBalanceThunk = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       // Kullanıcı bakiyesi kullanıcı bilgisi içinde gelir, bu yüzden current user endpoint’i kullanılır
-      const { data } = await API.get('/api/users/current');
+      const { data } = await API.get('/users/current');
       return data.balance;
     } catch (error) {
       return thunkAPI.rejectWithValue(

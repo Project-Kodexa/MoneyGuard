@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { setMonth, setYear } from "../redux/StatisticsSlice";
+import { setMonth, setYear } from "../../redux/StatisticsSlice";
 import styles from "./Statistics.module.css";
 
 const months = [
