@@ -68,7 +68,7 @@ export const refreshThunk = createAsyncThunk(
     setAuthToken(savedToken);
 
     try {
-      const { data } = await API.get('/api/users/current');
+      const { data } = await API.get('/users/current');
       return data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -83,7 +83,7 @@ export const getBalanceThunk = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       // Kullanıcı bakiyesi kullanıcı bilgisi içinde gelir, bu yüzden current user endpoint’i kullanılır
-      const { data } = await API.get('/api/users/current');
+      const { data } = await API.get('/users/current');
       return data.balance;
     } catch (error) {
       return thunkAPI.rejectWithValue(
