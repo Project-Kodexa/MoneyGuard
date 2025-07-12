@@ -10,6 +10,8 @@ import ModalAddTransaction from '../../features/transactions/ModalAddTransaction
 import './HomeTab.css';
 
 const HomeTab = () => {
+
+  
   const dispatch = useDispatch();
   const { 
     transactions, 
