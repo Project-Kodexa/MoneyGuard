@@ -1,16 +1,16 @@
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { registerSchema } from '../../schemas/registerSchema';
-import styles from './RegistrationForm.module.css';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { setCredentials } from '../../features/auth/authSlice';
-import { setAuthToken } from '../../services/api'; // ✅ token'ı ayarlamak için
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { registerSchema } from "../../schemas/registerSchema";
+import styles from "./RegistrationForm.module.css";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { setAuthToken } from "../../services/api";
+import { registerThunk } from "../../features/auth/authOperations";
+import { setCredentials } from "../auth/authSlice";
 
-function RegistrationForm() {
+export default function RegistrationForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const {
     register,
     handleSubmit,
@@ -20,64 +20,82 @@ function RegistrationForm() {
     resolver: yupResolver(registerSchema),
   });
 
-  const onSubmit = (data) => {
-    const { ...userData } = data;
+  const onSubmit = async (data) => {
+    try {
+      const { username, confirmPassword, ...rest } = data;
+      const payload = { name: username, ...rest };
 
-    // ✅ Sahte token oluşturuluyor
-    const userToSave = {
-      token: "mock_token_${Date.now()}",
-      user: {
-        name: userData.username,
-        email: userData.email,
-        balance: 0, // Başlangıç bakiyesi
-      },
-    };
+      console.log("📤 Kayıt için gönderilen payload:", payload);
 
-          // ✅ Token'ı hem Axios'a ekle hem localStorage'a kaydet
-      setAuthToken(userToSave.token);
-      localStorage.setItem("token", userToSave.token); // ✨ EKLENDİ
+      const result = await dispatch(registerThunk(payload));
 
-      // ✅ Redux store'a kullanıcıyı kaydet
-      dispatch(setCredentials(userToSave));
+      if (registerThunk.fulfilled.match(result)) {
+        const userToSave = result.payload;
 
-      console.log("✅ Kayıt başarılı ve Redux güncellendi!", userToSave);
-      alert('Kayıt başarılı! Şimdi giriş yapabilirsiniz.');
+        // ✅ Token'ı hem Axios'a ekle hem localStorage'a kaydet
+        setAuthToken(userToSave.token);
+        localStorage.setItem("token", userToSave.token);
 
-      navigate('/login');
-      reset();
+        // ✅ Redux store'a kullanıcıyı kaydet
+        dispatch(setCredentials(userToSave));
+
+        console.log("✅ Kayıt başarılı ve Redux güncellendi!", userToSave);
+        alert("Kayıt başarılı! Şimdi giriş yapabilirsiniz.");
+
+        reset(); // yönlendirme öncesi formu temizle
+        navigate("/login");
+      } else {
+        console.error("❌ Kayıt başarısız oldu:", result.error);
+        alert("Kayıt başarısız. Lütfen tekrar deneyin.");
+      }
+    } catch (error) {
+      console.error("❌ Kayıt işlemi sırasında bir hata oluştu:", error);
+      alert("Bir hata oluştu. Lütfen tekrar deneyin.");
+    }
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
       <input
         className={styles.input}
-        {...register('username')}
+        {...register("username")}
         placeholder="Username"
       />
-      {errors.username && <p className={styles.errorMessage}>{errors.username.message}</p>}
+      {errors.username && (
+        <p className={styles.errorMessage}>{errors.username.message}</p>
+      )}
 
       <input
+        type="email"
         className={styles.input}
-        {...register('email')}
+        {...register("email")}
         placeholder="E-mail"
       />
-      {errors.email && <p className={styles.errorMessage}>{errors.email.message}</p>}
+      {errors.email && (
+        <p className={styles.errorMessage}>{errors.email.message}</p>
+      )}
 
       <input
         type="password"
         className={styles.input}
-        {...register('password')}
+        {...register("password")}
         placeholder="Password"
       />
-      {errors.password && <p className={styles.errorMessage}>{errors.password.message}</p>}
+      {errors.password && (
+        <p className={styles.errorMessage}>{errors.password.message}</p>
+      )}
 
       <input
         type="password"
         className={styles.input}
-        {...register('confirmPassword')}
+        {...register("confirmPassword")}
         placeholder="Confirm Password"
       />
-      {errors.confirmPassword && <p className={styles.errorMessage}>{errors.confirmPassword.message}</p>}
+      {errors.confirmPassword && (
+        <p className={styles.errorMessage}>
+          {errors.confirmPassword.message}
+        </p>
+      )}
 
       <button type="submit" className={styles.button_reg}>
         Register
@@ -85,5 +103,3 @@ function RegistrationForm() {
     </form>
   );
 }
-
-export default RegistrationForm;

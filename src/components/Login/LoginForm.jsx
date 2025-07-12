@@ -36,12 +36,16 @@ export default function LoginForm() {
       const result = await dispatch(loginThunk(data));
 
       if (loginThunk.fulfilled.match(result)) {
-        const token = result.payload.token;
+        const { token, user } = result.payload;
+        
+        // API'den gelen veriyi kontrol et
+        console.log('Login API Response:', result.payload);
+        console.log('User data:', user);
 
-        setAuthToken(token); // ✅ axios'a token set edildi
-        localStorage.setItem("token", token); // ✅ localStorage'a da kaydedildi
+        setAuthToken(token);
+        localStorage.setItem("token", token);
 
-        navigate("/"); // ✅ yönlendirme
+        navigate("/");
       } else {
         setLoginError("Email or password is incorrect.");
       }
