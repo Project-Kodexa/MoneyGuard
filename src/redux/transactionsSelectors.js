@@ -9,14 +9,13 @@ export const selectExpenseTransactionsByMonth = createSelector(
   (transactions, year, month) => {
     return transactions.filter((tx) => {
       const txDate = new Date(tx.transactionDate);
-      return (
-        tx.type === 'EXPENSE' &&
-        txDate.getFullYear() === year &&
-        txDate.getMonth() + 1 === month
-      );
+      const matchesYear = txDate.getFullYear() === year;
+      const matchesMonth = month === 0 ? true : (txDate.getMonth() + 1) === month;
+      return tx.type === 'EXPENSE' && matchesYear && matchesMonth;
     });
   }
 );
+
 
 
 export const selectFilteredExpenses = createSelector(

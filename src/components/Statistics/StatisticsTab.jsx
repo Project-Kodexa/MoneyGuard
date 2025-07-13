@@ -4,7 +4,7 @@ import { Doughnut } from 'react-chartjs-2';
 import { format } from 'date-fns';
 import { fetchTransactions, fetchCategories } from '../../redux/transactionsOperations';
 import { selectExpenseTransactionsByMonth } from '../../redux/transactionsSelectors';
-
+import styles from './StatisticsTab.module.css';
 import {
   Chart as ChartJS,
   ArcElement,       // Doughnut için gerekli
@@ -77,13 +77,14 @@ const StatisticsTab = () => {
   };
 
   return (
-    <div>
-      <h2>Statistics</h2>
+    <div className={styles.container}>
+      <h2 className={styles.title}>Statistics</h2>
 
-      <select
+      <select className={styles.select}
         value={selectedMonth}
         onChange={(e) => setSelectedMonth(Number(e.target.value))}
       >
+        <option value={0}>All Months</option>
         {Array.from({ length: 12 }, (_, i) => (
           <option key={i} value={i + 1}>
             {format(new Date(2000, i), 'MMMM')}
@@ -91,7 +92,7 @@ const StatisticsTab = () => {
         ))}
       </select>
 
-      <select
+      <select className={styles.select}
         value={selectedYear}
         onChange={(e) => setSelectedYear(Number(e.target.value))}
       >
@@ -111,11 +112,11 @@ const StatisticsTab = () => {
         <>
           <Doughnut data={chartData} />
 
-          <ul>
+          <ul className={styles.list}>
             {filteredTransactions.map((tx) => {
               const categoryName = categoryIdNameMap[tx.categoryId] || 'Uncategorized';
               return (
-                <li key={tx.id}>
+                <li className={styles.listItem} key={tx.id}>
                   {categoryName}: {Number(tx.amount).toFixed(2)} USD
                 </li>
               );
