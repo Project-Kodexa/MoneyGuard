@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import AddTransactionForm from '../AddTransactionForm/AddTransactionForm';
 import styles from './ModalAddTransaction.module.css';
 
-const ModalAddTransaction = ({ isOpen, onClose }) => {
+const ModalAddTransaction = ({ isOpen, onClose, mode = 'add', transaction = null }) => {
   useEffect(() => {
     const handleEsc = e => {
       if (e.key === 'Escape') {
@@ -47,7 +47,11 @@ const ModalAddTransaction = ({ isOpen, onClose }) => {
         </button>
 
         {/* İçerikteki form bileşeni */}
-        <AddTransactionForm onClose={onClose} />
+        <AddTransactionForm 
+          mode={mode}
+          transaction={transaction}
+          onClose={onClose} 
+        />
       </div>
     </div>,
     document.getElementById('modal-root')

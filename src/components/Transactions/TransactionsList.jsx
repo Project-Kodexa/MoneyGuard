@@ -2,7 +2,7 @@ import React from 'react';
 import TransactionsItem from './TransactionsItem';
 import './TransactionsList.css';
 
-const TransactionsList = ({ transactions }) => {
+const TransactionsList = ({ transactions, onEditTransaction }) => {
   if (!transactions || transactions.length === 0) {
     return (
       <div className="transactions-list-empty">
@@ -36,6 +36,7 @@ const TransactionsList = ({ transactions }) => {
           <TransactionsItem 
             key={transaction.id} 
             transaction={transaction} 
+            onEdit={onEditTransaction}
           />
         ))}
       </div>
