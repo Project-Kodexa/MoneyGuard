@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -6,7 +6,7 @@ import * as yup from "yup";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import styles from "./AddTransactionForm.module.css";
-import { addTransactionThunk } from "../../../redux/transactionsOperations";
+import { addTransactionThunk, updateTransactionThunk } from "../../../redux/transactionsOperations";
 
 import calendarIcon from "../../../images/addTrn/calenderIcon.png";
 
@@ -27,9 +27,9 @@ const schema = yup.object().shape({
   comment: yup.string().required("Comment is required"),
 });
 
-const AddTransactionForm = ({ onClose }) => {
+const AddTransactionForm = ({ onClose, mode = 'add', transaction = null }) => {
   const dispatch = useDispatch();
-  const [type, setType] = useState("expense");
+  const [type, setType] = useState(transaction?.type?.toLowerCase() || "expense");
 
   const { categories } = useSelector((state) => state.transactions);
 
@@ -42,13 +42,25 @@ const AddTransactionForm = ({ onClose }) => {
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      type: "expense",
-      sum: "",
-      date: new Date(),
-      category: "",
-      comment: "",
+      type: transaction?.type?.toLowerCase() || "expense",
+      sum: transaction?.amount ? Math.abs(transaction.amount).toString() : "",
+      date: transaction?.date ? new Date(transaction.date) : new Date(),
+      category: transaction?.categoryId || transaction?.category || "",
+      comment: transaction?.comment || "",
     },
   });
+
+  // Edit modunda form verilerini doldur
+  useEffect(() => {
+    if (mode === 'edit' && transaction) {
+      setType(transaction.type?.toLowerCase() || "expense");
+      setValue("type", transaction.type?.toLowerCase() || "expense");
+      setValue("sum", transaction.amount ? Math.abs(transaction.amount).toString() : "");
+      setValue("date", transaction.date ? new Date(transaction.date) : new Date());
+      setValue("category", transaction.categoryId || transaction.category || "");
+      setValue("comment", transaction.comment || "");
+    }
+  }, [mode, transaction, setValue]);
 
   const onSubmit = (data) => {
     try {
@@ -71,9 +83,20 @@ const AddTransactionForm = ({ onClose }) => {
         comment: data.comment,
       };
 
-      dispatch(addTransactionThunk(transactionData))
-        .then(() => onClose())
-        .catch((err) => console.error("Add transaction error:", err.message));
+      if (mode === 'edit' && transaction?.id) {
+        // Edit mode - update existing transaction
+        dispatch(updateTransactionThunk({ 
+          id: transaction.id, 
+          transactionData: transactionData 
+        }))
+          .then(() => onClose())
+          .catch((err) => console.error("Update transaction error:", err.message));
+      } else {
+        // Add mode - create new transaction
+        dispatch(addTransactionThunk(transactionData))
+          .then(() => onClose())
+          .catch((err) => console.error("Add transaction error:", err.message));
+      }
     } catch (error) {
       console.error("Form submit error:", error.message);
     }
@@ -91,7 +114,9 @@ const AddTransactionForm = ({ onClose }) => {
       className={styles.addTransactionForm__container}
       noValidate
     >
-      <h2 className={styles.addTransactionForm__title}>Add transaction</h2>
+      <h2 className={styles.addTransactionForm__title}>
+        {mode === 'edit' ? 'Edit transaction' : 'Add transaction'}
+      </h2>
 
       {/* Toggle */}
       <div className={styles.addTransactionForm__typeToggle}>
@@ -217,7 +242,7 @@ const AddTransactionForm = ({ onClose }) => {
           type="submit"
           className={styles.addTransactionForm__buttonSubmit}
         >
-          ADD
+          {mode === 'edit' ? 'UPDATE' : 'ADD'}
         </button>
         <button
           type="button"

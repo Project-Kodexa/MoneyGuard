@@ -129,7 +129,11 @@ const TransactionsItem = ({ transaction, onEdit }) => {
           Delete
         </button>
 
-        <button className="edit-icon-btn" title="Edit">
+        <button 
+          className="edit-icon-btn" 
+          onClick={handleEdit}
+          title="Edit"
+        >
           <EditIcon />
         </button>
       </div>
