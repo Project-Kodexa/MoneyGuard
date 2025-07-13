@@ -61,10 +61,9 @@
 }
 .transaction-amount {
   font-weight: 600;
-  font-size: 20px;
+  font-size: 14px;
   min-width: 80px;
   text-align: right;
-  
 }
 .transaction-actions {
   display: flex;

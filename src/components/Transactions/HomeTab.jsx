@@ -5,6 +5,7 @@ import {
   fetchCategories,
   fetchTransactionsByCategory 
 } from '../../redux/transactionsOperations';
+import { selectTransactionsWithCategories } from '../../features/transactions/transactionsSlice';
 import TransactionsList from './TransactionsList';
 import ModalAddTransaction from '../../features/transactions/ModalAddTransaction/ModalAddTransaction';
 import './HomeTab.css';
@@ -14,25 +15,18 @@ const HomeTab = () => {
   
   const dispatch = useDispatch();
   const { 
-    transactions, 
     categories, 
     isLoading, 
     error 
   } = useSelector(state => state.transactions);
   
-  // Debug için kategorileri kontrol et
-  console.log('Categories from store:', categories);
-  if (categories && categories.length > 0) {
-    console.log('First category example:', categories[0]);
-    // INCOME ve EXPENSE kategorilerini ayır
-    const incomeCategories = categories.filter(cat => cat.type === 'INCOME');
-    const expenseCategories = categories.filter(cat => cat.type === 'EXPENSE');
-    console.log('Income categories:', incomeCategories);
-    console.log('Expense categories:', expenseCategories);
-  }
+  // Kategorilerle eşleştirilmiş transaction'ları al
+  const transactions = useSelector(selectTransactionsWithCategories);
   
   const [selectedCategory, setSelectedCategory] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState('add');
+  const [selectedTransaction, setSelectedTransaction] = useState(null);
 
   // Debug için kategorileri kontrol et
   console.log('Categories from store:', categories);
@@ -64,14 +58,21 @@ const HomeTab = () => {
     }
   };
 
-  const handleOpenModal = () => {
+  const handleOpenAddModal = () => {
+    setModalMode('add');
+    setSelectedTransaction(null);
+    setIsModalOpen(true);
+  };
+
+  const handleOpenEditModal = (transaction) => {
+    setModalMode('edit');
+    setSelectedTransaction(transaction);
     setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    // Modal kapandıktan sonra işlemleri tekrar çek (sadece gerekirse)
-    // dispatch(fetchTransactions());
+    setSelectedTransaction(null);
   };
 
   // Kategoriler yüklenene kadar loading göster
@@ -106,17 +107,22 @@ const HomeTab = () => {
   return (
     <div className="home-tab">
       {/* Transactions List */}
-      <TransactionsList transactions={transactions} />
+      <TransactionsList 
+        transactions={transactions} 
+        onEditTransaction={handleOpenEditModal}
+      />
 
       {/* Add Transaction Button */}
-      <button className="add-transaction-btn" onClick={handleOpenModal}>
+      <button className="add-transaction-btn" onClick={handleOpenAddModal}>
         <span className="plus-icon">+</span>
       </button>
 
-      {/* Modal */}
+      {/* Universal Transaction Modal */}
       <ModalAddTransaction 
         isOpen={isModalOpen} 
-        onClose={handleCloseModal} 
+        onClose={handleCloseModal}
+        mode={modalMode}
+        transaction={selectedTransaction}
       />
     </div>
   );
