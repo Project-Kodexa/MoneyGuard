@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { deleteTransactionThunk } from '../../redux/transactionsOperations';
+import { selectCategoryNameById } from '../../features/transactions/transactionsSlice';
 import './TransactionsItem.css';
 
 const EditIcon = () => (
@@ -9,9 +10,12 @@ const EditIcon = () => (
   </svg>
 );
 
-const TransactionsItem = ({ transaction }) => {
+const TransactionsItem = ({ transaction, onEdit }) => {
   const dispatch = useDispatch();
   const [isDeleting, setIsDeleting] = useState(false);
+  
+  // Kategorileri Redux store'dan al
+  const { categories } = useSelector(state => state.transactions);
 
   const handleDelete = async () => {
     if (window.confirm('Are you sure you want to delete this transaction?')) {
@@ -27,10 +31,30 @@ const TransactionsItem = ({ transaction }) => {
     }
   };
 
+  const handleEdit = () => {
+    if (onEdit) {
+      onEdit(transaction);
+    }
+  };
+
   // Tarih formatı: 04.01.23
   const formatDate = (dateString) => {
-    const d = new Date(dateString);
-    return d.toLocaleDateString('en-GB').replace(/\//g, '.');
+    if (!dateString) {
+      return 'N/A';
+    }
+    
+    try {
+      const d = new Date(dateString);
+      
+      // Geçerli bir date mi kontrol et
+      if (isNaN(d.getTime())) {
+        return 'Invalid Date';
+      }
+      
+      return d.toLocaleDateString('en-GB').replace(/\//g, '.');
+    } catch (error) {
+      return 'Invalid Date';
+    }
   };
 
   // Sadece + veya - işareti
@@ -39,8 +63,30 @@ const TransactionsItem = ({ transaction }) => {
     return (normalizedType === 'income' ? '+' : '-');
   };
 
-  // Kategori adı
-  const getCategory = (category) => category || '';
+  // Kategori adını al - categoryName varsa onu kullan, yoksa mapping yap
+  const getCategory = (categoryId) => {
+    // Eğer transaction'da categoryName varsa onu kullan
+    if (transaction.categoryName) {
+      return transaction.categoryName;
+    }
+    
+    // Yoksa eski yöntemle mapping yap
+    if (!categoryId || !categories || categories.length === 0) {
+      return '';
+    }
+    
+    const category = categories.find(cat => cat.id === categoryId);
+    if (category) {
+      return category.name;
+    }
+    
+    // Eğer bulunamazsa, category alanını da kontrol et (geriye uyumluluk için)
+    if (typeof categoryId === 'string' && categoryId.length > 20) {
+      return categoryId;
+    }
+    
+    return '';
+  };
 
   // Yorum
   const getComment = (comment) => comment || '';
@@ -57,11 +103,16 @@ const TransactionsItem = ({ transaction }) => {
     <div className={`transaction-item ${transaction.type?.toLowerCase()}`}> {/* grid satır */}
       <div className="transaction-date">{formatDate(transaction.date)}</div>
       <div className={`transaction-type ${transaction.type?.toLowerCase()}`}>{getTypeSign(transaction.type)}</div>
-      <div className="transaction-category">{getCategory(transaction.category)}</div>
+      <div className="transaction-category">{getCategory(transaction.categoryId || transaction.category)}</div>
       <div className="transaction-description">{getComment(transaction.comment)}</div>
       <div className="transaction-amount">{formatAmount(transaction.amount)}</div>
       <div className="transaction-actions">
-        <button className="edit-icon-btn" title="Edit" style={{width:14, height:14, display:'flex', alignItems:'center', justifyContent:'center', marginRight:8, padding:0, background:'none', border:'none', cursor:'pointer'}}>
+        <button 
+          className="edit-icon-btn" 
+          title="Edit" 
+          onClick={handleEdit}
+          style={{width:14, height:14, display:'flex', alignItems:'center', justifyContent:'center', marginRight:8, padding:0, background:'none', border:'none', cursor:'pointer'}}
+        >
           <EditIcon />
         </button>
         <button 

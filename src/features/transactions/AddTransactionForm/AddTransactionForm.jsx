@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -6,7 +6,7 @@ import * as yup from "yup";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import styles from "./AddTransactionForm.module.css";
-import { addTransactionThunk } from "../../../redux/transactionsOperations";
+import { addTransactionThunk, updateTransactionThunk } from "../../../redux/transactionsOperations";
 
 const schema = yup.object().shape({
   type: yup.string().oneOf(["income", "expense"]).required(),
@@ -24,28 +24,58 @@ const schema = yup.object().shape({
   comment: yup.string().required("Comment is required"),
 });
 
-const AddTransactionForm = ({ onClose }) => {
+const AddTransactionForm = ({ mode = 'add', transaction = null, onClose }) => {
   const dispatch = useDispatch();
-  const [type, setType] = useState("expense");
-
-  const { categories } = useSelector((state) => state.transactions);
+  
+  // Kategorileri Redux store'dan al
+  const { categories } = useSelector(state => state.transactions);
+  
+  // Mode kontrolü
+  const isEditMode = mode === 'edit';
+  
+  // Default values based on mode
+  const getDefaultValues = () => {
+    if (isEditMode && transaction) {
+      const normalizedType = transaction.type?.toLowerCase() === 'income' ? 'income' : 'expense';
+      const normalizedAmount = Math.abs(parseFloat(transaction.amount || 0));
+      
+      return {
+        type: normalizedType,
+        sum: normalizedAmount.toString(),
+        date: transaction.date ? new Date(transaction.date) : new Date(),
+        category: transaction.categoryId || transaction.category || '',
+        comment: transaction.comment || ''
+      };
+    }
+    return {
+      type: 'expense',
+      sum: '',
+      date: new Date(),
+      category: '',
+      comment: ''
+    };
+  };
+  
+  const [type, setType] = useState(getDefaultValues().type);
 
   const {
     register,
     handleSubmit,
     setValue,
     watch,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
-    defaultValues: {
-      type: "expense",
-      sum: "",
-      date: new Date(),
-      category: "",
-      comment: "",
-    },
+    defaultValues: getDefaultValues(),
   });
+
+  // Form'u mode değişikliklerinde reset et
+  useEffect(() => {
+    const defaultValues = getDefaultValues();
+    reset(defaultValues);
+    setType(defaultValues.type);
+  }, [mode, transaction, reset]);
 
   const onSubmit = (data) => {
     try {
@@ -68,13 +98,24 @@ const AddTransactionForm = ({ onClose }) => {
         categoryId: categoryId,
         comment: data.comment,
       };
-      dispatch(addTransactionThunk(transactionData))
-        .then(() => {
-          onClose();
-        })
-        .catch((err) => {
-          console.error("Add transaction error:", err.message);
-        });
+      
+      if (isEditMode) {
+        dispatch(updateTransactionThunk({ id: transaction.id, transactionData }))
+          .then(() => {
+            onClose();
+          })
+          .catch((err) => {
+            console.error('Update transaction error:', err.message);
+          });
+      } else {
+        dispatch(addTransactionThunk(transactionData))
+          .then(() => {
+            onClose();
+          })
+          .catch((err) => {
+            console.error('Add transaction error:', err.message);
+          });
+      }
     } catch (error) {
       console.error("Form submit error:", error.message);
     }
@@ -94,7 +135,9 @@ const AddTransactionForm = ({ onClose }) => {
       className={styles.addTransactionForm__container}
       noValidate
     >
-      <h2 className={styles.addTransactionForm__title}>Add transaction</h2>
+      <h2 className={styles.addTransactionForm__title}>
+        {isEditMode ? 'Edit transaction' : 'Add transaction'}
+      </h2>
 
       <div className={styles.addTransactionForm__typeToggle}>
         <div
@@ -213,7 +256,7 @@ const AddTransactionForm = ({ onClose }) => {
           type="submit"
           className={styles.addTransactionForm__buttonSubmit}
         >
-          ADD
+          {isEditMode ? 'EDIT' : 'ADD'}
         </button>
         <button
           type="button"
