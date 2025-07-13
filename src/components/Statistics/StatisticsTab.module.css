@@ -1,22 +1,55 @@
 .container {
-  padding: 20px;
-  max-width: 600px;
-  margin: 0 auto;
-  font-family: Arial, sans-serif;
+  padding: 40px;
+  background: linear-gradient(135deg, #18022d, #2d0b4e);
+  color: white;
+  min-height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
 }
 
 .title {
+  font-size: 32px;
+  margin-bottom: 30px;
   text-align: center;
-  color: #333;
-  margin-bottom: 20px;
+}
+
+.dateSelector {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  justify-content: center;
 }
 
 .select {
-  padding: 6px 12px;
-  margin-right: 10px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
+  padding: 10px 16px;
+  background-color: #2e1852;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  outline: none;
   cursor: pointer;
+}
+
+.select option {
+  background-color: #2e1852;
+  color: white;
+}
+
+.chartTableWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 50px;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.chart {
+  width: 320px;
+  height: 320px;
+}
+
+.table {
+  min-width: 280px;
 }
 
 .list {
@@ -26,10 +59,67 @@
 }
 
 .listItem {
-  background: #f9f9f9;
-  margin-bottom: 8px;
-  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 16px;
+  background: rgba(255, 255, 255, 0.1);
   padding: 8px 12px;
-  font-weight: 600;
-  color: #555;
+  border-radius: 5px;
 }
+
+.colorBox {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.totals {
+  margin-top: 20px;
+  font-size: 18px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+.expense {
+  color: #ff6384;
+  font-weight: bold;
+}
+
+.income {
+  color: #ffce56;
+  font-weight: bold;
+}
+
+.noData {
+  text-align: center;
+  padding: 40px;
+  font-size: 18px;
+  color: #ccc;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 20px;
+  }
+  
+  .chartTableWrapper {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .chart {
+    width: 280px;
+    height: 280px;
+  }
+  
+  .dateSelector {
+    flex-direction: column;
+    align-items: center;
+  }
+} 

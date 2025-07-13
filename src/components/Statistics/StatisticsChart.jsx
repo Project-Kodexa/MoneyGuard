@@ -11,8 +11,6 @@ export default function StatisticsChart() {
 
   const balance = ((totalIncome || 0) - (totalExpenses || 0)).toFixed(2);
 
-  const totalAmount = expenses.reduce((sum, e) => sum + e.amount, 0);
-
   const data = {
     labels: expenses.map((e) => e.category),
     datasets: [

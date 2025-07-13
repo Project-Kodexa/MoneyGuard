@@ -3,8 +3,7 @@ import TransactionsItem from './TransactionsItem';
 import './TransactionsList.css';
 import ModalAddTransaction from '../../features/transactions/ModalAddTransaction/ModalAddTransaction';
 
-
-const TransactionsList = ({ transactions }) => {
+const TransactionsList = ({ transactions, onEditTransaction }) => {
   const [isModalOpen, setIsModalOpen] = useState(false); 
 
   const handleOpenModal = () => {
@@ -62,6 +61,7 @@ const TransactionsList = ({ transactions }) => {
           <TransactionsItem
             key={transaction.id}
             transaction={transaction}
+            onEdit={onEditTransaction}
           />
         ))}
       </div>

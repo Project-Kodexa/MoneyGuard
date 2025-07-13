@@ -1,98 +1,194 @@
+import React, { useState, useMemo, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { Doughnut } from 'react-chartjs-2';
+import { format } from 'date-fns';
+import { fetchTransactions, fetchCategories, fetchStatistics } from '../../redux/transactionsOperations';
+import { 
+  selectExpenseTransactionsByMonth, 
+  selectCategoryTotals,
+  selectTotalIncome,
+  selectTotalExpenses 
+} from '../../redux/transactionsSelectors';
+import styles from './StatisticsTab.module.css';
+import {
+  Chart as ChartJS,
+  ArcElement,       // Doughnut için gerekli
+  Tooltip,
+  Legend,
+} from 'chart.js';
 
-import { useState } from "react";
-import StatisticsChart from "./StatisticsChart";
-import StatisticsTable from "./StatisticsTable";
-import styles from "./StatisticsTab.module.css";
-
-const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-
-const years = [2020, 2021, 2022, 2023, 2024];
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 const StatisticsTab = () => {
-  const [selectedMonth, setSelectedMonth] = useState("March");
-  const [selectedYear, setSelectedYear] = useState(2023);
+  const dispatch = useDispatch();
 
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
+
+  const categories = useSelector((state) => state.transactions.categories || []);
+  const filteredTransactions = useSelector((state) =>
+    selectExpenseTransactionsByMonth(state, selectedYear, selectedMonth)
+  );
+
+  // Selector'ları kullan
+  const categorySums = useSelector((state) => 
+    selectCategoryTotals(state, selectedYear, selectedMonth)
+  );
+  const totalIncome = useSelector((state) => 
+    selectTotalIncome(state, selectedYear, selectedMonth)
+  );
+  const totalExpenses = useSelector((state) => 
+    selectTotalExpenses(state, selectedYear, selectedMonth)
+  );
+
+  useEffect(() => {
+    dispatch(fetchTransactions());
+    dispatch(fetchCategories());
+  }, [dispatch]);
+
+  // ID → isim map
+  const categoryIdNameMap = useMemo(() => {
+    const map = {};
+    categories.forEach((cat) => {
+      map[cat.id] = cat.name;
+    });
+    return map;
+  }, [categories]);
+
+  const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#8BC34A'];
+  
   const chartData = {
-    labels: [
-      "Education",
-      "Child care",
-      "Leisure",
-      "Car",
-      "Other expenses",
-      "Self care",
-      "Household products",
-    ],
+    labels: Object.keys(categorySums),
     datasets: [
       {
-        data: [3400, 2208.5, 1230, 1500, 610, 800, 300],
-        backgroundColor: [
-          "#f9dc5c",
-          "#36a2eb",
-          "#4bc0c0",
-          "#ff6384",
-          "#9966ff",
-          "#c9cbcf",
-          "#2f2fa2",
-        ],
+        data: Object.values(categorySums),
+        backgroundColor: Object.keys(categorySums).map(
+          (_, idx) => colors[idx % colors.length]
+        ),
+        borderWidth: 1,
       },
     ],
   };
 
-  const dataTable = [
-    { name: "Car", amount: 1500, color: "#ff6384" },
-    { name: "Self care", amount: 800, color: "#c9cbcf" },
-    { name: "Child care", amount: 2208.5, color: "#36a2eb" },
-    { name: "Household products", amount: 300, color: "#2f2fa2" },
-    { name: "Education", amount: 3400, color: "#f9dc5c" },
-    { name: "Leisure", amount: 1230, color: "#4bc0c0" },
-    { name: "Other expenses", amount: 610, color: "#9966ff" },
-  ];
+  // Balance hesapla
+  const balance = totalIncome - totalExpenses;
+
+  // Center text plugin
+  const centerTextPlugin = {
+    id: "centerText",
+    beforeDraw: (chart) => {
+      const { width, height } = chart;
+      const ctx = chart.ctx;
+      ctx.restore();
+
+      const fontSize = (height / 120).toFixed(2);
+      ctx.font = `bold ${fontSize}em 'Segoe UI', sans-serif`;
+      ctx.textBaseline = "middle";
+      ctx.fillStyle = "#fff";
+
+      const text = `$${balance.toFixed(2)}`;
+      const textX = Math.round((width - ctx.measureText(text).width) / 2);
+      const textY = height / 2;
+
+      ctx.fillText(text, textX, textY);
+      ctx.save();
+    },
+  };
+
+  const chartOptions = {
+    plugins: {
+      legend: {
+        display: true,
+        position: "bottom",
+        labels: {
+          color: "#fff"
+        }
+      },
+    },
+    cutout: "70%",
+  };
 
   return (
-    <div className={styles.wrapper}>
-      <h2 className={styles.heading}>Statistics</h2>
+    <div className={styles.container}>
+      <h2 className={styles.title}>Statistics</h2>
 
-      <div className={styles.chartSection}>
-        <StatisticsChart chartData={chartData} />
-        <div className={styles.filters}>
-          <select
-            value={selectedMonth}
-            onChange={(e) => setSelectedMonth(e.target.value)}
-          >
-            {months.map((month) => (
-              <option key={month} value={month}>
-                {month}
-              </option>
-            ))}
-          </select>
+      <div className={styles.dateSelector}>
+        <select className={styles.select}
+          value={selectedMonth}
+          onChange={(e) => setSelectedMonth(Number(e.target.value))}
+        >
+          <option value={0}>All Months</option>
+          {Array.from({ length: 12 }, (_, i) => (
+            <option key={i} value={i + 1}>
+              {format(new Date(2000, i), 'MMMM')}
+            </option>
+          ))}
+        </select>
 
-          <select
-            value={selectedYear}
-            onChange={(e) => setSelectedYear(Number(e.target.value))}
-          >
-            {years.map((year) => (
+        <select className={styles.select}
+          value={selectedYear}
+          onChange={(e) => setSelectedYear(Number(e.target.value))}
+        >
+          {Array.from({ length: 5 }, (_, i) => {
+            const year = new Date().getFullYear() - i;
+            return (
               <option key={year} value={year}>
                 {year}
               </option>
-            ))}
-          </select>
-        </div>
+            );
+          })}
+        </select>
       </div>
 
-      <StatisticsTable data={dataTable} expenses={22549.24} income={27350.0} />
+      {filteredTransactions.length === 0 ? (
+        <div className={styles.noData}>
+          <p>No expenses found for the selected period.</p>
+        </div>
+      ) : (
+        <div className={styles.chartTableWrapper}>
+          <div className={styles.chart}>
+            <Doughnut data={chartData} options={chartOptions} plugins={[centerTextPlugin]} />
+          </div>
+
+          <div className={styles.table}>
+            <ul className={styles.list}>
+              {Object.entries(categorySums).map(([categoryName, amount]) => (
+                <li className={styles.listItem} key={categoryName}>
+                  <span>
+                    <span
+                      className={styles.colorBox}
+                      style={{ 
+                        backgroundColor: colors[Object.keys(categorySums).indexOf(categoryName) % colors.length] 
+                      }}
+                    ></span>
+                    {categoryName}
+                  </span>
+                  <span>
+                    {amount.toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                    })}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            
+            <div className={styles.totals}>
+              <p>
+                Expenses:{" "}
+                <span className={styles.expense}>
+                  {totalExpenses.toLocaleString()}
+                </span>
+              </p>
+              <p>
+                Income:{" "}
+                <span className={styles.income}>
+                  {totalIncome.toLocaleString()}
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
