@@ -1,36 +1,40 @@
 /* Tablo ana container */
 .transactions-list-container {
-  width: 565px;
+  width: 100%;
   max-width: 100%;
-  margin: 0 auto;
-  background: #2a1a40;
-  border-radius: 16px;
-  border: 2px solid;
-  border-image-source: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.2) 100%);
+  margin-left: 0;
+  margin-right: 0;
+
+  border-image-source: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.2) 100%
+  );
   border-image-slice: 1;
   box-sizing: border-box;
-  box-shadow: 0 2px 16px 0 rgba(44,16,69,0.08);
+  box-shadow: 0 2px 16px 0 rgba(44, 16, 69, 0.08);
   overflow: hidden;
+  margin-top: 32px;
 }
 
 .transactions-table-header {
+  width: auto;
+  height: 56px;
   display: grid;
   grid-template-columns: 1.1fr 0.7fr 1.2fr 2fr 1fr 0.9fr;
   align-items: center;
-  background: transparent;
   color: #fff;
   font-weight: 600;
   font-size: 15px;
   padding: 12px 24px 8px 24px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   letter-spacing: 0.02em;
 }
 
 .transactions-list {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
+  height: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 .transaction-item {
@@ -40,7 +44,7 @@
   background: transparent;
   color: #fff;
   font-size: 15px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   padding: 10px 24px;
   transition: background 0.2s;
   column-gap: 33px;
@@ -59,12 +63,7 @@
   text-align: center;
   font-weight: bold;
 }
-.transaction-type.income {
-  color: #ffb627;
-}
-.transaction-type.expense {
-  color: #ff6b08;
-}
+
 .transaction-category {
   color: #ffb627;
   font-weight: 600;
@@ -109,9 +108,10 @@
   transition: filter 0.2s;
 }
 .edit-icon-btn:hover svg path {
-  fill: #9E40BA;
+  fill: #9e40ba;
 }
-.edit-button, .delete-button {
+.edit-button,
+.delete-button {
   padding: 4px 12px;
   border: none;
   border-radius: 8px;
@@ -124,20 +124,32 @@
   gap: 4px;
 }
 .edit-button {
-  background: linear-gradient(96.76deg, #FFC727 -16.42%, #9E40BA 97.04%, #7000FF 150.71%);
+  background: linear-gradient(
+    96.76deg,
+    #ffc727 -16.42%,
+    #9e40ba 97.04%,
+    #7000ff 150.71%
+  );
   color: #fff;
 }
 .edit-button:hover {
-  background: #FFC727;
-  color: #7000FF;
+  background: #ffc727;
+  color: #7000ff;
 }
 .delete-button {
-  background: linear-gradient(96.76deg, #FFC727 -16.42%, #9E40BA 97.04%, #7000FF 150.71%);
+  width: 91px;
+  height: 29px;
+  background: linear-gradient(
+    96.76deg,
+    #ffc727 -16.42%,
+    #9e40ba 97.04%,
+    #7000ff 150.71%
+  );
   color: #fff;
   border: none;
   border-radius: 20px;
   padding: 8px 20px;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-weight: 600;
   font-size: 15px;
   box-shadow: 1px 9px 15px 0px rgba(0, 0, 0, 0.08);
@@ -145,7 +157,12 @@
   transition: background 0.2s, color 0.2s;
 }
 .delete-button:hover {
-  background: linear-gradient(96.76deg, #9E40BA -16.42%, #FFC727 97.04%, #7000FF 150.71%);
+  background: linear-gradient(
+    96.76deg,
+    #9e40ba -16.42%,
+    #ffc727 97.04%,
+    #7000ff 150.71%
+  );
   color: #fff;
 }
 
@@ -155,7 +172,8 @@
     width: 100%;
     min-width: 0;
   }
-  .transactions-table-header, .transaction-item {
+  .transactions-table-header,
+  .transaction-item {
     grid-template-columns: 1fr 0.7fr 1fr 1.5fr 1fr 0.9fr;
     font-size: 13px;
     padding: 10px 8px;
@@ -165,13 +183,68 @@
   }
 }
 @media (max-width: 480px) {
-  .transactions-table-header, .transaction-item {
-    grid-template-columns: 1fr 0.5fr 1fr 1fr 1fr 0.9fr;
-    font-size: 12px;
-    padding: 6px 2px;
+  .transactions-table-header {
+    display: none;
   }
+
+  .transaction-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 18px;
+    border-radius: 14px;
+    background-color: #3a2c5e; /* kutu mor tonu */
+    margin-bottom: 16px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    gap: 8px;
+    position: relative;
+  }
+
+  .transaction-item > div {
+    font-size: 15px;
+    line-height: 1.4;
+    word-break: break-word;
+  }
+
+  .transaction-date::before,
+  .transaction-type::before,
+  .transaction-category::before,
+  .transaction-description::before,
+  .transaction-amount::before {
+    font-weight: 700;
+    content: attr(data-label);
+    margin-right: 4px;
+  }
+
   .transaction-description {
-    max-width: 40px;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .delete-button {
+    width: auto;
+    padding: 6px 18px;
+    border-radius: 20px;
+    font-size: 14px;
+    background: linear-gradient(
+      96.76deg,
+      #ffc727 -16.42%,
+      #9e40ba 97.04%,
+      #7000ff 150.71%
+    );
+    color: white;
+    font-weight: 600;
+  }
+
+  .edit-icon-btn {
+    width: 18px;
+    height: 18px;
+    background: none;
+    border: none;
+    margin-left: auto;
+    margin-right: 8px;
   }
 }
 
@@ -191,7 +264,7 @@
 .empty-state h3 {
   margin: 0 0 10px 0;
   font-size: 1.5rem;
-  color: #FFC727;
+  color: #ffc727;
   font-weight: 600;
 }
 
@@ -212,12 +285,17 @@
 }
 
 .add-first-transaction-btn {
-  background: linear-gradient(96.76deg, #FFC727 -16.42%, #9E40BA 97.04%, #7000FF 150.71%);
+  background: linear-gradient(
+    96.76deg,
+    #ffc727 -16.42%,
+    #9e40ba 97.04%,
+    #7000ff 150.71%
+  );
   color: #fff;
   border: none;
   border-radius: 20px;
   padding: 6px 18px;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-weight: 600;
   font-size: 14px;
   box-shadow: 1px 9px 15px 0px rgba(0, 0, 0, 0.2);
@@ -225,8 +303,8 @@
 }
 
 .add-first-transaction-btn:hover {
-  background: #FFC727;
-  color: #7000FF;
+  background: #ffc727;
+  color: #7000ff;
 }
 
 /* Custom scrollbar */
@@ -240,18 +318,18 @@
 }
 
 .transactions-list::-webkit-scrollbar-thumb {
-  background: #FFC727;
+  background: #ffc727;
   border-radius: 4px;
 }
 
 .transactions-list::-webkit-scrollbar-thumb:hover {
-  background: #9E40BA;
+  background: #9e40ba;
 }
 
 /* Firefox scrollbar */
 .transactions-list {
   scrollbar-width: thin;
-  scrollbar-color: #FFC727 rgba(82, 59, 126, 0.2);
+  scrollbar-color: #ffc727 rgba(82, 59, 126, 0.2);
 }
 
 .scroll-indicator {
@@ -263,7 +341,7 @@
 .scroll-indicator p {
   margin: 0 0 5px 0;
   font-size: 12px;
-  color: #FFC727;
+  color: #ffc727;
 }
 
 .scroll-arrow {
@@ -273,7 +351,11 @@
 }
 
 @keyframes bounce {
-  0%, 20%, 50%, 80%, 100% {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
     transform: translateY(0);
   }
   40% {
@@ -296,12 +378,16 @@
   width: 30px;
   height: 30px;
   border: 3px solid #f3f3f3;
-  border-top: 3px solid #FFC727;
+  border-top: 3px solid #ffc727;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-} 
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

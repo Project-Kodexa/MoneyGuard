@@ -7,18 +7,19 @@
 
 .dashboardContent {
   display: flex;
-  max-width: 1200px;
-  margin: 0 auto;
   width: 100%;
+  max-width: none; /* ❌ 1200px sınır kaldırılıyor */
+  margin: 0; /* ❌ Ortalamayı iptal ediyoruz */
   gap: 32px;
-  padding: 32px 0;
+  padding: 32px;
 }
 
 .leftPanel {
-  width: 320px;
+  width: 480px;
   display: flex;
   flex-direction: column;
   gap: 32px;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .rightPanel {
@@ -43,6 +44,11 @@
   .rightPanel {
     width: 100%;
   }
+  .leftPanelContent{
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
 }
 
 @media (max-width: 600px) {
@@ -53,4 +59,4 @@
     flex-direction: column;
     gap: 12px;
   }
-} 
+}
