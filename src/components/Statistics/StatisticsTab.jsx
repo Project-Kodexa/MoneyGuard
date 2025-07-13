@@ -1,119 +1,194 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchStatistics } from '../../redux/transactionsOperations';
+import React, { useState, useMemo, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { Doughnut } from 'react-chartjs-2';
+import { format } from 'date-fns';
+import { fetchTransactions, fetchCategories, fetchStatistics } from '../../redux/transactionsOperations';
+import { 
+  selectExpenseTransactionsByMonth, 
+  selectCategoryTotals,
+  selectTotalIncome,
+  selectTotalExpenses 
+} from '../../redux/transactionsSelectors';
 import styles from './StatisticsTab.module.css';
+import {
+  Chart as ChartJS,
+  ArcElement,       // Doughnut için gerekli
+  Tooltip,
+  Legend,
+} from 'chart.js';
+
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 const StatisticsTab = () => {
   const dispatch = useDispatch();
-  const { statistics, isLoading, error } = useSelector(state => state.transactions);
-  
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
-  const { token } = useSelector(state => state.auth);
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
+
+  const categories = useSelector((state) => state.transactions.categories || []);
+  const filteredTransactions = useSelector((state) =>
+    selectExpenseTransactionsByMonth(state, selectedYear, selectedMonth)
+  );
+
+  // Selector'ları kullan
+  const categorySums = useSelector((state) => 
+    selectCategoryTotals(state, selectedYear, selectedMonth)
+  );
+  const totalIncome = useSelector((state) => 
+    selectTotalIncome(state, selectedYear, selectedMonth)
+  );
+  const totalExpenses = useSelector((state) => 
+    selectTotalExpenses(state, selectedYear, selectedMonth)
+  );
 
   useEffect(() => {
-    // Sadece token varsa API istekleri yap
-    if (token) {
-      dispatch(fetchStatistics({ month: selectedMonth, year: selectedYear }));
-    }
-  }, [dispatch, selectedMonth, selectedYear, token]);
+    dispatch(fetchTransactions());
+    dispatch(fetchCategories());
+  }, [dispatch]);
 
-  const handleMonthChange = (e) => {
-    setSelectedMonth(parseInt(e.target.value));
+  // ID → isim map
+  const categoryIdNameMap = useMemo(() => {
+    const map = {};
+    categories.forEach((cat) => {
+      map[cat.id] = cat.name;
+    });
+    return map;
+  }, [categories]);
+
+  const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#8BC34A'];
+  
+  const chartData = {
+    labels: Object.keys(categorySums),
+    datasets: [
+      {
+        data: Object.values(categorySums),
+        backgroundColor: Object.keys(categorySums).map(
+          (_, idx) => colors[idx % colors.length]
+        ),
+        borderWidth: 1,
+      },
+    ],
   };
 
-  const handleYearChange = (e) => {
-    setSelectedYear(parseInt(e.target.value));
+  // Balance hesapla
+  const balance = totalIncome - totalExpenses;
+
+  // Center text plugin
+  const centerTextPlugin = {
+    id: "centerText",
+    beforeDraw: (chart) => {
+      const { width, height } = chart;
+      const ctx = chart.ctx;
+      ctx.restore();
+
+      const fontSize = (height / 120).toFixed(2);
+      ctx.font = `bold ${fontSize}em 'Segoe UI', sans-serif`;
+      ctx.textBaseline = "middle";
+      ctx.fillStyle = "#fff";
+
+      const text = `$${balance.toFixed(2)}`;
+      const textX = Math.round((width - ctx.measureText(text).width) / 2);
+      const textY = height / 2;
+
+      ctx.fillText(text, textX, textY);
+      ctx.save();
+    },
   };
 
-  const months = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
-  ];
-
-  const years = Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i);
-
-  if (isLoading) {
-    return (
-      <div className={styles.loading}>
-        <div className={styles.spinner}></div>
-        <p>Loading statistics...</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className={styles.error}>
-        <h3>Error loading statistics</h3>
-        <p>{error}</p>
-      </div>
-    );
-  }
+  const chartOptions = {
+    plugins: {
+      legend: {
+        display: true,
+        position: "bottom",
+        labels: {
+          color: "#fff"
+        }
+      },
+    },
+    cutout: "70%",
+  };
 
   return (
-    <div className={styles.statisticsTab}>
+    <div className={styles.container}>
       <h2 className={styles.title}>Statistics</h2>
-      
-      {/* Date Selector */}
+
       <div className={styles.dateSelector}>
-        <select 
-          value={selectedMonth} 
-          onChange={handleMonthChange}
-          className={styles.select}
+        <select className={styles.select}
+          value={selectedMonth}
+          onChange={(e) => setSelectedMonth(Number(e.target.value))}
         >
-          {months.map((month, index) => (
-            <option key={index} value={index + 1}>
-              {month}
+          <option value={0}>All Months</option>
+          {Array.from({ length: 12 }, (_, i) => (
+            <option key={i} value={i + 1}>
+              {format(new Date(2000, i), 'MMMM')}
             </option>
           ))}
         </select>
-        
-        <select 
-          value={selectedYear} 
-          onChange={handleYearChange}
-          className={styles.select}
+
+        <select className={styles.select}
+          value={selectedYear}
+          onChange={(e) => setSelectedYear(Number(e.target.value))}
         >
-          {years.map(year => (
-            <option key={year} value={year}>
-              {year}
-            </option>
-          ))}
+          {Array.from({ length: 5 }, (_, i) => {
+            const year = new Date().getFullYear() - i;
+            return (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            );
+          })}
         </select>
       </div>
 
-      {/* Statistics Content */}
-      <div className={styles.content}>
-        {statistics ? (
-          <div className={styles.statisticsGrid}>
-            <div className={styles.summaryCard}>
-              <h3>Total Income</h3>
-              <div className={styles.amount}>
-                ${statistics.totalIncome?.toFixed(2) || '0.00'}
-              </div>
-            </div>
+      {filteredTransactions.length === 0 ? (
+        <div className={styles.noData}>
+          <p>No expenses found for the selected period.</p>
+        </div>
+      ) : (
+        <div className={styles.chartTableWrapper}>
+          <div className={styles.chart}>
+            <Doughnut data={chartData} options={chartOptions} plugins={[centerTextPlugin]} />
+          </div>
+
+          <div className={styles.table}>
+            <ul className={styles.list}>
+              {Object.entries(categorySums).map(([categoryName, amount]) => (
+                <li className={styles.listItem} key={categoryName}>
+                  <span>
+                    <span
+                      className={styles.colorBox}
+                      style={{ 
+                        backgroundColor: colors[Object.keys(categorySums).indexOf(categoryName) % colors.length] 
+                      }}
+                    ></span>
+                    {categoryName}
+                  </span>
+                  <span>
+                    {amount.toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                    })}
+                  </span>
+                </li>
+              ))}
+            </ul>
             
-            <div className={styles.summaryCard}>
-              <h3>Total Expenses</h3>
-              <div className={styles.amount}>
-                ${statistics.totalExpenses?.toFixed(2) || '0.00'}
-              </div>
-            </div>
-            
-            <div className={styles.summaryCard}>
-              <h3>Net Balance</h3>
-              <div className={styles.amount}>
-                ${((statistics.totalIncome || 0) - (statistics.totalExpenses || 0)).toFixed(2)}
-              </div>
+            <div className={styles.totals}>
+              <p>
+                Expenses:{" "}
+                <span className={styles.expense}>
+                  {totalExpenses.toLocaleString()}
+                </span>
+              </p>
+              <p>
+                Income:{" "}
+                <span className={styles.income}>
+                  {totalIncome.toLocaleString()}
+                </span>
+              </p>
             </div>
           </div>
-        ) : (
-          <div className={styles.noData}>
-            <p>No statistics available for the selected period.</p>
-          </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

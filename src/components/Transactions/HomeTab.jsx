@@ -28,10 +28,16 @@ const HomeTab = () => {
   const [modalMode, setModalMode] = useState('add');
   const [selectedTransaction, setSelectedTransaction] = useState(null);
 
-  // Kategorileri normalize et (string veya obje olabilir)
-  // const categoriesNormalized = categories.map((cat, idx) =>
-  //   typeof cat === "string" ? { id: idx, name: cat } : cat
-  // );
+  // Debug için kategorileri kontrol et
+  console.log('Categories from store:', categories);
+  if (categories && categories.length > 0) {
+    console.log('First category example:', categories[0]);
+    // INCOME ve EXPENSE kategorilerini ayır
+    const incomeCategories = categories.filter(cat => cat.type === 'INCOME');
+    const expenseCategories = categories.filter(cat => cat.type === 'EXPENSE');
+    console.log('Income categories:', incomeCategories);
+    console.log('Expense categories:', expenseCategories);
+  }
 
   useEffect(() => {
     // Token kontrolü yap
@@ -69,12 +75,13 @@ const HomeTab = () => {
     setSelectedTransaction(null);
   };
 
-  if (isLoading) {
+  // Kategoriler yüklenene kadar loading göster
+  if (isLoading || !categories || categories.length === 0) {
     return (
       <div className="home-tab-loading">
         <div className="loading-spinner">
           <div className="spinner"></div>
-          <p>Loading transactions...</p>
+          <p>Loading transactions and categories...</p>
         </div>
       </div>
     );

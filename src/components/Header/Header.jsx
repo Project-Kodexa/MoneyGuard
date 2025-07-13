@@ -3,6 +3,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 import { logoutThunk } from '../../features/auth/authOperations';
 import s from "./Header.module.css";
+import { IoExitOutline } from "react-icons/io5";
+
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -43,6 +45,7 @@ const Header = () => {
           className={s.exitBtn}
           disabled={isLoading}
         >
+          <IoExitOutline />
           {isLoading ? 'Exiting...' : 'Exit'}
         </button>
       </div>

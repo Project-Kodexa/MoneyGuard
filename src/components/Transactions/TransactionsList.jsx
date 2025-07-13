@@ -13,6 +13,7 @@ const TransactionsList = ({ transactions, onEditTransaction }) => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
+
   if (!transactions || transactions.length === 0) {
     return (
       <div className="transactions-list-empty">
@@ -57,9 +58,9 @@ const TransactionsList = ({ transactions, onEditTransaction }) => {
       </div>
       <div className="transactions-list">
         {transactions.map(transaction => (
-          <TransactionsItem 
-            key={transaction.id} 
-            transaction={transaction} 
+          <TransactionsItem
+            key={transaction.id}
+            transaction={transaction}
             onEdit={onEditTransaction}
           />
         ))}

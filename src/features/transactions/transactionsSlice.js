@@ -50,7 +50,12 @@ export const selectTransactionsWithCategories = (state) => {
   const { transactions, categories } = state.transactions;
   
   if (!categories || categories.length === 0) {
-    return transactions;
+    // Kategoriler henüz yüklenmemişse, transaction'ları olduğu gibi döndür
+    return transactions.map(transaction => ({
+      ...transaction,
+      categoryName: "Loading...",
+      categoryId: transaction.categoryId || transaction.category
+    }));
   }
   
   return transactions.map(transaction => {
@@ -59,7 +64,7 @@ export const selectTransactionsWithCategories = (state) => {
     
     return {
       ...transaction,
-      categoryName: category ? category.name : (categoryId || ''),
+      categoryName: category ? category.name : (categoryId && categoryId.length > 20 ? "Unknown Category" : categoryId || "Unknown"),
       categoryId: categoryId
     };
   });
