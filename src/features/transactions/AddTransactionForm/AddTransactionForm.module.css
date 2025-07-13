@@ -72,7 +72,7 @@
   border-radius: 50%;
   background-color: #ff6b08;
   position: absolute;
-  top: -2px;
+  top: -2px; 
   left: 0px;
   transition: left 0.3s ease, background-color 0.3s ease;
   display: flex;
@@ -81,23 +81,15 @@
   color: white;
   font-size: 1.3rem;
   font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
   user-select: none;
   pointer-events: none;
-  box-shadow: 
-    0 2px 5px rgba(0, 0, 0, 0.25),
-    0 0 10px rgba(255, 107, 8, 0.6),
-    0 0 20px rgba(255, 107, 8, 0.4);
 }
 
 .addTransactionForm__switchThumb.expense {
   left: 54px;
   background-color: #ff6b6b;
-  box-shadow: 
-    0 2px 5px rgba(0, 0, 0, 0.25),
-    0 0 10px rgba(255, 107, 107, 0.6),
-    0 0 20px rgba(255, 107, 107, 0.4);
 }
-
 
 .addTransactionForm__formGroup {
   display: flex;
@@ -238,7 +230,7 @@
   background-color: #bbb;
 }
 
-/* Datepicker stilleri */
+
 .datepickerWrapper {
   flex: 1;
   max-width: 100%;
@@ -275,12 +267,12 @@
   }
 
   .addTransactionForm__typeToggle {
-    gap: 0.4rem; /* switch ve yazılar arasını biraz daha sıkıştırdım */
+    gap: 0.4rem; 
     justify-content: center;
   }
 
   .addTransactionForm__typeToggleText {
-    width: auto;      /* mobilde genişlik sınırlamasını kaldırdım */
+    width: auto;     
     height: auto;
     font-size: 0.95rem;
     padding: 0 8px;
@@ -301,11 +293,11 @@
   }
 
   .addTransactionForm__switchTrackk {
-    width: 70px;      /* switch biraz daha küçük */
+    width: 70px;    
     height: 36px;
     border-radius: 18px;
     margin: 0 auto;
-    position: relative; /* fixed kaldırıldı, scrollda daha doğal */
+    position: relative; 
     padding: 0 0px;
   }
 
@@ -332,7 +324,7 @@
   .datepickerInput {
     height: 35px;
     font-size: 0.9rem;
-    padding-right: 2.5rem; /* orijinal hali */
+    padding-right: 2.5rem;
   }
 
   .datepickerIcon {
