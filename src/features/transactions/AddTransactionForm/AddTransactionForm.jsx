@@ -242,7 +242,7 @@ const AddTransactionForm = ({ onClose, mode = 'add', transaction = null }) => {
           type="submit"
           className={styles.addTransactionForm__buttonSubmit}
         >
-          {mode === 'edit' ? 'UPDATE' : 'ADD'}
+          {mode === 'edit' ? 'SAVE' : 'ADD'}
         </button>
         <button
           type="button"
