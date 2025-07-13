@@ -1,121 +1,131 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchStatistics } from '../../redux/transactionsOperations';
+import React, { useState, useMemo, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { Doughnut } from 'react-chartjs-2';
+import { format } from 'date-fns';
+import { fetchTransactions, fetchCategories } from '../../redux/transactionsOperations';
+import { selectExpenseTransactionsByMonth } from '../../redux/transactionsSelectors';
 import styles from './StatisticsTab.module.css';
+import {
+  Chart as ChartJS,
+  ArcElement,       // Doughnut için gerekli
+  Tooltip,
+  Legend,
+} from 'chart.js';
+
+ChartJS.register(ArcElement, Tooltip, Legend);
+
 
 const StatisticsTab = () => {
   const dispatch = useDispatch();
-  const { statistics, isLoading, error } = useSelector(state => state.transactions);
-  
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
-  const { token } = useSelector(state => state.auth);
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
+
+  const categories = useSelector((state) => state.transactions.categories || []);
+  const filteredTransactions = useSelector((state) =>
+    selectExpenseTransactionsByMonth(state, selectedYear, selectedMonth)
+  );
 
   useEffect(() => {
-    // Sadece token varsa API istekleri yap
-    if (token) {
-      dispatch(fetchStatistics({ month: selectedMonth, year: selectedYear }));
-    }
-  }, [dispatch, selectedMonth, selectedYear, token]);
+    dispatch(fetchTransactions());
+    dispatch(fetchCategories());
+  }, [dispatch]);
 
-  const handleMonthChange = (e) => {
-    setSelectedMonth(parseInt(e.target.value));
+  // ID → isim map
+  const categoryIdNameMap = useMemo(() => {
+    const map = {};
+    categories.forEach((cat) => {
+      map[cat.id] = cat.name;
+    });
+    return map;
+  }, [categories]);
+
+  // Debug loglar:
+  useEffect(() => {
+    filteredTransactions.forEach(tx => {
+      console.log('Transaction id:', tx.id, 'Category id:', tx.categoryId);
+    });
+  }, [filteredTransactions]);
+
+  useEffect(() => {
+    Object.entries(categoryIdNameMap).forEach(([id, name]) => {
+      console.log('Category id:', id, 'Category name:', name);
+    });
+  }, [categoryIdNameMap]);
+
+  const categorySums = useMemo(() => {
+    const sums = {};
+    filteredTransactions.forEach((tx) => {
+      const categoryName = categoryIdNameMap[tx.categoryId] || 'Uncategorized';
+      sums[categoryName] = (sums[categoryName] || 0) + Number(tx.amount);
+    });
+    return sums;
+  }, [filteredTransactions, categoryIdNameMap]);
+
+  const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#8BC34A'];
+  const chartData = {
+    labels: Object.keys(categorySums),
+    datasets: [
+      {
+        data: Object.values(categorySums),
+        backgroundColor: Object.keys(categorySums).map(
+          (_, idx) => colors[idx % colors.length]
+        ),
+        borderWidth: 1,
+      },
+    ],
   };
-
-  const handleYearChange = (e) => {
-    setSelectedYear(parseInt(e.target.value));
-  };
-
-  const months = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
-  ];
-
-  const years = Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i);
-
-  if (isLoading) {
-    return (
-      <div className={styles.loading}>
-        <div className={styles.spinner}></div>
-        <p>Loading statistics...</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className={styles.error}>
-        <h3>Error loading statistics</h3>
-        <p>{error}</p>
-      </div>
-    );
-  }
 
   return (
-    <div className={styles.statisticsTab}>
+    <div className={styles.container}>
       <h2 className={styles.title}>Statistics</h2>
-      
-      {/* Date Selector */}
-      <div className={styles.dateSelector}>
-        <select 
-          value={selectedMonth} 
-          onChange={handleMonthChange}
-          className={styles.select}
-        >
-          {months.map((month, index) => (
-            <option key={index} value={index + 1}>
-              {month}
-            </option>
-          ))}
-        </select>
-        
-        <select 
-          value={selectedYear} 
-          onChange={handleYearChange}
-          className={styles.select}
-        >
-          {years.map(year => (
+
+      <select className={styles.select}
+        value={selectedMonth}
+        onChange={(e) => setSelectedMonth(Number(e.target.value))}
+      >
+        <option value={0}>All Months</option>
+        {Array.from({ length: 12 }, (_, i) => (
+          <option key={i} value={i + 1}>
+            {format(new Date(2000, i), 'MMMM')}
+          </option>
+        ))}
+      </select>
+
+      <select className={styles.select}
+        value={selectedYear}
+        onChange={(e) => setSelectedYear(Number(e.target.value))}
+      >
+        {Array.from({ length: 5 }, (_, i) => {
+          const year = new Date().getFullYear() - i;
+          return (
             <option key={year} value={year}>
               {year}
             </option>
-          ))}
-        </select>
-      </div>
+          );
+        })}
+      </select>
 
-      {/* Statistics Content */}
-      <div className={styles.content}>
-        {statistics ? (
-          <div className={styles.statisticsGrid}>
-            <div className={styles.summaryCard}>
-              <h3>Total Income</h3>
-              <div className={styles.amount}>
-                ${statistics.totalIncome?.toFixed(2) || '0.00'}
-              </div>
-            </div>
-            
-            <div className={styles.summaryCard}>
-              <h3>Total Expenses</h3>
-              <div className={styles.amount}>
-                ${statistics.totalExpenses?.toFixed(2) || '0.00'}
-              </div>
-            </div>
-            
-            <div className={styles.summaryCard}>
-              <h3>Net Balance</h3>
-              <div className={styles.amount}>
-                ${((statistics.totalIncome || 0) - (statistics.totalExpenses || 0)).toFixed(2)}
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className={styles.noData}>
-            <p>No statistics available for the selected period.</p>
-          </div>
-        )}
-      </div>
+      {filteredTransactions.length === 0 ? (
+        <p>No expenses found for the selected period.</p>
+      ) : (
+        <>
+          <Doughnut data={chartData} />
+
+          <ul className={styles.list}>
+            {filteredTransactions.map((tx) => {
+              const categoryName = categoryIdNameMap[tx.categoryId] || 'Uncategorized';
+              return (
+                <li className={styles.listItem} key={tx.id}>
+                  {categoryName}: {Number(tx.amount).toFixed(2)} USD
+                </li>
+              );
+            })}
+          </ul>
+        </>
+      )}
     </div>
   );
 };
 
-export default StatisticsTab; 
+export default StatisticsTab;
