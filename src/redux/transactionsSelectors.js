@@ -1,25 +1,27 @@
 import { createSelector } from 'reselect';
 
-export const selectTransactions = (state) => state.transactions.transactions;
+export const getAllTransactions = (state) => state.transactions.transactions;
+
+
 
 export const selectExpenseTransactionsByMonth = createSelector(
-  [selectTransactions, (_, selectedYear) => selectedYear, (_, __, selectedMonth) => selectedMonth],
+  [getAllTransactions, (_, year) => year, (_, __, month) => month],
   (transactions, year, month) => {
-    return transactions.filter(tx => {
-      const date = new Date(tx.date);
+    return transactions.filter((tx) => {
+      const txDate = new Date(tx.transactionDate);
       return (
-        date.getFullYear() === year &&
-        date.getMonth() + 1 === month &&
-        tx.type?.toLowerCase() === 'expense'
+        tx.type === 'EXPENSE' &&
+        txDate.getFullYear() === year &&
+        txDate.getMonth() + 1 === month
       );
     });
   }
 );
-export const selectAllTransactions = (state) => state.transactions.transactions;
+
 
 export const selectFilteredExpenses = createSelector(
   [
-    selectAllTransactions,
+    getAllTransactions,
     (_, selectedYear) => selectedYear,
     (_, __, selectedMonth) => selectedMonth,
   ],
