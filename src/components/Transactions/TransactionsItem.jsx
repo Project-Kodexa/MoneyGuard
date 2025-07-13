@@ -27,6 +27,16 @@ const TransactionsItem = ({ transaction }) => {
       setIsDeleting(true);
       try {
         await dispatch(deleteTransactionThunk(transaction.id)).unwrap();
+
+         // transaction.date'den month ve year çıkar
+      const date = transaction.date ? new Date(transaction.date) : new Date();
+      const month = date.getMonth() + 1; // 1-12 arası
+      const year = date.getFullYear();
+
+      // İstatistikleri güncelle
+      await dispatch(fetchStatistics({ month, year })).unwrap();
+
+
       } catch (error) {
         // Error handling - alert yerine console.error kullan
         console.error("Failed to delete transaction:", error.message);

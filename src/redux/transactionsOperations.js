@@ -101,7 +101,7 @@ export const addTransactionThunk = createAsyncThunk(
       // Eksik alanları tamamla
       transactionToAdd = {
         ...transactionToAdd,
-        id: transactionToAdd.id  || Date.now().toString(),
+        id: transactionToAdd.id || Date.now().toString(),
         type: transactionToAdd.type || transactionData.type || "expense",
         amount: parseFloat(
           transactionToAdd.amount || transactionData.amount || 0
@@ -122,6 +122,16 @@ export const addTransactionThunk = createAsyncThunk(
       }
 
       thunkAPI.dispatch(addTransaction(transactionToAdd));
+
+      // ✅ İstatistikleri güncelle (şu anki ay ve yılı alarak)
+      const now = new Date(transactionToAdd.date);
+      const currentMonth = now.getMonth() + 1;
+      const currentYear = now.getFullYear();
+
+      thunkAPI.dispatch(
+        fetchStatistics({ month: currentMonth, year: currentYear })
+      );
+
       return transactionToAdd;
     } catch (error) {
       console.error("API Error:", error.response?.data || error);
@@ -164,6 +174,16 @@ export const updateTransactionThunk = createAsyncThunk(
       thunkAPI.dispatch(
         updateTransactionAction({ id, transaction: data.transaction })
       );
+
+      // ✅ Yeni istatistikleri getir
+      const updatedDate = new Date(
+        data.transaction.transactionDate || data.transaction.date || new Date()
+      );
+      const month = updatedDate.getMonth() + 1;
+      const year = updatedDate.getFullYear();
+
+      thunkAPI.dispatch(fetchStatistics({ month, year }));
+
       return data.transaction;
     } catch (error) {
       const errorMessage =
@@ -185,9 +205,15 @@ export const deleteTransactionThunk = createAsyncThunk(
     try {
       thunkAPI.dispatch(setLoading(true));
 
-      await API.delete(`/transactions/${id}`);
+      if (!id) {
+        throw new Error("Transaction ID is required.");
+      }
 
+      await API.delete(`/transactions/${id}`);
       thunkAPI.dispatch(deleteTransactionAction(id));
+
+      // İstatistik güncellemesi burada yapılmaz, başka yerde tetiklenir
+
       return id;
     } catch (error) {
       const errorMessage =
@@ -201,6 +227,10 @@ export const deleteTransactionThunk = createAsyncThunk(
     }
   }
 );
+
+
+
+
 
 // Kategorileri getir
 export const fetchCategories = createAsyncThunk(
