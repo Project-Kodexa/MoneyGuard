@@ -8,7 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import styles from "./AddTransactionForm.module.css";
 import { addTransactionThunk } from "../../../redux/transactionsOperations";
 
-import calendarIcon from "../../../images/addTrn/calendarIcon.png";
+import calendarIcon from "../../../images/addTrn/calenderIcon.png";
 
 // Validasyon şeması
 const schema = yup.object().shape({
