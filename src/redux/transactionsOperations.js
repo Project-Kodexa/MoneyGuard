@@ -377,3 +377,4 @@ export const fetchCurrencyRates = createAsyncThunk(
 export const clearError = () => (dispatch) => {
   dispatch(setError(null));
 };
+
