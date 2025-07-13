@@ -1,7 +1,7 @@
 .balanceCard {
   background: #523b7e99;
   border-radius: 12px;
-  padding: 24px;
+  padding: 10px;
   color: white;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   min-height: 80px;
@@ -27,15 +27,13 @@
 
 @media (max-width: 768px) {
   .balanceContainer {
-    padding: 16px;
+    width: 336px;
+    height: 80px;
   }
-
-  .balanceCard {
-    padding: 20px;
-    min-height: 100px;
-  }
-
   .balanceAmount {
     font-size: 24px;
+  }
+  .balanceCard {
+    margin-top: 12px;
   }
 }

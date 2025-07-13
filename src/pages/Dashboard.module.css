@@ -44,6 +44,11 @@
   .rightPanel {
     width: 100%;
   }
+  .leftPanelContent{
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
 }
 
 @media (max-width: 600px) {
