@@ -37,14 +37,8 @@ export default function LoginForm() {
 
       if (loginThunk.fulfilled.match(result)) {
         const { token, user } = result.payload;
-        
-        // API'den gelen veriyi kontrol et
-        console.log('Login API Response:', result.payload);
-        console.log('User data:', user);
-
         setAuthToken(token);
         localStorage.setItem("token", token);
-
         navigate("/");
       } else {
         setLoginError("Email or password is incorrect.");
@@ -76,12 +70,16 @@ export default function LoginForm() {
           className={styles.loginInput}
         />
       </div>
-      {errors.password && <p className={styles.error}>{errors.password.message}</p>}
+      {errors.password && (
+        <p className={styles.error}>{errors.password.message}</p>
+      )}
 
       {loginError && <p className={styles.error}>{loginError}</p>}
 
       <div className={styles.loginBtnContainer}>
-        <button type="submit" className={styles.loginBtn}>LOG IN</button>
+        <button type="submit" className={styles.loginBtn}>
+          LOG IN
+        </button>
         <button
           type="button"
           onClick={() => navigate("/register")}

@@ -5,14 +5,14 @@
   justify-content: center;
   display: flex;
   gap: 32px;
+ 
 }
 
 @media screen and (min-width: 768px) {
   .link_icon_wrapper {
     flex-direction: column;
-    margin-top: 40px;
     gap: 12px;
-    margin-left: 0px;
+    margin-left: 32px;
   }
 }
 @media screen and (min-width: 1128px) {
