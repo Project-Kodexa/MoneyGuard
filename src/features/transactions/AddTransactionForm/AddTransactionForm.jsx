@@ -8,9 +8,12 @@ import "react-datepicker/dist/react-datepicker.css";
 import styles from "./AddTransactionForm.module.css";
 import { addTransactionThunk } from "../../../redux/transactionsOperations";
 
+<<<<<<< HEAD
 import calendarIcon from "../../../images/addTrn/calenderIcon.png";
 
 // Validasyon şeması
+=======
+>>>>>>> parent of b355213 (Merge branch 'main' of https://github.com/Project-Kodexa/MoneyGuard into nurPektas)
 const schema = yup.object().shape({
   type: yup.string().oneOf(["income", "expense"]).required(),
   sum: yup
@@ -54,26 +57,35 @@ const AddTransactionForm = ({ onClose }) => {
     try {
       const formattedDate = data.date.toISOString().split("T")[0];
       let categoryId = data.category;
-
       if (data.type === "income") {
         const incomeCategories = categories.filter(
           (cat) => cat.type === "INCOME"
         );
+<<<<<<< HEAD
         categoryId =
           incomeCategories[0]?.id || "00000000-0000-0000-0000-000000000001";
+=======
+        if (incomeCategories.length > 0) {
+          categoryId = incomeCategories[0].id;
+        } else {
+          categoryId = "00000000-0000-0000-0000-000000000001";
+        }
+>>>>>>> parent of b355213 (Merge branch 'main' of https://github.com/Project-Kodexa/MoneyGuard into nurPektas)
       }
-
       const transactionData = {
         amount: parseFloat(data.sum),
         transactionDate: formattedDate,
         type: data.type === "income" ? "INCOME" : "EXPENSE",
-        categoryId,
+        categoryId: categoryId,
         comment: data.comment,
       };
-
       dispatch(addTransactionThunk(transactionData))
-        .then(() => onClose())
-        .catch((err) => console.error("Add transaction error:", err.message));
+        .then(() => {
+          onClose();
+        })
+        .catch((err) => {
+          console.error("Add transaction error:", err.message);
+        });
     } catch (error) {
       console.error("Form submit error:", error.message);
     }
@@ -82,7 +94,9 @@ const AddTransactionForm = ({ onClose }) => {
   const handleTypeChange = (selectedType) => {
     setType(selectedType);
     setValue("type", selectedType);
-    if (selectedType === "income") setValue("category", "");
+    if (selectedType === "income") {
+      setValue("category", "");
+    }
   };
 
   return (
@@ -93,34 +107,46 @@ const AddTransactionForm = ({ onClose }) => {
     >
       <h2 className={styles.addTransactionForm__title}>Add transaction</h2>
 
-      {/* Toggle */}
       <div className={styles.addTransactionForm__typeToggle}>
         <div
           className={`${styles.addTransactionForm__typeToggleText} ${
-            type === "income" ? styles.active : ""
+            type === "income" ? styles.active : styles.inactive
           }`}
           onClick={() => handleTypeChange("income")}
           role="button"
           tabIndex={0}
+<<<<<<< HEAD
           onKeyDown={(e) =>
             (e.key === "Enter" || e.key === " ") && handleTypeChange("income")
           }
+=======
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              handleTypeChange("income");
+            }
+          }}
+>>>>>>> parent of b355213 (Merge branch 'main' of https://github.com/Project-Kodexa/MoneyGuard into nurPektas)
         >
           Income
         </div>
 
         <div
+<<<<<<< HEAD
           className={styles.addTransactionForm__switchTrackk}
+=======
+          className={styles.addTransactionForm__switchTrack}
+>>>>>>> parent of b355213 (Merge branch 'main' of https://github.com/Project-Kodexa/MoneyGuard into nurPektas)
           onClick={() =>
             handleTypeChange(type === "income" ? "expense" : "income")
           }
           role="switch"
           aria-checked={type === "income"}
           tabIndex={0}
-          onKeyDown={(e) =>
-            (e.key === "Enter" || e.key === " ") &&
-            handleTypeChange(type === "income" ? "expense" : "income")
-          }
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              handleTypeChange(type === "income" ? "expense" : "income");
+            }
+          }}
         >
           <div
             className={`${styles.addTransactionForm__switchThumb} ${
@@ -133,14 +159,22 @@ const AddTransactionForm = ({ onClose }) => {
 
         <div
           className={`${styles.addTransactionForm__typeToggleText} ${
-            type === "expense" ? styles.active : ""
+            type === "expense" ? styles.active : styles.inactive
           }`}
           onClick={() => handleTypeChange("expense")}
           role="button"
           tabIndex={0}
+<<<<<<< HEAD
           onKeyDown={(e) =>
             (e.key === "Enter" || e.key === " ") && handleTypeChange("expense")
           }
+=======
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              handleTypeChange("expense");
+            }
+          }}
+>>>>>>> parent of b355213 (Merge branch 'main' of https://github.com/Project-Kodexa/MoneyGuard into nurPektas)
         >
           Expense
         </div>
@@ -153,8 +187,8 @@ const AddTransactionForm = ({ onClose }) => {
             {...register("category")}
           >
             <option value="">Select a category</option>
-            {categories.map((category) => (
-              <option key={category.id} value={category.id}>
+            {categories.map((category, index) => (
+              <option key={index} value={category.id}>
                 {category.name}
               </option>
             ))}
@@ -165,7 +199,6 @@ const AddTransactionForm = ({ onClose }) => {
         </div>
       )}
 
-      {/* Amount + Date */}
       <div className={styles.addTransactionForm__rowInputs}>
         <input
           type="text"
@@ -175,21 +208,16 @@ const AddTransactionForm = ({ onClose }) => {
           onInput={(e) =>
             (e.target.value = e.target.value.replace(/[^0-9.]/g, ""))
           }
+<<<<<<< HEAD
+=======
         />
-
-        <div className={styles.datepickerWrapper}>
-          <DatePicker
-            selected={watch("date")}
-            onChange={(date) => setValue("date", date)}
-            dateFormat="dd.MM.yyyy"
-            className={`${styles.addTransactionForm__input} ${styles.datepickerInput}`}
-          />
-          <img
-            src={calendarIcon}
-            alt="calendar icon"
-            className={styles.datepickerIcon}
-          />
-        </div>
+        <DatePicker
+          selected={watch("date")}
+          onChange={(date) => setValue("date", date)}
+          dateFormat="dd.MM.yyyy"
+          className={styles.addTransactionForm__input}
+>>>>>>> parent of b355213 (Merge branch 'main' of https://github.com/Project-Kodexa/MoneyGuard into nurPektas)
+        />
       </div>
       <p className={styles.addTransactionForm__errorMessage}>
         {errors.sum?.message}
@@ -198,7 +226,6 @@ const AddTransactionForm = ({ onClose }) => {
         {errors.date?.message}
       </p>
 
-      {/* Comment */}
       <div className={styles.addTransactionForm__formGroup}>
         <input
           type="text"
@@ -211,7 +238,6 @@ const AddTransactionForm = ({ onClose }) => {
         </p>
       </div>
 
-      {/* Buttons */}
       <div className={styles.addTransactionForm__buttonGroup}>
         <button
           type="submit"
