@@ -28,15 +28,14 @@ const TransactionsItem = ({ transaction }) => {
       try {
         await dispatch(deleteTransactionThunk(transaction.id)).unwrap();
 
-         // transaction.date'den month ve year çıkar
-      const date = transaction.date ? new Date(transaction.date) : new Date();
-      const month = date.getMonth() + 1; // 1-12 arası
-      const year = date.getFullYear();
+        // transaction.date'den month ve year çıkar
+        const date = transaction.date ? new Date(transaction.date) : new Date();
+        const month = date.getMonth() + 1; // 1-12 arası
+        const year = date.getFullYear();
+       
 
-      // İstatistikleri güncelle
-      await dispatch(fetchStatistics({ month, year })).unwrap();
-
-
+        // İstatistikleri güncelle
+        await dispatch(fetchStatistics({ month, year })).unwrap();
       } catch (error) {
         // Error handling - alert yerine console.error kullan
         console.error("Failed to delete transaction:", error.message);
@@ -48,26 +47,32 @@ const TransactionsItem = ({ transaction }) => {
 
   // Tarih formatı: GG.AA.YY
   const formatDate = (dateString) => {
-  const validDate = new Date(dateString);
-  if (isNaN(validDate)) return "Invalid Date";
-  return validDate.toLocaleDateString("en-GB").replace(/\//g, ".");
-};
-console.log("Rendered Transaction:", transaction);
+    const validDate = new Date(dateString);
+    if (isNaN(validDate)) return "Invalid Date";
+    return validDate.toLocaleDateString("en-GB").replace(/\//g, ".");
+  };
+  console.log("Rendered Transaction:", transaction);
   // Sadece + veya - işareti
   const getTypeSign = (type) => {
     const normalizedType = type?.toLowerCase();
     return normalizedType === "income" ? "+" : "-";
   };
 
+   const handleEdit = () => {
+          if (onEdit) {
+            onEdit(transaction);
+          }
+        };
+
   // Kategori adı
   const getCategory = (category) => category || "";
 
-  const allCategories = useSelector(state => state.transactions.categories);
+  const allCategories = useSelector((state) => state.transactions.categories);
 
-const getCategoryNameById = (categoryId) => {
-  const matched = allCategories.find(cat => cat.id === categoryId);
-  return matched?.name || "Unknown";
-};
+  const getCategoryNameById = (categoryId) => {
+    const matched = allCategories.find((cat) => cat.id === categoryId);
+    return matched?.name || "Unknown";
+  };
 
   // Yorum
   const getComment = (comment) => comment || "";
@@ -110,11 +115,7 @@ const getCategoryNameById = (categoryId) => {
           Delete
         </button>
 
-        <button 
-          className="edit-icon-btn" 
-          onClick={handleEdit}
-          title="Edit"
-        >
+        <button className="edit-icon-btn" onClick={handleEdit} title="Edit">
           <EditIcon />
         </button>
       </div>
