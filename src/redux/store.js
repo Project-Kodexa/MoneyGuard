@@ -7,7 +7,7 @@ import rootReducer from "./rootReducer";
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["auth"], // sadece auth slice persist edilecek
+  whitelist: ["auth", "transactions", "statistics", "currency"], // auth, transactions, statistics ve currency slice'ları persist edilecek
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -19,3 +19,8 @@ export const store = configureStore({
 });
 
 export const persistor = persistStore(store);
+
+// Development ortamında store'u global olarak erişilebilir hale getir
+if (process.env.NODE_ENV === 'development') {
+  window.store = store;
+}

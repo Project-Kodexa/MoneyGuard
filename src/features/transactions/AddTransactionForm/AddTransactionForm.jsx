@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -7,7 +7,6 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import styles from "./AddTransactionForm.module.css";
 import { addTransactionThunk } from "../../../redux/transactionsOperations";
-import categories from "../modalCategory"; 
 
 // Validasyon şeması
 const schema = yup.object().shape({
@@ -29,6 +28,9 @@ const schema = yup.object().shape({
 const AddTransactionForm = ({ onClose }) => {
   const dispatch = useDispatch();
   const [type, setType] = useState("expense");
+  
+  // Kategorileri Redux store'dan al
+  const { categories } = useSelector(state => state.transactions);
 
   const {
     register,
@@ -48,11 +50,44 @@ const AddTransactionForm = ({ onClose }) => {
   });
 
   const onSubmit = (data) => {
-    dispatch(addTransactionThunk(data))
-      .then(() => onClose())
-      .catch((err) =>
-        alert("Transaction eklenirken hata oluştu: " + err.message)
-      );
+    try {
+      // Date'i YYYY-MM-DD formatına dönüştür
+      const formattedDate = data.date.toISOString().split('T')[0];
+      
+      // INCOME için uygun categoryId bul
+      let categoryId = data.category;
+      if (data.type === 'income') {
+        // INCOME kategorilerini bul
+        const incomeCategories = categories.filter(cat => cat.type === 'INCOME');
+        if (incomeCategories.length > 0) {
+          categoryId = incomeCategories[0].id; // İlk INCOME kategorisini kullan
+        } else {
+          // INCOME kategorisi yoksa, varsayılan bir UUID kullan
+          categoryId = '00000000-0000-0000-0000-000000000001';
+        }
+      }
+      
+      // Form verilerini API formatına dönüştür
+      const transactionData = {
+        amount: parseFloat(data.sum), // sum -> amount
+        transactionDate: formattedDate, // date -> transactionDate (YYYY-MM-DD format)
+        type: data.type === 'income' ? 'INCOME' : 'EXPENSE', // type enum değeri (büyük harf)
+        categoryId: categoryId, // Her zaman geçerli bir UUID
+        comment: data.comment
+      };
+      
+      console.log('Sending transaction data:', transactionData);
+      
+      dispatch(addTransactionThunk(transactionData))
+        .then((res) => {
+          onClose();
+        })
+        .catch((err) => {
+          console.error('Add transaction error:', err.message);
+        });
+    } catch (error) {
+      console.error('Form submit error:', error.message);
+    }
   };
 
   const handleTypeChange = (selectedType) => {
@@ -135,8 +170,8 @@ const AddTransactionForm = ({ onClose }) => {
           >
             <option value="">Select a category</option>
             {categories.map((category, index) => (
-              <option key={index} value={category}>
-                {category}
+              <option key={index} value={category.id}>
+                {category.name}
               </option>
             ))}
           </select>

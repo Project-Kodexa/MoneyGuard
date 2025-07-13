@@ -49,9 +49,9 @@ const EditTransactionForm = ({ transaction, onClose }) => {
   const onSubmit = (data) => {
     dispatch(updateTransactionThunk(transaction.id, data))
       .then(() => onClose())
-      .catch((err) =>
-        alert("Güncelleme sırasında bir hata oluştu: " + err.message)
-      );
+      .catch((err) => {
+        console.error('Update error:', err.message);
+      });
   };
 
   const handleTypeChange = (selectedType) => {

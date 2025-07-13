@@ -1,173 +1,172 @@
 .transaction-item {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: center;
-  padding: 16px 20px;
-  margin: 8px 0;
-  background: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border-left: 4px solid #e0e0e0;
-  transition: all 0.3s ease;
-}
-
-.transaction-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-.transaction-item.income {
-  border-left-color: #4caf50;
-}
-
-.transaction-item.expense {
-  border-left-color: #f44336;
-}
-
-.transaction-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.transaction-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.transaction-type-icon {
-  font-size: 20px;
-}
-
-.transaction-date {
+  padding: 12px 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  font-family: 'Poppins', sans-serif;
   font-size: 14px;
-  color: #666;
-  font-weight: 500;
-}
-
-.transaction-details {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.transaction-category {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 600;
-  color: #333;
-}
-
-.category-icon {
-  font-size: 16px;
-}
-
-.transaction-description {
-  font-size: 14px;
-  color: #666;
-  max-width: 300px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.transaction-amount {
-  font-size: 18px;
-  font-weight: 700;
-  color: #333;
-}
-
-.transaction-item.income .transaction-amount {
-  color: #4caf50;
+  background: transparent;
 }
 
 .transaction-item.expense .transaction-amount {
-  color: #f44336;
+  background: rgba(255, 134, 141, 1);
+  color: #fff;
+  border-radius: 8px;
+  padding: 2px 10px;
+}
+.transaction-item.income .transaction-amount {
+  background: rgba(255, 182, 39, 1);
+  color: #fff;
+  border-radius: 8px;
+  padding: 2px 10px;
 }
 
+.transaction-info {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 24px;
+}
+.transaction-header {
+  display: flex;
+  flex-direction: column;
+  min-width: 80px;
+}
+.transaction-type-icon {
+  font-size: 18px;
+  margin-bottom: 2px;
+}
+.transaction-date {
+  font-weight: 400;
+  color: #fff;
+  font-size: 14px;
+}
+.transaction-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.transaction-category {
+  display: flex;
+  align-items: center;
+  font-weight: 400;
+  color: #fff;
+  font-size: 14px;
+}
+.category-icon {
+  margin-right: 6px;
+}
+.transaction-description {
+  color: #bdbdbd;
+  font-size: 13px;
+}
+.transaction-amount {
+  font-weight: 600;
+  font-size: 14px;
+  min-width: 80px;
+  text-align: right;
+}
 .transaction-actions {
   display: flex;
+  align-items: center;
   gap: 8px;
-  margin-left: 16px;
 }
-
-.edit-button,
-.delete-button {
-  padding: 8px 12px;
+.edit-button {
+  background: none;
   border: none;
-  border-radius: 6px;
+  color: #fff;
   font-size: 14px;
-  font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   gap: 4px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  transition: background 0.2s;
 }
-
-.edit-button {
-  background: #2196f3;
-  color: white;
-}
-
 .edit-button:hover {
-  background: #1976d2;
-  transform: translateY(-1px);
+  background: rgba(255,255,255,0.08);
 }
-
 .delete-button {
-  background: #f44336;
-  color: white;
+  background: linear-gradient(96.76deg, #FFC727 -16.42%, #9E40BA 97.04%, #7000FF 150.71%);
+  width: 69px;
+  height: 29px;
+  border-radius: 20px;
+  padding: 4px 12px;
+  border: none;
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  box-shadow: 1px 9px 15px 0px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  transition: opacity 0.2s;
 }
-
-.delete-button:hover:not(:disabled) {
-  background: #d32f2f;
-  transform: translateY(-1px);
-}
-
 .delete-button:disabled {
-  background: #ccc;
+  opacity: 0.7;
   cursor: not-allowed;
-  transform: none;
 }
 
-/* Responsive design */
-@media (max-width: 768px) {
+/* Responsive: Mobile Card */
+@media (max-width: 600px) {
   .transaction-item {
-    padding: 12px 16px;
     flex-direction: column;
     align-items: flex-start;
-    gap: 12px;
+    width: 280px;
+    height: 293px;
+    border-radius: 10px;
+    background: rgba(82, 59, 126, 0.6);
+    margin-bottom: 8px;
+    padding: 18px 16px 16px 16px;
+    box-sizing: border-box;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: none;
   }
-  
-  .transaction-actions {
-    margin-left: 0;
+  .transaction-info {
+    flex-direction: column;
+    gap: 8px;
     width: 100%;
-    justify-content: flex-end;
   }
-  
-  .transaction-description {
-    max-width: 100%;
+  .transaction-header, .transaction-details, .transaction-amount {
+    min-width: unset;
+    width: 100%;
+    text-align: left;
   }
-  
-  .edit-button,
-  .delete-button {
-    padding: 6px 10px;
-    font-size: 12px;
-  }
-}
-
-@media (max-width: 480px) {
   .transaction-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-  }
-  
-  .transaction-actions {
+    flex-direction: row;
     justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .transaction-date {
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .transaction-details {
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+  .transaction-amount {
+    margin-bottom: 8px;
+    text-align: left;
+    width: 100%;
+  }
+  .transaction-actions {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+  }
+  .delete-button {
+    margin-right: auto;
+  }
+  .edit-button {
+    margin-left: auto;
   }
 } 

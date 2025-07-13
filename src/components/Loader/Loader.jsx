@@ -1,13 +1,17 @@
-import React from 'react';
-import './Loader.css';
+import styles from './Loader.module.css'; // Adjust the path as necessary
 
-const Loader = () => {
-  return (
-    <div className="loader-container">
-      <div className="loader-spinner"></div>
-      <p className="loader-text">Loading...</p>
+
+export default function Loader() {
+    return (
+        <div className={styles.overlay}>
+      <div className={styles['bar-wave']}>
+        <div className={styles.bar}></div>
+        <div className={styles.bar}></div>
+        <div className={styles.bar}></div>
+        <div className={styles.bar}></div>
+        <div className={styles.bar}></div>
+      </div>
     </div>
-  );
-};
-
-export default Loader; 
+    );
+   
+    }

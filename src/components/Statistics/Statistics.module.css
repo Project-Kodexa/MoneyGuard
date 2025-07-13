@@ -1,0 +1,82 @@
+/* components/Statistics/Statistics.module.css */
+
+.container {
+    padding: 40px;
+    background: linear-gradient(135deg, #18022d, #2d0b4e);
+    color: white;
+    min-height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  .title {
+    font-size: 32px;
+    margin-bottom: 30px;
+  }
+  
+  .dashboard {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+  }
+  
+  .select {
+    padding: 10px 16px;
+    background-color: #2e1852;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    outline: none;
+    cursor: pointer;
+  }
+  
+  .select option {
+    background-color: #2e1852;
+    color: white;
+  }
+  
+  .chartTableWrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 50px;
+  }
+  
+  .chart {
+    width: 320px;
+    height: 320px;
+  }
+  
+  .table {
+    min-width: 280px;
+  }
+  
+  .listItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 16px;
+  }
+  
+  .colorBox {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    display: inline-block;
+    margin-right: 10px;
+  }
+  
+  .totals {
+    margin-top: 20px;
+    font-size: 18px;
+  }
+  
+  .expense {
+    color: #ff6384;
+  }
+  
+  .income {
+    color: #ffce56;
+  }
+  
