@@ -1,23 +1,22 @@
-import React, { useEffect } from 'react';
-import ReactDOM from 'react-dom';
-import AddTransactionForm from '../AddTransactionForm/AddTransactionForm';
-import styles from './ModalAddTransaction.module.css';
+import React, { useEffect } from "react";
+import ReactDOM from "react-dom";
+import AddTransactionForm from "../AddTransactionForm/AddTransactionForm";
+import styles from "./ModalAddTransaction.module.css";
 
 const ModalAddTransaction = ({ isOpen, onClose, mode = 'add', transaction = null }) => {
   useEffect(() => {
-    const handleEsc = e => {
-      if (e.key === 'Escape') {
+    const handleEsc = (e) => {
+      if (e.key === "Escape") {
         onClose();
       }
     };
 
     if (isOpen) {
-      window.addEventListener('keydown', handleEsc);
+      window.addEventListener("keydown", handleEsc);
     }
 
-    // Cleanup: Modal kapanırken dinleyiciyi kaldır
     return () => {
-      window.removeEventListener('keydown', handleEsc);
+      window.removeEventListener("keydown", handleEsc);
     };
   }, [isOpen, onClose]);
 
@@ -29,14 +28,12 @@ const ModalAddTransaction = ({ isOpen, onClose, mode = 'add', transaction = null
       onClick={onClose}
       role="presentation"
     >
-      {/* Modal pencere içeriği */}
       <div
         className={styles.modalAddTransaction__content}
-        onClick={e => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
       >
-        {/* Kapatma butonu */}
         <button
           type="button"
           className={styles.modalAddTransaction__closeButton}
@@ -54,7 +51,7 @@ const ModalAddTransaction = ({ isOpen, onClose, mode = 'add', transaction = null
         />
       </div>
     </div>,
-    document.getElementById('modal-root')
+    document.getElementById("modal-root")
   );
 };
 

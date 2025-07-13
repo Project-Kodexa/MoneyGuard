@@ -10,13 +10,12 @@
 }
 
 .transaction-item.expense .transaction-amount {
-  background: rgba(255, 134, 141, 1);
   color: #fff;
   border-radius: 8px;
   padding: 2px 10px;
 }
 .transaction-item.income .transaction-amount {
-  background: rgba(255, 182, 39, 1);
+ 
   color: #fff;
   border-radius: 8px;
   padding: 2px 10px;

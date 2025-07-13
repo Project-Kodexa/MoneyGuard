@@ -1,18 +1,12 @@
-.balanceContainer {
-  padding: 20px;
-}
-
 .balanceCard {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #523b7e99;
   border-radius: 12px;
-  padding: 24px;
+  padding: 10px;
   color: white;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  min-height: 120px;
+  min-height: 80px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
 }
 
 .balanceTitle {
@@ -20,6 +14,7 @@
   font-weight: 500;
   margin: 0 0 12px 0;
   opacity: 0.9;
+  margin-left: 54px;
 }
 
 .balanceAmount {
@@ -27,19 +22,18 @@
   font-weight: 700;
   margin: 0;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  margin-left: 54px;
 }
 
 @media (max-width: 768px) {
   .balanceContainer {
-    padding: 16px;
+    width: 336px;
+    height: 80px;
   }
-  
-  .balanceCard {
-    padding: 20px;
-    min-height: 100px;
-  }
-  
   .balanceAmount {
     font-size: 24px;
   }
-} 
+  .balanceCard {
+    margin-top: 12px;
+  }
+}
