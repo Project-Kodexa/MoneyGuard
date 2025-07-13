@@ -39,39 +39,49 @@ const LogoutModal = ({ isOpen, onClose }) => {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  if (!isOpen) return null;
+
   return (
     <div
       className={styles.overlay}
       onClick={handleBackdropClick}
-      style={{ display: isOpen ? 'flex' : 'none' }} // burada görünürlüğü kontrol ediyoruz
     >
       <div className={styles.modal}>
-        <button className={styles.closeButton} onClick={onClose}>
+        <button className={styles.closeButton} onClick={onClose} aria-label="Close modal">
           ×
         </button>
 
-        <div className={styles.content}>
-          <h2 className={styles.title}>Are you sure?</h2>
-          <p className={styles.message}>
-            Do you really want to log out from your account?
-          </p>
+        {/* Logo ve başlık */}
+        <div className={styles.logoSection}>
+          <img
+            src="/moneyGuard.svg" 
+            alt="Money Guard Logo"
+            className={styles.logoImg}
+          />
+          <h3 className={styles.logoTitle}>Money Guard</h3>
+        </div>
 
-          <div className={styles.buttonGroup}>
-            <button
-              className={styles.logoutButton}
-              onClick={handleLogout}
-              type="button"
-            >
-              Log Out
-            </button>
-            <button
-              className={styles.cancelButton}
-              onClick={onClose}
-              type="button"
-            >
-              Cancel
-            </button>
-          </div>
+        {/* Soru metni */}
+        <p className={styles.questionText}>
+          Are you sure you want to log out?
+        </p>
+
+        {/* Butonlar */}
+        <div className={styles.buttonGroup}>
+          <button
+            className={styles.logoutButton}
+            onClick={handleLogout}
+            type="button"
+          >
+            LOGOUT
+          </button>
+          <button
+            className={styles.cancelButton}
+            onClick={onClose}
+            type="button"
+          >
+            CANCEL
+          </button>
         </div>
       </div>
     </div>
