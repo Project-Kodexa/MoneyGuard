@@ -56,8 +56,11 @@ const AddTransactionForm = ({ onClose }) => {
       let categoryId = data.category;
 
       if (data.type === "income") {
-        const incomeCategories = categories.filter((cat) => cat.type === "INCOME");
-        categoryId = incomeCategories[0]?.id || "00000000-0000-0000-0000-000000000001";
+        const incomeCategories = categories.filter(
+          (cat) => cat.type === "INCOME"
+        );
+        categoryId =
+          incomeCategories[0]?.id || "00000000-0000-0000-0000-000000000001";
       }
 
       const transactionData = {
@@ -99,14 +102,18 @@ const AddTransactionForm = ({ onClose }) => {
           onClick={() => handleTypeChange("income")}
           role="button"
           tabIndex={0}
-          onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && handleTypeChange("income")}
+          onKeyDown={(e) =>
+            (e.key === "Enter" || e.key === " ") && handleTypeChange("income")
+          }
         >
           Income
         </div>
 
         <div
           className={styles.addTransactionForm__switchTrackk}
-          onClick={() => handleTypeChange(type === "income" ? "expense" : "income")}
+          onClick={() =>
+            handleTypeChange(type === "income" ? "expense" : "income")
+          }
           role="switch"
           aria-checked={type === "income"}
           tabIndex={0}
@@ -131,7 +138,9 @@ const AddTransactionForm = ({ onClose }) => {
           onClick={() => handleTypeChange("expense")}
           role="button"
           tabIndex={0}
-          onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && handleTypeChange("expense")}
+          onKeyDown={(e) =>
+            (e.key === "Enter" || e.key === " ") && handleTypeChange("expense")
+          }
         >
           Expense
         </div>
@@ -163,7 +172,9 @@ const AddTransactionForm = ({ onClose }) => {
           placeholder="0.00"
           className={styles.addTransactionForm__input}
           {...register("sum")}
-          onInput={(e) => (e.target.value = e.target.value.replace(/[^0-9.]/g, ""))}
+          onInput={(e) =>
+            (e.target.value = e.target.value.replace(/[^0-9.]/g, ""))
+          }
         />
 
         <div className={styles.datepickerWrapper}>
@@ -180,8 +191,12 @@ const AddTransactionForm = ({ onClose }) => {
           />
         </div>
       </div>
-      <p className={styles.addTransactionForm__errorMessage}>{errors.sum?.message}</p>
-      <p className={styles.addTransactionForm__errorMessage}>{errors.date?.message}</p>
+      <p className={styles.addTransactionForm__errorMessage}>
+        {errors.sum?.message}
+      </p>
+      <p className={styles.addTransactionForm__errorMessage}>
+        {errors.date?.message}
+      </p>
 
       {/* Comment */}
       <div className={styles.addTransactionForm__formGroup}>
@@ -217,5 +232,3 @@ const AddTransactionForm = ({ onClose }) => {
 };
 
 export default AddTransactionForm;
-
-
