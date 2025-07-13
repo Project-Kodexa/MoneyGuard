@@ -3,7 +3,7 @@ import TransactionsItem from './TransactionsItem';
 import './TransactionsList.css';
 import ModalAddTransaction from '../../features/transactions/ModalAddTransaction/ModalAddTransaction';
 
-const TransactionsList = ({ transactions }) => {
+const TransactionsList = ({ transactions, onEditTransaction }) => {
   const [isModalOpen, setIsModalOpen] = useState(false); 
 
   const handleOpenModal = () => {
@@ -13,7 +13,6 @@ const TransactionsList = ({ transactions }) => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
-
   if (!transactions || transactions.length === 0) {
     return (
       <div className="transactions-list-empty">
@@ -34,10 +33,6 @@ const TransactionsList = ({ transactions }) => {
                 onClose={handleCloseModal}
               />
             )}
-
-            <button className="add-first-transaction-btn">
-              Add Transaction
-            </button>
 
           </div>
         </div>
@@ -62,9 +57,10 @@ const TransactionsList = ({ transactions }) => {
       </div>
       <div className="transactions-list">
         {transactions.map(transaction => (
-          <TransactionsItem
-            key={transaction.id}
-            transaction={transaction}
+          <TransactionsItem 
+            key={transaction.id} 
+            transaction={transaction} 
+            onEdit={onEditTransaction}
           />
         ))}
       </div>

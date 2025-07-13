@@ -7,7 +7,6 @@ import HomeTab from "../components/Transactions/HomeTab";
 import styles from "./Dashboard.module.css";
 import { useMedia } from "../hooks/useMedia";
 
-
 const Dashboard = () => {
   const { isDesktop, isTablet } = useMedia();
   return (
@@ -15,16 +14,19 @@ const Dashboard = () => {
       <Header />
       <div className={styles.dashboardContent}>
         <div className={styles.leftPanel}>
-          <Navigation />
-          <Balance />
+          <div className={styles.leftPanelContent}>
+            {" "}
+            <Navigation />
+            <Balance />
+          </div>
+
           {(isTablet || isDesktop) && <Currency />}
         </div>
 
-          <div className={styles.rightPanel}>
-          <Outlet /> {/* Bu kısım rotaya göre HomeTab ya da Currency gösterecek */}
-          
+        <div className={styles.rightPanel}>
+          <Outlet />{" "}
+          {/* Bu kısım rotaya göre HomeTab ya da Currency gösterecek */}
         </div>
-        
       </div>
     </div>
   );

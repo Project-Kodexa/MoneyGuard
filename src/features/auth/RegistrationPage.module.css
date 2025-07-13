@@ -8,6 +8,10 @@
     color: #fff;
     padding: 20px;
     box-sizing: border-box; 
+    background: linear-gradient(rgba(10, 10, 25, 0.7), rgba(10, 10, 25, 0.7)),
+    url("../../images/login/bg-login-desk@2x.webp") no-repeat center
+      center/cover;
+
 }
 
 .title {
