@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -6,7 +6,7 @@ import * as yup from "yup";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import styles from "./AddTransactionForm.module.css";
-import { addTransactionThunk, updateTransactionThunk } from "../../../redux/transactionsOperations";
+import { addTransactionThunk } from "../../../redux/transactionsOperations";
 
 import calendarIcon from "../../../images/addTrn/calendarIcon.png";
 
@@ -27,9 +27,9 @@ const schema = yup.object().shape({
   comment: yup.string().required("Comment is required"),
 });
 
-const AddTransactionForm = ({ onClose, mode = 'add', transaction = null }) => {
+const AddTransactionForm = ({ onClose }) => {
   const dispatch = useDispatch();
-  const [type, setType] = useState(transaction?.type?.toLowerCase() || "expense");
+  const [type, setType] = useState("expense");
 
   const { categories } = useSelector((state) => state.transactions);
 
@@ -42,25 +42,13 @@ const AddTransactionForm = ({ onClose, mode = 'add', transaction = null }) => {
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      type: transaction?.type?.toLowerCase() || "expense",
-      sum: transaction?.amount ? Math.abs(transaction.amount).toString() : "",
-      date: transaction?.date ? new Date(transaction.date) : new Date(),
-      category: transaction?.categoryId || transaction?.category || "",
-      comment: transaction?.comment || "",
+      type: "expense",
+      sum: "",
+      date: new Date(),
+      category: "",
+      comment: "",
     },
   });
-
-  // Edit modunda form verilerini doldur
-  useEffect(() => {
-    if (mode === 'edit' && transaction) {
-      setType(transaction.type?.toLowerCase() || "expense");
-      setValue("type", transaction.type?.toLowerCase() || "expense");
-      setValue("sum", transaction.amount ? Math.abs(transaction.amount).toString() : "");
-      setValue("date", transaction.date ? new Date(transaction.date) : new Date());
-      setValue("category", transaction.categoryId || transaction.category || "");
-      setValue("comment", transaction.comment || "");
-    }
-  }, [mode, transaction, setValue]);
 
   const onSubmit = (data) => {
     try {
@@ -68,11 +56,8 @@ const AddTransactionForm = ({ onClose, mode = 'add', transaction = null }) => {
       let categoryId = data.category;
 
       if (data.type === "income") {
-        const incomeCategories = categories.filter(
-          (cat) => cat.type === "INCOME"
-        );
-        categoryId =
-          incomeCategories[0]?.id || "00000000-0000-0000-0000-000000000001";
+        const incomeCategories = categories.filter((cat) => cat.type === "INCOME");
+        categoryId = incomeCategories[0]?.id || "00000000-0000-0000-0000-000000000001";
       }
 
       const transactionData = {
@@ -83,20 +68,9 @@ const AddTransactionForm = ({ onClose, mode = 'add', transaction = null }) => {
         comment: data.comment,
       };
 
-      if (mode === 'edit' && transaction?.id) {
-        // Edit mode - update existing transaction
-        dispatch(updateTransactionThunk({ 
-          id: transaction.id, 
-          transactionData: transactionData 
-        }))
-          .then(() => onClose())
-          .catch((err) => console.error("Update transaction error:", err.message));
-      } else {
-        // Add mode - create new transaction
-        dispatch(addTransactionThunk(transactionData))
-          .then(() => onClose())
-          .catch((err) => console.error("Add transaction error:", err.message));
-      }
+      dispatch(addTransactionThunk(transactionData))
+        .then(() => onClose())
+        .catch((err) => console.error("Add transaction error:", err.message));
     } catch (error) {
       console.error("Form submit error:", error.message);
     }
@@ -114,9 +88,7 @@ const AddTransactionForm = ({ onClose, mode = 'add', transaction = null }) => {
       className={styles.addTransactionForm__container}
       noValidate
     >
-      <h2 className={styles.addTransactionForm__title}>
-        {mode === 'edit' ? 'Edit transaction' : 'Add transaction'}
-      </h2>
+      <h2 className={styles.addTransactionForm__title}>Add transaction</h2>
 
       {/* Toggle */}
       <div className={styles.addTransactionForm__typeToggle}>
@@ -127,18 +99,14 @@ const AddTransactionForm = ({ onClose, mode = 'add', transaction = null }) => {
           onClick={() => handleTypeChange("income")}
           role="button"
           tabIndex={0}
-          onKeyDown={(e) =>
-            (e.key === "Enter" || e.key === " ") && handleTypeChange("income")
-          }
+          onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && handleTypeChange("income")}
         >
           Income
         </div>
 
         <div
           className={styles.addTransactionForm__switchTrackk}
-          onClick={() =>
-            handleTypeChange(type === "income" ? "expense" : "income")
-          }
+          onClick={() => handleTypeChange(type === "income" ? "expense" : "income")}
           role="switch"
           aria-checked={type === "income"}
           tabIndex={0}
@@ -163,9 +131,7 @@ const AddTransactionForm = ({ onClose, mode = 'add', transaction = null }) => {
           onClick={() => handleTypeChange("expense")}
           role="button"
           tabIndex={0}
-          onKeyDown={(e) =>
-            (e.key === "Enter" || e.key === " ") && handleTypeChange("expense")
-          }
+          onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && handleTypeChange("expense")}
         >
           Expense
         </div>
@@ -197,9 +163,7 @@ const AddTransactionForm = ({ onClose, mode = 'add', transaction = null }) => {
           placeholder="0.00"
           className={styles.addTransactionForm__input}
           {...register("sum")}
-          onInput={(e) =>
-            (e.target.value = e.target.value.replace(/[^0-9.]/g, ""))
-          }
+          onInput={(e) => (e.target.value = e.target.value.replace(/[^0-9.]/g, ""))}
         />
 
         <div className={styles.datepickerWrapper}>
@@ -216,12 +180,8 @@ const AddTransactionForm = ({ onClose, mode = 'add', transaction = null }) => {
           />
         </div>
       </div>
-      <p className={styles.addTransactionForm__errorMessage}>
-        {errors.sum?.message}
-      </p>
-      <p className={styles.addTransactionForm__errorMessage}>
-        {errors.date?.message}
-      </p>
+      <p className={styles.addTransactionForm__errorMessage}>{errors.sum?.message}</p>
+      <p className={styles.addTransactionForm__errorMessage}>{errors.date?.message}</p>
 
       {/* Comment */}
       <div className={styles.addTransactionForm__formGroup}>
@@ -242,7 +202,7 @@ const AddTransactionForm = ({ onClose, mode = 'add', transaction = null }) => {
           type="submit"
           className={styles.addTransactionForm__buttonSubmit}
         >
-          {mode === 'edit' ? 'UPDATE' : 'ADD'}
+          ADD
         </button>
         <button
           type="button"
@@ -257,3 +217,5 @@ const AddTransactionForm = ({ onClose, mode = 'add', transaction = null }) => {
 };
 
 export default AddTransactionForm;
+
+
