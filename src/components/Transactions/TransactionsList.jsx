@@ -35,10 +35,6 @@ const TransactionsList = ({ transactions }) => {
               />
             )}
 
-            <button className="add-first-transaction-btn">
-              Add Transaction
-            </button>
-
           </div>
         </div>
       </div>
