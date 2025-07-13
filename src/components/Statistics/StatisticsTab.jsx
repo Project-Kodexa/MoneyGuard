@@ -1,19 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchStatistics } from '../../redux/transactionsOperations';
-import styles from './StatisticsTab.module.css';
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchStatistics } from "../../redux/transactionsOperations";
+import StatisticsDashboard from "./StatisticsDashboard";
+import StatisticsChart from "./StatisticsChart";
+import StatisticsTable from "./StatisticsTable";
+import styles from "./Statistics.module.css";
 
 const StatisticsTab = () => {
   const dispatch = useDispatch();
-  const { statistics, isLoading, error } = useSelector(state => state.transactions);
-  
+  const { statistics, isLoading, error } = useSelector(
+    (state) => state.transactions
+  );
+  const { token } = useSelector((state) => state.auth);
+
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
-  const { token } = useSelector(state => state.auth);
-
   useEffect(() => {
-    // Sadece token varsa API istekleri yap
     if (token) {
       dispatch(fetchStatistics({ month: selectedMonth, year: selectedYear }));
     }
@@ -28,11 +31,24 @@ const StatisticsTab = () => {
   };
 
   const months = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
   ];
 
-  const years = Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i);
+  const years = Array.from(
+    { length: 10 },
+    (_, i) => new Date().getFullYear() - i
+  );
 
   if (isLoading) {
     return (
@@ -53,13 +69,13 @@ const StatisticsTab = () => {
   }
 
   return (
-    <div className={styles.statisticsTab}>
+    <div className={styles.container}>
       <h2 className={styles.title}>Statistics</h2>
-      
+
       {/* Date Selector */}
       <div className={styles.dateSelector}>
-        <select 
-          value={selectedMonth} 
+        <select
+          value={selectedMonth}
           onChange={handleMonthChange}
           className={styles.select}
         >
@@ -69,13 +85,13 @@ const StatisticsTab = () => {
             </option>
           ))}
         </select>
-        
-        <select 
-          value={selectedYear} 
+
+        <select
+          value={selectedYear}
           onChange={handleYearChange}
           className={styles.select}
         >
-          {years.map(year => (
+          {years.map((year) => (
             <option key={year} value={year}>
               {year}
             </option>
@@ -83,39 +99,13 @@ const StatisticsTab = () => {
         </select>
       </div>
 
-      {/* Statistics Content */}
-      <div className={styles.content}>
-        {statistics ? (
-          <div className={styles.statisticsGrid}>
-            <div className={styles.summaryCard}>
-              <h3>Total Income</h3>
-              <div className={styles.amount}>
-                ${statistics.totalIncome?.toFixed(2) || '0.00'}
-              </div>
-            </div>
-            
-            <div className={styles.summaryCard}>
-              <h3>Total Expenses</h3>
-              <div className={styles.amount}>
-                ${statistics.totalExpenses?.toFixed(2) || '0.00'}
-              </div>
-            </div>
-            
-            <div className={styles.summaryCard}>
-              <h3>Net Balance</h3>
-              <div className={styles.amount}>
-                ${((statistics.totalIncome || 0) - (statistics.totalExpenses || 0)).toFixed(2)}
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className={styles.noData}>
-            <p>No statistics available for the selected period.</p>
-          </div>
-        )}
+      {/* Chart & Table */}
+      <div className={styles.chartTableWrapper}>
+        <StatisticsChart />
+        <StatisticsTable />
       </div>
     </div>
   );
 };
 
-export default StatisticsTab; 
+export default StatisticsTab;

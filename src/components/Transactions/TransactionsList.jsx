@@ -2,6 +2,7 @@ import React from 'react';
 import TransactionsItem from './TransactionsItem';
 import './TransactionsList.css';
 
+
 const TransactionsList = ({ transactions }) => {
   if (!transactions || transactions.length === 0) {
     return (

@@ -12,10 +12,6 @@ import StatisticsTab from "./components/Statistics/StatisticsTab.jsx";
 import Currency from "./components/Currency/Currency.jsx";
 import HomeTab from "./components/Transactions/HomeTab.jsx";
 
-import { setLoading } from "./redux/globalSlice"; // doğru dosya yoluna göre ayarla
-import { setAuthToken } from "./services/api"; // ✅ token'ı Axios'a tanıtmak için
-import { refreshThunk } from "./features/auth/authOperations";
-import { setLoading } from "./redux/globalSlice";
 import { setAuthToken, clearAuthToken } from "./services/api";
 import { refreshThunk } from "./features/auth/authOperations";
 
@@ -25,7 +21,7 @@ function App() {
 
   useEffect(() => {
     // Sayfa yüklendiğinde token'ı al
-    
+
     const savedToken = localStorage.getItem("token");
     if (savedToken) {
       // Token'ı axios header'a ekle
