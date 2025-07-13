@@ -1,129 +1,98 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { Doughnut } from 'react-chartjs-2';
-import { format } from 'date-fns';
-import { fetchTransactions, fetchCategories } from '../../redux/transactionsOperations';
-import { selectExpenseTransactionsByMonth } from '../../redux/transactionsSelectors';
-import styles from './StatisticsTab.module.css';
-import {
-  Chart as ChartJS,
-  ArcElement,       // Doughnut için gerekli
-  Tooltip,
-  Legend,
-} from 'chart.js';
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+import { useState } from "react";
+import StatisticsChart from "./StatisticsChart";
+import StatisticsTable from "./StatisticsTable";
+import styles from "./StatisticsTab.module.css";
 
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+const years = [2020, 2021, 2022, 2023, 2024];
 
 const StatisticsTab = () => {
-  const dispatch = useDispatch();
+  const [selectedMonth, setSelectedMonth] = useState("March");
+  const [selectedYear, setSelectedYear] = useState(2023);
 
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
-
-  const categories = useSelector((state) => state.transactions.categories || []);
-  const filteredTransactions = useSelector((state) =>
-    selectExpenseTransactionsByMonth(state, selectedYear, selectedMonth)
-  );
-
-  useEffect(() => {
-    dispatch(fetchTransactions());
-    dispatch(fetchCategories());
-  }, [dispatch]);
-
-  // ID → isim map
-  const categoryIdNameMap = useMemo(() => {
-    const map = {};
-    categories.forEach((cat) => {
-      map[cat.id] = cat.name;
-    });
-    return map;
-  }, [categories]);
-
-  // Debug loglar:
-  useEffect(() => {
-    filteredTransactions.forEach(tx => {
-      console.log('Transaction id:', tx.id, 'Category id:', tx.categoryId);
-    });
-  }, [filteredTransactions]);
-
-  useEffect(() => {
-    Object.entries(categoryIdNameMap).forEach(([id, name]) => {
-      console.log('Category id:', id, 'Category name:', name);
-    });
-  }, [categoryIdNameMap]);
-
-  const categorySums = useMemo(() => {
-    const sums = {};
-    filteredTransactions.forEach((tx) => {
-      const categoryName = categoryIdNameMap[tx.categoryId] || 'Uncategorized';
-      sums[categoryName] = (sums[categoryName] || 0) + Number(tx.amount);
-    });
-    return sums;
-  }, [filteredTransactions, categoryIdNameMap]);
-
-  const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#8BC34A'];
   const chartData = {
-    labels: Object.keys(categorySums),
+    labels: [
+      "Education",
+      "Child care",
+      "Leisure",
+      "Car",
+      "Other expenses",
+      "Self care",
+      "Household products",
+    ],
     datasets: [
       {
-        data: Object.values(categorySums),
-        backgroundColor: Object.keys(categorySums).map(
-          (_, idx) => colors[idx % colors.length]
-        ),
-        borderWidth: 1,
+        data: [3400, 2208.5, 1230, 1500, 610, 800, 300],
+        backgroundColor: [
+          "#f9dc5c",
+          "#36a2eb",
+          "#4bc0c0",
+          "#ff6384",
+          "#9966ff",
+          "#c9cbcf",
+          "#2f2fa2",
+        ],
       },
     ],
   };
 
+  const dataTable = [
+    { name: "Car", amount: 1500, color: "#ff6384" },
+    { name: "Self care", amount: 800, color: "#c9cbcf" },
+    { name: "Child care", amount: 2208.5, color: "#36a2eb" },
+    { name: "Household products", amount: 300, color: "#2f2fa2" },
+    { name: "Education", amount: 3400, color: "#f9dc5c" },
+    { name: "Leisure", amount: 1230, color: "#4bc0c0" },
+    { name: "Other expenses", amount: 610, color: "#9966ff" },
+  ];
+
   return (
-    <div className={styles.container}>
-      <h2 className={styles.title}>Statistics</h2>
+    <div className={styles.wrapper}>
+      <h2 className={styles.heading}>Statistics</h2>
 
-      <select className={styles.select}
-        value={selectedMonth}
-        onChange={(e) => setSelectedMonth(Number(e.target.value))}
-      >
-        <option value={0}>All Months</option>
-        {Array.from({ length: 12 }, (_, i) => (
-          <option key={i} value={i + 1}>
-            {format(new Date(2000, i), 'MMMM')}
-          </option>
-        ))}
-      </select>
+      <div className={styles.chartSection}>
+        <StatisticsChart chartData={chartData} />
+        <div className={styles.filters}>
+          <select
+            value={selectedMonth}
+            onChange={(e) => setSelectedMonth(e.target.value)}
+          >
+            {months.map((month) => (
+              <option key={month} value={month}>
+                {month}
+              </option>
+            ))}
+          </select>
 
-      <select className={styles.select}
-        value={selectedYear}
-        onChange={(e) => setSelectedYear(Number(e.target.value))}
-      >
-        {Array.from({ length: 5 }, (_, i) => {
-          const year = new Date().getFullYear() - i;
-          return (
-            <option key={year} value={year}>
-              {year}
-            </option>
-          );
-        })}
-      </select>
+          <select
+            value={selectedYear}
+            onChange={(e) => setSelectedYear(Number(e.target.value))}
+          >
+            {years.map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
 
-      {filteredTransactions.length === 0 ? (
-        <p>No expenses found for the selected period.</p>
-      ) : (
-        <>
-          <Doughnut data={chartData} />
-
-          <ul className={styles.list}>
-            {filteredTransactions.map((tx) => {
-              const categoryName = categoryIdNameMap[tx.categoryId] || 'Uncategorized';
-              return (
-                <li className={styles.listItem} key={tx.id}>
-                  {categoryName}: {Number(tx.amount).toFixed(2)} USD
-                </li>
-              );
-            })}
-          </ul>
-        </>
-      )}
+      <StatisticsTable data={dataTable} expenses={22549.24} income={27350.0} />
     </div>
   );
 };
