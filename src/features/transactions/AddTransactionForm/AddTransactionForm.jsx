@@ -8,7 +8,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import styles from "./AddTransactionForm.module.css";
 import { addTransactionThunk } from "../../../redux/transactionsOperations";
 
-// Validasyon şeması
 const schema = yup.object().shape({
   type: yup.string().oneOf(["income", "expense"]).required(),
   sum: yup
@@ -28,9 +27,8 @@ const schema = yup.object().shape({
 const AddTransactionForm = ({ onClose }) => {
   const dispatch = useDispatch();
   const [type, setType] = useState("expense");
-  
-  // Kategorileri Redux store'dan al
-  const { categories } = useSelector(state => state.transactions);
+
+  const { categories } = useSelector((state) => state.transactions);
 
   const {
     register,
@@ -51,42 +49,34 @@ const AddTransactionForm = ({ onClose }) => {
 
   const onSubmit = (data) => {
     try {
-      // Date'i YYYY-MM-DD formatına dönüştür
-      const formattedDate = data.date.toISOString().split('T')[0];
-      
-      // INCOME için uygun categoryId bul
+      const formattedDate = data.date.toISOString().split("T")[0];
       let categoryId = data.category;
-      if (data.type === 'income') {
-        // INCOME kategorilerini bul
-        const incomeCategories = categories.filter(cat => cat.type === 'INCOME');
+      if (data.type === "income") {
+        const incomeCategories = categories.filter(
+          (cat) => cat.type === "INCOME"
+        );
         if (incomeCategories.length > 0) {
-          categoryId = incomeCategories[0].id; // İlk INCOME kategorisini kullan
+          categoryId = incomeCategories[0].id;
         } else {
-          // INCOME kategorisi yoksa, varsayılan bir UUID kullan
-          categoryId = '00000000-0000-0000-0000-000000000001';
+          categoryId = "00000000-0000-0000-0000-000000000001";
         }
       }
-      
-      // Form verilerini API formatına dönüştür
       const transactionData = {
-        amount: parseFloat(data.sum), // sum -> amount
-        transactionDate: formattedDate, // date -> transactionDate (YYYY-MM-DD format)
-        type: data.type === 'income' ? 'INCOME' : 'EXPENSE', // type enum değeri (büyük harf)
-        categoryId: categoryId, // Her zaman geçerli bir UUID
-        comment: data.comment
+        amount: parseFloat(data.sum),
+        transactionDate: formattedDate,
+        type: data.type === "income" ? "INCOME" : "EXPENSE",
+        categoryId: categoryId,
+        comment: data.comment,
       };
-      
-      console.log('Sending transaction data:', transactionData);
-      
       dispatch(addTransactionThunk(transactionData))
-        .then((res) => {
+        .then(() => {
           onClose();
         })
         .catch((err) => {
-          console.error('Add transaction error:', err.message);
+          console.error("Add transaction error:", err.message);
         });
     } catch (error) {
-      console.error('Form submit error:', error.message);
+      console.error("Form submit error:", error.message);
     }
   };
 
@@ -97,7 +87,6 @@ const AddTransactionForm = ({ onClose }) => {
       setValue("category", "");
     }
   };
-
 
   return (
     <form
@@ -126,7 +115,9 @@ const AddTransactionForm = ({ onClose }) => {
 
         <div
           className={styles.addTransactionForm__switchTrack}
-          onClick={() => handleTypeChange(type === "income" ? "expense" : "income")}
+          onClick={() =>
+            handleTypeChange(type === "income" ? "expense" : "income")
+          }
           role="switch"
           aria-checked={type === "income"}
           tabIndex={0}

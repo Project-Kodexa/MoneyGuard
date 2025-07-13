@@ -1,14 +1,10 @@
-/* Overlay (arka plan, blur ve koyuluk) */
 .modalAddTransaction__overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
-  min-height: 100vh;
-
-  /* Şeffaf arka plan */
-  background-color: transparent;
-  /* ← burada istersen transparan/mor yapabilirsin */
+  height: 100vh;
+  background-color: rgba(83, 61, 186, 0.6);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 
@@ -19,7 +15,6 @@
   padding: 1rem;
 }
 
-/* Modal içeriği (kutu, degrade arka plan) */
 .modalAddTransaction__content {
   background: linear-gradient(
     0deg,
@@ -30,6 +25,7 @@
   );
   border-radius: 8px;
   width: 540px;
+  max-width: 95vw;
   max-height: 90vh;
   overflow-y: auto;
   padding: 1.5rem 2rem;
@@ -38,25 +34,18 @@
   backdrop-filter: blur(50px);
   position: relative;
   color: white;
+
+  display: flex;
+  flex-direction: column;
 }
 
-/* Başlık */
-.modalAddTransaction__title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  text-align: center;
-  color: white;
-}
-
-/* Kapatma butonu */
 .modalAddTransaction__closeButton {
   position: absolute;
   top: 1rem;
   right: 1rem;
   background: transparent;
   border: none;
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   cursor: pointer;
   color: white;
   transition: color 0.3s ease;
@@ -71,29 +60,22 @@
   .modalAddTransaction__content {
     width: 540px;
     height: 511px;
-    max-height: unset;
+    max-height: unset; /* Yüksekliği sabitledik, taşma kontrolü iptal */
     padding: 1rem 1.5rem;
-  }
-
-  .modalAddTransaction__title {
-    font-size: 1.25rem;
+    margin: auto;
   }
 }
 
-/* Responsive Mobil */
+/* Responsive Mobile */
 @media (max-width: 480px) {
   .modalAddTransaction__content {
-    width: 95%;
-    height: auto;
+    width: 95vw;
+    max-height: 80vh;
     padding: 0.75rem 1rem;
   }
 
-  .modalAddTransaction__title {
-    font-size: 1.1rem;
-  }
-
   .modalAddTransaction__closeButton {
-    font-size: 1rem;
+    font-size: 1.25rem;
     top: 0.5rem;
     right: 0.5rem;
   }
