@@ -82,40 +82,25 @@ const getCategoryNameById = (categoryId) => {
 
   return (
     <div className={`transaction-item ${transaction.type?.toLowerCase()}`}>
-      {" "}
-      {/* grid satır */}
-      <div className="transaction-date">{formatDate(transaction.date || transaction.transactionDate)}</div>
-      <div className={`transaction-type ${transaction.type?.toLowerCase()}`}>
+      <div className="transaction-date" data-label="Date: ">
+        {formatDate(transaction.date)}
+      </div>
+      <div
+        className={`transaction-type ${transaction.type?.toLowerCase()}`}
+        data-label="Type: "
+      >
         {getTypeSign(transaction.type)}
       </div>
-      <div className="transaction-category">
-         {transaction.category || getCategoryNameById(transaction.categoryId)}
+      <div className="transaction-category" data-label="Category: ">
+        {getCategory(transaction.category)}
       </div>
-      <div className="transaction-description">
+      <div className="transaction-description" data-label="Comment: ">
         {getComment(transaction.comment)}
       </div>
-      <div className="transaction-amount">
+      <div className="transaction-amount" data-label="Sum: ">
         {formatAmount(transaction.amount)}
       </div>
       <div className="transaction-actions">
-        <button
-          className="edit-icon-btn"
-          title="Edit"
-          style={{
-            width: 14,
-            height: 14,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            marginRight: 8,
-            padding: 0,
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-          }}
-        >
-          <EditIcon />
-        </button>
         <button
           className="delete-button"
           onClick={handleDelete}
@@ -123,6 +108,10 @@ const getCategoryNameById = (categoryId) => {
           title="Delete transaction"
         >
           Delete
+        </button>
+
+        <button className="edit-icon-btn" title="Edit">
+          <EditIcon />
         </button>
       </div>
     </div>

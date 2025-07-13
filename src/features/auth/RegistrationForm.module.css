@@ -7,53 +7,74 @@
     border-radius: 5px;
     margin: 0 auto;
     width: 320px;
-    height: 568px;
-    flex-shrink: 0;
-    margin-top: 20px;
-    flex-shrink: 0;
+    max-width: 90vw;
     background: var(--Form-color, rgba(255, 255, 255, 0.1));
     box-shadow: 0px 4px 60px 0px rgba(0, 0, 0, 0.25);
-    
-}
-
-.label {
+ 
+  }
+  
+  .inputGroup {
     display: flex;
-    flex-direction: column;
-    margin-bottom: 10px;
-    width: 100%;
-}
-
-.link {
-    margin-top: 10px;
-}
-
-.button_reg {
-    border-radius: 20px;
-    width: 300px;
-    height: 50px;
-    box-shadow: 1px 9px 15px 0 rgba(0, 0, 0, 0.2);
-    background: linear-gradient(167deg, #ffc727 0%, #9e40ba 61.46%, #7000ff 90.54%);
-    color: white;
-    border: none;
-}
-
-.button_log {
-    border-radius: 20px;
-    width: 300px;
-    height: 50px;
-    box-shadow: 1px 9px 15px 0 rgba(0, 0, 0, 0.2);
-    background: #fcfcfc;
-    border: none;
-}
-
-.input {
-    display: flex;
-    flex-direction: column;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
     margin-bottom: 20px;
-    padding-left: 20px;
+    width: 100%;
+  }
+  
+  .icon {
+    margin-right: 10px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .input {
+    flex: 1;
+    background-color: transparent;
     border: none;
     outline: none;
-    background-color: transparent;
-    border-bottom: 1px solid #ccc;
-    color: rgba(255, 255, 255, 0.4);
-}
+    padding: 10px 0;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 16px;
+  }
+  
+  .button_reg,
+  .button_log {
+    border-radius: 20px;
+    width: 100%;
+    max-width: 300px;
+    height: 50px;
+    font-size: 16px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 15px;
+  }
+  
+  .button_reg {
+    background: linear-gradient(167deg, #ffc727 0%, #9e40ba 61.46%, #7000ff 90.54%);
+    color: white;
+    box-shadow: 1px 9px 15px 0 rgba(0, 0, 0, 0.2);
+  }
+  
+  .button_reg:hover {
+    opacity: 0.9;
+  }
+  
+  .button_log {
+    background: #fcfcfc;
+    color: #623f8b;
+    box-shadow: 1px 9px 15px 0 rgba(0, 0, 0, 0.1);
+  }
+  
+  .button_log:hover {
+    background-color: #f3f3f3;
+  }
+  
+  .errorMessage {
+    color: red;
+    font-size: 13px;
+    margin-top: -10px;
+    margin-bottom: 10px;
+    align-self: flex-start;
+  }
+  
