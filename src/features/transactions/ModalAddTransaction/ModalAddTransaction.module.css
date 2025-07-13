@@ -24,12 +24,12 @@
   border-radius: 8px;
   width: 540px;
   max-height: 90vh;
-  overflow-y: auto;
+  
   padding: 1.5rem 2rem;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
   position: relative;
-  max-height: 90vh;
-  overflow-y: auto;
+  
+ 
   color: white;
 
   background: linear-gradient(
@@ -72,8 +72,8 @@
 
 /* Responsive Tablet */
 @media (max-width: 768px) {
-  .modalAddTransaction__content {
-    width: 90%;
+ .modalAddTransaction__content {
+    width: auto;
     height: auto;
     padding: 1rem 1.5rem;
   }
@@ -83,20 +83,33 @@
   }
 }
 
-/* Responsive Mobil */
+/* Tablet zaten iyi görünüyor, değiştirmiyoruz */
+
 @media (max-width: 480px) {
+  .modalAddTransaction__overlay {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background-color: transparent;
+    padding: 0;
+    align-items: flex-start;
+    padding-top: 60px;
+  }
+
   .modalAddTransaction__content {
-    width: 95%;
-    padding: 0.75rem 1rem;
+    width: 100vw;            /* Genişliği tam ekran yap */
+    max-width: 100vw;        /* Maksimum genişlik de tam ekran */
+    height: auto;
+    max-height: calc(100vh - 70px - 20px);
+    border-radius: 0;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+    background-clip: padding-box;
+    margin: 0;               /* Kenar boşluklarını kaldır */
   }
 
-  .modalAddTransaction__title {
-    font-size: 1.1rem;
-  }
-
-  .modalAddTransaction__closeButton {
-    font-size: 1rem;
-    top: 0.5rem;
-    right: 0.5rem;
+  .modalAddTransaction__content.income,
+  .modalAddTransaction__content.expense {
+    max-height: calc(100vh - 70px - 20px);
   }
 }
+
+

@@ -8,6 +8,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import styles from "./AddTransactionForm.module.css";
 import { addTransactionThunk } from "../../../redux/transactionsOperations";
 
+import calendarIcon from "../../../images/addTrn/calendarIcon.png";
+
 // Validasyon şeması
 const schema = yup.object().shape({
   type: yup.string().oneOf(["income", "expense"]).required(),
@@ -28,9 +30,8 @@ const schema = yup.object().shape({
 const AddTransactionForm = ({ onClose }) => {
   const dispatch = useDispatch();
   const [type, setType] = useState("expense");
-  
-  // Kategorileri Redux store'dan al
-  const { categories } = useSelector(state => state.transactions);
+
+  const { categories } = useSelector((state) => state.transactions);
 
   const {
     register,
@@ -51,53 +52,35 @@ const AddTransactionForm = ({ onClose }) => {
 
   const onSubmit = (data) => {
     try {
-      // Date'i YYYY-MM-DD formatına dönüştür
-      const formattedDate = data.date.toISOString().split('T')[0];
-      
-      // INCOME için uygun categoryId bul
+      const formattedDate = data.date.toISOString().split("T")[0];
       let categoryId = data.category;
-      if (data.type === 'income') {
-        // INCOME kategorilerini bul
-        const incomeCategories = categories.filter(cat => cat.type === 'INCOME');
-        if (incomeCategories.length > 0) {
-          categoryId = incomeCategories[0].id; // İlk INCOME kategorisini kullan
-        } else {
-          // INCOME kategorisi yoksa, varsayılan bir UUID kullan
-          categoryId = '00000000-0000-0000-0000-000000000001';
-        }
+
+      if (data.type === "income") {
+        const incomeCategories = categories.filter((cat) => cat.type === "INCOME");
+        categoryId = incomeCategories[0]?.id || "00000000-0000-0000-0000-000000000001";
       }
-      
-      // Form verilerini API formatına dönüştür
+
       const transactionData = {
-        amount: parseFloat(data.sum), // sum -> amount
-        transactionDate: formattedDate, // date -> transactionDate (YYYY-MM-DD format)
-        type: data.type === 'income' ? 'INCOME' : 'EXPENSE', // type enum değeri (büyük harf)
-        categoryId: categoryId, // Her zaman geçerli bir UUID
-        comment: data.comment
+        amount: parseFloat(data.sum),
+        transactionDate: formattedDate,
+        type: data.type === "income" ? "INCOME" : "EXPENSE",
+        categoryId,
+        comment: data.comment,
       };
-      
-      console.log('Sending transaction data:', transactionData);
-      
+
       dispatch(addTransactionThunk(transactionData))
-        .then((res) => {
-          onClose();
-        })
-        .catch((err) => {
-          console.error('Add transaction error:', err.message);
-        });
+        .then(() => onClose())
+        .catch((err) => console.error("Add transaction error:", err.message));
     } catch (error) {
-      console.error('Form submit error:', error.message);
+      console.error("Form submit error:", error.message);
     }
   };
 
   const handleTypeChange = (selectedType) => {
     setType(selectedType);
     setValue("type", selectedType);
-    if (selectedType === "income") {
-      setValue("category", "");
-    }
+    if (selectedType === "income") setValue("category", "");
   };
-
 
   return (
     <form
@@ -107,34 +90,30 @@ const AddTransactionForm = ({ onClose }) => {
     >
       <h2 className={styles.addTransactionForm__title}>Add transaction</h2>
 
+      {/* Toggle */}
       <div className={styles.addTransactionForm__typeToggle}>
         <div
           className={`${styles.addTransactionForm__typeToggleText} ${
-            type === "income" ? styles.active : styles.inactive
+            type === "income" ? styles.active : ""
           }`}
           onClick={() => handleTypeChange("income")}
           role="button"
           tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              handleTypeChange("income");
-            }
-          }}
+          onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && handleTypeChange("income")}
         >
           Income
         </div>
 
         <div
-          className={styles.addTransactionForm__switchTrack}
+          className={styles.addTransactionForm__switchTrackk}
           onClick={() => handleTypeChange(type === "income" ? "expense" : "income")}
           role="switch"
           aria-checked={type === "income"}
           tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              handleTypeChange(type === "income" ? "expense" : "income");
-            }
-          }}
+          onKeyDown={(e) =>
+            (e.key === "Enter" || e.key === " ") &&
+            handleTypeChange(type === "income" ? "expense" : "income")
+          }
         >
           <div
             className={`${styles.addTransactionForm__switchThumb} ${
@@ -147,16 +126,12 @@ const AddTransactionForm = ({ onClose }) => {
 
         <div
           className={`${styles.addTransactionForm__typeToggleText} ${
-            type === "expense" ? styles.active : styles.inactive
+            type === "expense" ? styles.active : ""
           }`}
           onClick={() => handleTypeChange("expense")}
           role="button"
           tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              handleTypeChange("expense");
-            }
-          }}
+          onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && handleTypeChange("expense")}
         >
           Expense
         </div>
@@ -169,8 +144,8 @@ const AddTransactionForm = ({ onClose }) => {
             {...register("category")}
           >
             <option value="">Select a category</option>
-            {categories.map((category, index) => (
-              <option key={index} value={category.id}>
+            {categories.map((category) => (
+              <option key={category.id} value={category.id}>
                 {category.name}
               </option>
             ))}
@@ -181,30 +156,34 @@ const AddTransactionForm = ({ onClose }) => {
         </div>
       )}
 
+      {/* Amount + Date */}
       <div className={styles.addTransactionForm__rowInputs}>
         <input
           type="text"
           placeholder="0.00"
           className={styles.addTransactionForm__input}
           {...register("sum")}
-          onInput={(e) =>
-            (e.target.value = e.target.value.replace(/[^0-9.]/g, ""))
-          }
+          onInput={(e) => (e.target.value = e.target.value.replace(/[^0-9.]/g, ""))}
         />
-        <DatePicker
-          selected={watch("date")}
-          onChange={(date) => setValue("date", date)}
-          dateFormat="dd.MM.yyyy"
-          className={styles.addTransactionForm__input}
-        />
-      </div>
-      <p className={styles.addTransactionForm__errorMessage}>
-        {errors.sum?.message}
-      </p>
-      <p className={styles.addTransactionForm__errorMessage}>
-        {errors.date?.message}
-      </p>
 
+        <div className={styles.datepickerWrapper}>
+          <DatePicker
+            selected={watch("date")}
+            onChange={(date) => setValue("date", date)}
+            dateFormat="dd.MM.yyyy"
+            className={`${styles.addTransactionForm__input} ${styles.datepickerInput}`}
+          />
+          <img
+            src={calendarIcon}
+            alt="calendar icon"
+            className={styles.datepickerIcon}
+          />
+        </div>
+      </div>
+      <p className={styles.addTransactionForm__errorMessage}>{errors.sum?.message}</p>
+      <p className={styles.addTransactionForm__errorMessage}>{errors.date?.message}</p>
+
+      {/* Comment */}
       <div className={styles.addTransactionForm__formGroup}>
         <input
           type="text"
@@ -217,6 +196,7 @@ const AddTransactionForm = ({ onClose }) => {
         </p>
       </div>
 
+      {/* Buttons */}
       <div className={styles.addTransactionForm__buttonGroup}>
         <button
           type="submit"
@@ -237,3 +217,5 @@ const AddTransactionForm = ({ onClose }) => {
 };
 
 export default AddTransactionForm;
+
+
