@@ -45,6 +45,43 @@ export const selectTotalExpenses = (state) => {
     .reduce((total, transaction) => total + Math.abs(parseFloat(transaction.amount) || 0), 0);
 };
 
+// Selector to get transactions with mapped category names
+export const selectTransactionsWithCategories = (state) => {
+  const { transactions, categories } = state.transactions;
+  
+  if (!categories || categories.length === 0) {
+    // Kategoriler henüz yüklenmemişse, transaction'ları olduğu gibi döndür
+    return transactions.map(transaction => ({
+      ...transaction,
+      categoryName: "Loading...",
+      categoryId: transaction.categoryId || transaction.category
+    }));
+  }
+  
+  return transactions.map(transaction => {
+    const categoryId = transaction.categoryId || transaction.category;
+    const category = categories.find(cat => cat.id === categoryId);
+    
+    return {
+      ...transaction,
+      categoryName: category ? category.name : (categoryId && categoryId.length > 20 ? "Unknown Category" : categoryId || "Unknown"),
+      categoryId: categoryId
+    };
+  });
+};
+
+// Selector to get category name by ID
+export const selectCategoryNameById = (state, categoryId) => {
+  const { categories } = state.transactions;
+  
+  if (!categoryId || !categories || categories.length === 0) {
+    return '';
+  }
+  
+  const category = categories.find(cat => cat.id === categoryId);
+  return category ? category.name : '';
+};
+
 const transactionsSlice = createSlice({
   name: 'transactions',
   initialState,

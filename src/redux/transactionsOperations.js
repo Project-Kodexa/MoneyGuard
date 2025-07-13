@@ -23,38 +23,41 @@ export const fetchTransactions = createAsyncThunk(
       thunkAPI.dispatch(setTransactionsLoading(true));
 
       const response = await API.get("/transactions");
-
+      
       // API response formatını kontrol et ve normalize et
       let transactionsData;
-
+      
       if (response.data && Array.isArray(response.data)) {
         // Format: { data: [...] }
         transactionsData = response.data;
-      } else if (
-        response.data &&
-        response.data.transactions &&
-        Array.isArray(response.data.transactions)
-      ) {
+      } else if (response.data && response.data.transactions && Array.isArray(response.data.transactions)) {
         // Format: { data: { transactions: [...] } }
         transactionsData = response.data.transactions;
-      } else if (
-        response.data &&
-        response.data.result &&
-        Array.isArray(response.data.result)
-      ) {
+      } else if (response.data && response.data.result && Array.isArray(response.data.result)) {
         // Format: { data: { result: [...] } }
         transactionsData = response.data.result;
       } else {
         // Bilinmeyen format, boş array döndür
-        console.warn("Unknown API response format:", response.data);
+        console.warn('Unknown API response format:', response.data);
         transactionsData = [];
       }
 
-      thunkAPI.dispatch(setTransactions(transactionsData));
+      // Transaction verilerini normalize et - categoryId ekle
+      const normalizedTransactions = transactionsData.map(transaction => {
+        return {
+          ...transaction,
+          // API'den gelen transactionDate alanını date olarak normalize et
+          date: transaction.transactionDate || transaction.date || new Date().toISOString(),
+          categoryId: transaction.categoryId || transaction.category || '',
+          category: transaction.category || transaction.categoryId || '' // Geriye uyumluluk için
+        };
+      });
+      
+      thunkAPI.dispatch(setTransactions(normalizedTransactions));
       thunkAPI.dispatch(setError(null)); // Error state'ini temizle
-      return transactionsData;
+      return normalizedTransactions;
     } catch (error) {
-      console.error("API Error:", error);
+      console.error('API Error:', error);
       const errorMessage =
         error.response?.data?.message ||
         error.message ||
@@ -69,7 +72,6 @@ export const fetchTransactions = createAsyncThunk(
 );
 
 // İşlem ekle
-
 export const addTransactionThunk = createAsyncThunk(
   "transactions/addTransaction",
   async (transactionData, thunkAPI) => {
@@ -78,78 +80,47 @@ export const addTransactionThunk = createAsyncThunk(
 
       // Expense işlemleri için tutarı negatif yap
       const apiData = { ...transactionData };
-      if (apiData.type === "EXPENSE" && apiData.amount > 0) {
+      if (apiData.type === 'EXPENSE' && apiData.amount > 0) {
         apiData.amount = -Math.abs(apiData.amount);
       }
 
-      console.log("Sending to API:", apiData);
       const { data } = await API.post("/transactions", apiData);
-      console.log("API Response:", data);
-
-      const allCategories = thunkAPI.getState().transactions.categories;
-
-      const matchedCategory = allCategories.find(
-        (cat) => cat.id === transactionData.categoryId
-      );
-
-      console.log("Category ID sent:", transactionData.categoryId);
-      console.log("Matched category:", matchedCategory);
 
       // API'den dönen veri formatını kontrol et ve normalize et
       let transactionToAdd = data.transaction || data;
 
       // Eksik alanları tamamla
       transactionToAdd = {
-        ...transactionToAdd,
         id: transactionToAdd.id || Date.now().toString(),
-        type: transactionToAdd.type || transactionData.type || "expense",
-        amount: parseFloat(
-          transactionToAdd.amount || transactionData.amount || 0
-        ),
-        date:
-          transactionToAdd.transactionDate ||
-          transactionToAdd.date ||
-          transactionData.transactionDate ||
-          new Date().toISOString(),
-        category: matchedCategory?.name || "Uncategorized",
-        comment:
-          transactionToAdd.comment || transactionData.comment || "No comment",
+        type: transactionToAdd.type || transactionData.type || 'expense',
+        amount: parseFloat(transactionToAdd.amount || transactionData.amount || 0),
+        date: transactionToAdd.transactionDate || transactionToAdd.date || transactionData.transactionDate || new Date().toISOString(),
+        categoryId: transactionToAdd.categoryId || transactionData.categoryId || transactionToAdd.category || transactionData.category || '',
+        category: transactionToAdd.category || transactionData.category || '', // Geriye uyumluluk için
+        comment: transactionToAdd.comment || transactionData.comment || 'No comment'
       };
 
       // Date'i ISO string formatına dönüştür
-      if (transactionToAdd.date && typeof transactionToAdd.date === "string") {
+      if (transactionToAdd.date && typeof transactionToAdd.date === 'string') {
         transactionToAdd.date = new Date(transactionToAdd.date).toISOString();
       }
 
       thunkAPI.dispatch(addTransaction(transactionToAdd));
-
-      // ✅ İstatistikleri güncelle (şu anki ay ve yılı alarak)
-      const now = new Date(transactionToAdd.date);
-      const currentMonth = now.getMonth() + 1;
-      const currentYear = now.getFullYear();
-
-      thunkAPI.dispatch(
-        fetchStatistics({ month: currentMonth, year: currentYear })
-      );
-
       return transactionToAdd;
     } catch (error) {
-      console.error("API Error:", error.response?.data || error);
-      console.error("API Error Details:", {
+      console.error('API Error:', error.response?.data || error);
+      console.error('API Error Details:', {
         status: error.response?.status,
         statusText: error.response?.statusText,
         data: error.response?.data,
-        message: error.message,
+        message: error.message
       });
-
+      
       // API error message array'ini detaylı göster
-      if (
-        error.response?.data?.message &&
-        Array.isArray(error.response.data.message)
-      ) {
-        console.error("API Validation Errors:", error.response.data.message);
+      if (error.response?.data?.message && Array.isArray(error.response.data.message)) {
+        console.error('API Validation Errors:', error.response.data.message);
       }
-
+      
       const errorMessage =
         error.response?.data?.message ||
         error.message ||
@@ -169,23 +140,45 @@ export const updateTransactionThunk = createAsyncThunk(
     try {
       thunkAPI.dispatch(setLoading(true));
 
-      const { data } = await API.put(`/transactions/${id}`, transactionData);
+      // API update endpoint'i desteklemiyor, bu yüzden delete + create pattern kullanıyoruz
+      // 1. Önce eski transaction'ı sil
+      await API.delete(`/transactions/${id}`);
+      
+      // 2. Yeni transaction'ı oluştur
+      // Expense işlemleri için tutarı negatif yap
+      const apiData = { ...transactionData };
+      if (apiData.type === 'EXPENSE' && apiData.amount > 0) {
+        apiData.amount = -Math.abs(apiData.amount);
+      }
+      
+      const { data } = await API.post("/transactions", apiData);
 
-      thunkAPI.dispatch(
-        updateTransactionAction({ id, transaction: data.transaction })
-      );
+      // API'den dönen veriyi normalize et
+      let newTransaction = data.transaction || data;
+      
+      // Eksik alanları tamamla
+      newTransaction = {
+        id: newTransaction.id || Date.now().toString(),
+        type: newTransaction.type || transactionData.type || 'expense',
+        amount: parseFloat(newTransaction.amount || transactionData.amount || 0),
+        date: newTransaction.transactionDate || newTransaction.date || transactionData.transactionDate || new Date().toISOString(),
+        categoryId: newTransaction.categoryId || transactionData.categoryId || newTransaction.category || transactionData.category || '',
+        category: newTransaction.category || transactionData.category || '', // Geriye uyumluluk için
+        comment: newTransaction.comment || transactionData.comment || 'No comment'
+      };
 
-      // ✅ Yeni istatistikleri getir
-      const updatedDate = new Date(
-        data.transaction.transactionDate || data.transaction.date || new Date()
-      );
-      const month = updatedDate.getMonth() + 1;
-      const year = updatedDate.getFullYear();
+      // Date'i ISO string formatına dönüştür
+      if (newTransaction.date && typeof newTransaction.date === 'string') {
+        newTransaction.date = new Date(newTransaction.date).toISOString();
+      }
 
-      thunkAPI.dispatch(fetchStatistics({ month, year }));
-
-      return data.transaction;
+      // Redux store'da eski transaction'ı sil ve yenisini ekle
+      thunkAPI.dispatch(deleteTransactionAction(id));
+      thunkAPI.dispatch(addTransaction(newTransaction));
+      
+      return newTransaction;
     } catch (error) {
+      console.error('Update transaction error:', error.response?.data || error);
       const errorMessage =
         error.response?.data?.message ||
         error.message ||
@@ -205,15 +198,9 @@ export const deleteTransactionThunk = createAsyncThunk(
     try {
       thunkAPI.dispatch(setLoading(true));
 
-      if (!id) {
-        throw new Error("Transaction ID is required.");
-      }
-
       await API.delete(`/transactions/${id}`);
+
       thunkAPI.dispatch(deleteTransactionAction(id));
-
-      // İstatistik güncellemesi burada yapılmaz, başka yerde tetiklenir
-
       return id;
     } catch (error) {
       const errorMessage =
@@ -228,22 +215,20 @@ export const deleteTransactionThunk = createAsyncThunk(
   }
 );
 
-
-
-
-
 // Kategorileri getir
 export const fetchCategories = createAsyncThunk(
   "transactions/fetchCategories",
   async (_, thunkAPI) => {
     try {
-      console.log("Fetching categories from API...");
       const { data } = await API.get("/transaction-categories");
-      console.log("Categories API response:", data);
+      
+      // Debug için API response'unu logla
+      console.log('Categories API Response:', data);
+      
       thunkAPI.dispatch(setCategories(data));
       return data;
     } catch (error) {
-      console.error("Categories API Error:", error.response?.data || error);
+      console.error('Categories API Error:', error.response?.data || error);
       const errorMessage =
         error.response?.data?.message ||
         error.message ||
@@ -290,8 +275,17 @@ export const fetchTransactionsByCategory = createAsyncThunk(
 
       const { data } = await API.get(`/transactions?categoryId=${categoryId}`);
 
-      thunkAPI.dispatch(setTransactions(data.transactions));
-      return data.transactions;
+      // Transaction verilerini normalize et - categoryId ekle
+      const normalizedTransactions = data.transactions.map(transaction => ({
+        ...transaction,
+        // API'den gelen transactionDate alanını date olarak normalize et
+        date: transaction.transactionDate || transaction.date || new Date().toISOString(),
+        categoryId: transaction.categoryId || transaction.category || '',
+        category: transaction.category || transaction.categoryId || '' // Geriye uyumluluk için
+      }));
+
+      thunkAPI.dispatch(setTransactions(normalizedTransactions));
+      return normalizedTransactions;
     } catch (error) {
       const errorMessage =
         error.response?.data?.message ||
@@ -375,6 +369,9 @@ export const fetchCurrencyRates = createAsyncThunk(
     }
   }
 );
+
+
+
 
 // Hata temizle
 export const clearError = () => (dispatch) => {
