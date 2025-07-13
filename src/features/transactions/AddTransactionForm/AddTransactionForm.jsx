@@ -8,6 +8,9 @@ import "react-datepicker/dist/react-datepicker.css";
 import styles from "./AddTransactionForm.module.css";
 import { addTransactionThunk } from "../../../redux/transactionsOperations";
 
+import calendarIcon from "../../../images/addTrn/calendarIcon.png";
+
+// Validasyon şeması
 const schema = yup.object().shape({
   type: yup.string().oneOf(["income", "expense"]).required(),
   sum: yup
@@ -51,30 +54,23 @@ const AddTransactionForm = ({ onClose }) => {
     try {
       const formattedDate = data.date.toISOString().split("T")[0];
       let categoryId = data.category;
+
       if (data.type === "income") {
-        const incomeCategories = categories.filter(
-          (cat) => cat.type === "INCOME"
-        );
-        if (incomeCategories.length > 0) {
-          categoryId = incomeCategories[0].id;
-        } else {
-          categoryId = "00000000-0000-0000-0000-000000000001";
-        }
+        const incomeCategories = categories.filter((cat) => cat.type === "INCOME");
+        categoryId = incomeCategories[0]?.id || "00000000-0000-0000-0000-000000000001";
       }
+
       const transactionData = {
         amount: parseFloat(data.sum),
         transactionDate: formattedDate,
         type: data.type === "income" ? "INCOME" : "EXPENSE",
-        categoryId: categoryId,
+        categoryId,
         comment: data.comment,
       };
+
       dispatch(addTransactionThunk(transactionData))
-        .then(() => {
-          onClose();
-        })
-        .catch((err) => {
-          console.error("Add transaction error:", err.message);
-        });
+        .then(() => onClose())
+        .catch((err) => console.error("Add transaction error:", err.message));
     } catch (error) {
       console.error("Form submit error:", error.message);
     }
@@ -83,9 +79,7 @@ const AddTransactionForm = ({ onClose }) => {
   const handleTypeChange = (selectedType) => {
     setType(selectedType);
     setValue("type", selectedType);
-    if (selectedType === "income") {
-      setValue("category", "");
-    }
+    if (selectedType === "income") setValue("category", "");
   };
 
   return (
@@ -96,36 +90,30 @@ const AddTransactionForm = ({ onClose }) => {
     >
       <h2 className={styles.addTransactionForm__title}>Add transaction</h2>
 
+      {/* Toggle */}
       <div className={styles.addTransactionForm__typeToggle}>
         <div
           className={`${styles.addTransactionForm__typeToggleText} ${
-            type === "income" ? styles.active : styles.inactive
+            type === "income" ? styles.active : ""
           }`}
           onClick={() => handleTypeChange("income")}
           role="button"
           tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              handleTypeChange("income");
-            }
-          }}
+          onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && handleTypeChange("income")}
         >
           Income
         </div>
 
         <div
-          className={styles.addTransactionForm__switchTrack}
-          onClick={() =>
-            handleTypeChange(type === "income" ? "expense" : "income")
-          }
+          className={styles.addTransactionForm__switchTrackk}
+          onClick={() => handleTypeChange(type === "income" ? "expense" : "income")}
           role="switch"
           aria-checked={type === "income"}
           tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              handleTypeChange(type === "income" ? "expense" : "income");
-            }
-          }}
+          onKeyDown={(e) =>
+            (e.key === "Enter" || e.key === " ") &&
+            handleTypeChange(type === "income" ? "expense" : "income")
+          }
         >
           <div
             className={`${styles.addTransactionForm__switchThumb} ${
@@ -138,16 +126,12 @@ const AddTransactionForm = ({ onClose }) => {
 
         <div
           className={`${styles.addTransactionForm__typeToggleText} ${
-            type === "expense" ? styles.active : styles.inactive
+            type === "expense" ? styles.active : ""
           }`}
           onClick={() => handleTypeChange("expense")}
           role="button"
           tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              handleTypeChange("expense");
-            }
-          }}
+          onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && handleTypeChange("expense")}
         >
           Expense
         </div>
@@ -160,8 +144,8 @@ const AddTransactionForm = ({ onClose }) => {
             {...register("category")}
           >
             <option value="">Select a category</option>
-            {categories.map((category, index) => (
-              <option key={index} value={category.id}>
+            {categories.map((category) => (
+              <option key={category.id} value={category.id}>
                 {category.name}
               </option>
             ))}
@@ -172,30 +156,34 @@ const AddTransactionForm = ({ onClose }) => {
         </div>
       )}
 
+      {/* Amount + Date */}
       <div className={styles.addTransactionForm__rowInputs}>
         <input
           type="text"
           placeholder="0.00"
           className={styles.addTransactionForm__input}
           {...register("sum")}
-          onInput={(e) =>
-            (e.target.value = e.target.value.replace(/[^0-9.]/g, ""))
-          }
+          onInput={(e) => (e.target.value = e.target.value.replace(/[^0-9.]/g, ""))}
         />
-        <DatePicker
-          selected={watch("date")}
-          onChange={(date) => setValue("date", date)}
-          dateFormat="dd.MM.yyyy"
-          className={styles.addTransactionForm__input}
-        />
-      </div>
-      <p className={styles.addTransactionForm__errorMessage}>
-        {errors.sum?.message}
-      </p>
-      <p className={styles.addTransactionForm__errorMessage}>
-        {errors.date?.message}
-      </p>
 
+        <div className={styles.datepickerWrapper}>
+          <DatePicker
+            selected={watch("date")}
+            onChange={(date) => setValue("date", date)}
+            dateFormat="dd.MM.yyyy"
+            className={`${styles.addTransactionForm__input} ${styles.datepickerInput}`}
+          />
+          <img
+            src={calendarIcon}
+            alt="calendar icon"
+            className={styles.datepickerIcon}
+          />
+        </div>
+      </div>
+      <p className={styles.addTransactionForm__errorMessage}>{errors.sum?.message}</p>
+      <p className={styles.addTransactionForm__errorMessage}>{errors.date?.message}</p>
+
+      {/* Comment */}
       <div className={styles.addTransactionForm__formGroup}>
         <input
           type="text"
@@ -208,6 +196,7 @@ const AddTransactionForm = ({ onClose }) => {
         </p>
       </div>
 
+      {/* Buttons */}
       <div className={styles.addTransactionForm__buttonGroup}>
         <button
           type="submit"
@@ -228,3 +217,5 @@ const AddTransactionForm = ({ onClose }) => {
 };
 
 export default AddTransactionForm;
+
+

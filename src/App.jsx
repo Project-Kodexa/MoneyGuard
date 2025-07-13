@@ -16,13 +16,61 @@ import { setLoading } from "./redux/globalSlice";
 import { setAuthToken, clearAuthToken } from "./services/api";
 import { refreshThunk } from "./features/auth/authOperations";
 
+// localStorage'daki bozuk date verilerini temizle
+const cleanupInvalidDates = () => {
+  try {
+    const persistedState = localStorage.getItem('persist:root');
+    if (persistedState) {
+      const state = JSON.parse(persistedState);
+      
+      if (state.transactions) {
+        const transactionsState = JSON.parse(state.transactions);
+        
+        if (transactionsState.transactions && Array.isArray(transactionsState.transactions)) {
+          let hasInvalidDates = false;
+          
+          const cleanedTransactions = transactionsState.transactions.map(transaction => {
+            if (transaction.date && typeof transaction.date === 'string') {
+              const date = new Date(transaction.date);
+              if (isNaN(date.getTime())) {
+                hasInvalidDates = true;
+                // Geçersiz date'i şu anki tarihle değiştir
+                return {
+                  ...transaction,
+                  date: new Date().toISOString()
+                };
+              }
+            }
+            return transaction;
+          });
+          
+          if (hasInvalidDates) {
+            const updatedState = {
+              ...state,
+              transactions: JSON.stringify({
+                ...transactionsState,
+                transactions: cleanedTransactions
+              })
+            };
+            localStorage.setItem('persist:root', JSON.stringify(updatedState));
+          }
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Error cleaning up invalid dates:', error);
+  }
+};
+
 function App() {
   const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.global.isLoading);
 
   useEffect(() => {
+    // Uygulama başladığında bozuk date verilerini temizle
+    cleanupInvalidDates();
+    
     // Sayfa yüklendiğinde token'ı al
-
     const savedToken = localStorage.getItem("token");
 
     if (savedToken) {
@@ -33,7 +81,6 @@ function App() {
         .unwrap()
         .then((data) => {
           // Token geçerli, kullanıcı bilgileri güncellendi
-          console.log("Token refreshed successfully");
         })
         .catch((error) => {
           // Token geçersiz, temizle
