@@ -100,8 +100,8 @@ export const addTransactionThunk = createAsyncThunk(
 
       // Eksik alanları tamamla
       transactionToAdd = {
-        ...createdTransactionFromAPI,
-        id: createdTransactionFromAPI.id  || Date.now().toString(),
+        ...transactionToAdd,
+        id: transactionToAdd.id  || Date.now().toString(),
         type: transactionToAdd.type || transactionData.type || "expense",
         amount: parseFloat(
           transactionToAdd.amount || transactionData.amount || 0
