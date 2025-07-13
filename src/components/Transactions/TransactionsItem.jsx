@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteTransactionThunk } from "../../redux/transactionsOperations";
+import { deleteTransactionThunk, fetchStatistics } from "../../redux/transactionsOperations";
 import "./TransactionsItem.css";
 
 const EditIcon = () => (
@@ -18,7 +18,7 @@ const EditIcon = () => (
   </svg>
 );
 
-const TransactionsItem = ({ transaction }) => {
+const TransactionsItem = ({ transaction, onEdit }) => {
   const dispatch = useDispatch();
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -51,27 +51,49 @@ const TransactionsItem = ({ transaction }) => {
     if (isNaN(validDate)) return "Invalid Date";
     return validDate.toLocaleDateString("en-GB").replace(/\//g, ".");
   };
-  console.log("Rendered Transaction:", transaction);
+
   // Sadece + veya - işareti
   const getTypeSign = (type) => {
     const normalizedType = type?.toLowerCase();
     return normalizedType === "income" ? "+" : "-";
   };
 
-   const handleEdit = () => {
-          if (onEdit) {
-            onEdit(transaction);
-          }
-        };
+  const handleEdit = () => {
+    if (onEdit) {
+      onEdit(transaction);
+    }
+  };
 
-  // Kategori adı
-  const getCategory = (category) => category || "";
-
+  // Kategorileri Redux store'dan al
   const allCategories = useSelector((state) => state.transactions.categories);
 
-  const getCategoryNameById = (categoryId) => {
+  // Kategori adını ID'den bul
+  const getCategory = (transaction) => {
+    // Önce categoryName alanını kontrol et (eğer varsa)
+    if (transaction.categoryName) {
+      return transaction.categoryName;
+    }
+
+    // categoryId alanını kontrol et
+    const categoryId = transaction.categoryId || transaction.category;
+    
+    if (!categoryId || !allCategories || allCategories.length === 0) {
+      return "Loading...";
+    }
+
+    // Kategori ID'sini kullanarak kategori ismini bul
     const matched = allCategories.find((cat) => cat.id === categoryId);
-    return matched?.name || "Unknown";
+    
+    if (matched) {
+      return matched.name;
+    }
+
+    // Eğer bulunamazsa ve category alanı UUID ise, "Unknown Category" döndür
+    if (typeof categoryId === 'string' && categoryId.length > 20) {
+      return "Unknown Category";
+    }
+
+    return categoryId || "Unknown";
   };
 
   // Yorum
@@ -97,7 +119,7 @@ const TransactionsItem = ({ transaction }) => {
         {getTypeSign(transaction.type)}
       </div>
       <div className="transaction-category" data-label="Category: ">
-        {getCategory(transaction.category)}
+        {getCategory(transaction)}
       </div>
       <div className="transaction-description" data-label="Comment: ">
         {getComment(transaction.comment)}

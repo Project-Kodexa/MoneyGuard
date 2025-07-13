@@ -2,8 +2,13 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Doughnut } from 'react-chartjs-2';
 import { format } from 'date-fns';
-import { fetchTransactions, fetchCategories } from '../../redux/transactionsOperations';
-import { selectExpenseTransactionsByMonth } from '../../redux/transactionsSelectors';
+import { fetchTransactions, fetchCategories, fetchStatistics } from '../../redux/transactionsOperations';
+import { 
+  selectExpenseTransactionsByMonth, 
+  selectCategoryTotals,
+  selectTotalIncome,
+  selectTotalExpenses 
+} from '../../redux/transactionsSelectors';
 import styles from './StatisticsTab.module.css';
 import {
   Chart as ChartJS,
@@ -14,7 +19,6 @@ import {
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-
 const StatisticsTab = () => {
   const dispatch = useDispatch();
 
@@ -24,6 +28,17 @@ const StatisticsTab = () => {
   const categories = useSelector((state) => state.transactions.categories || []);
   const filteredTransactions = useSelector((state) =>
     selectExpenseTransactionsByMonth(state, selectedYear, selectedMonth)
+  );
+
+  // Selector'ları kullan
+  const categorySums = useSelector((state) => 
+    selectCategoryTotals(state, selectedYear, selectedMonth)
+  );
+  const totalIncome = useSelector((state) => 
+    selectTotalIncome(state, selectedYear, selectedMonth)
+  );
+  const totalExpenses = useSelector((state) => 
+    selectTotalExpenses(state, selectedYear, selectedMonth)
   );
 
   useEffect(() => {
@@ -40,29 +55,8 @@ const StatisticsTab = () => {
     return map;
   }, [categories]);
 
-  // Debug loglar:
-  useEffect(() => {
-    filteredTransactions.forEach(tx => {
-      console.log('Transaction id:', tx.id, 'Category id:', tx.categoryId);
-    });
-  }, [filteredTransactions]);
-
-  useEffect(() => {
-    Object.entries(categoryIdNameMap).forEach(([id, name]) => {
-      console.log('Category id:', id, 'Category name:', name);
-    });
-  }, [categoryIdNameMap]);
-
-  const categorySums = useMemo(() => {
-    const sums = {};
-    filteredTransactions.forEach((tx) => {
-      const categoryName = categoryIdNameMap[tx.categoryId] || 'Uncategorized';
-      sums[categoryName] = (sums[categoryName] || 0) + Number(tx.amount);
-    });
-    return sums;
-  }, [filteredTransactions, categoryIdNameMap]);
-
   const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#8BC34A'];
+  
   const chartData = {
     labels: Object.keys(categorySums),
     datasets: [
@@ -76,56 +70,127 @@ const StatisticsTab = () => {
     ],
   };
 
+  // Balance hesapla
+  const balance = totalIncome - totalExpenses;
+
+  // Center text plugin
+  const centerTextPlugin = {
+    id: "centerText",
+    beforeDraw: (chart) => {
+      const { width, height } = chart;
+      const ctx = chart.ctx;
+      ctx.restore();
+
+      const fontSize = (height / 120).toFixed(2);
+      ctx.font = `bold ${fontSize}em 'Segoe UI', sans-serif`;
+      ctx.textBaseline = "middle";
+      ctx.fillStyle = "#fff";
+
+      const text = `$${balance.toFixed(2)}`;
+      const textX = Math.round((width - ctx.measureText(text).width) / 2);
+      const textY = height / 2;
+
+      ctx.fillText(text, textX, textY);
+      ctx.save();
+    },
+  };
+
+  const chartOptions = {
+    plugins: {
+      legend: {
+        display: true,
+        position: "bottom",
+        labels: {
+          color: "#fff"
+        }
+      },
+    },
+    cutout: "70%",
+  };
+
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>Statistics</h2>
 
-      <select className={styles.select}
-        value={selectedMonth}
-        onChange={(e) => setSelectedMonth(Number(e.target.value))}
-      >
-        <option value={0}>All Months</option>
-        {Array.from({ length: 12 }, (_, i) => (
-          <option key={i} value={i + 1}>
-            {format(new Date(2000, i), 'MMMM')}
-          </option>
-        ))}
-      </select>
-
-      <select className={styles.select}
-        value={selectedYear}
-        onChange={(e) => setSelectedYear(Number(e.target.value))}
-      >
-        {Array.from({ length: 5 }, (_, i) => {
-          const year = new Date().getFullYear() - i;
-          return (
-            <option key={year} value={year}>
-              {year}
+      <div className={styles.dateSelector}>
+        <select className={styles.select}
+          value={selectedMonth}
+          onChange={(e) => setSelectedMonth(Number(e.target.value))}
+        >
+          <option value={0}>All Months</option>
+          {Array.from({ length: 12 }, (_, i) => (
+            <option key={i} value={i + 1}>
+              {format(new Date(2000, i), 'MMMM')}
             </option>
-          );
-        })}
-      </select>
+          ))}
+        </select>
+
+        <select className={styles.select}
+          value={selectedYear}
+          onChange={(e) => setSelectedYear(Number(e.target.value))}
+        >
+          {Array.from({ length: 5 }, (_, i) => {
+            const year = new Date().getFullYear() - i;
+            return (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            );
+          })}
+        </select>
+      </div>
 
       {filteredTransactions.length === 0 ? (
-        <p>No expenses found for the selected period.</p>
+        <div className={styles.noData}>
+          <p>No expenses found for the selected period.</p>
+        </div>
       ) : (
-        <>
-          <Doughnut data={chartData} />
+        <div className={styles.chartTableWrapper}>
+          <div className={styles.chart}>
+            <Doughnut data={chartData} options={chartOptions} plugins={[centerTextPlugin]} />
+          </div>
 
-          <ul className={styles.list}>
-            {filteredTransactions.map((tx) => {
-              const categoryName = categoryIdNameMap[tx.categoryId] || 'Uncategorized';
-              return (
-                <li className={styles.listItem} key={tx.id}>
-                  {categoryName}: {Number(tx.amount).toFixed(2)} USD
+          <div className={styles.table}>
+            <ul className={styles.list}>
+              {Object.entries(categorySums).map(([categoryName, amount]) => (
+                <li className={styles.listItem} key={categoryName}>
+                  <span>
+                    <span
+                      className={styles.colorBox}
+                      style={{ 
+                        backgroundColor: colors[Object.keys(categorySums).indexOf(categoryName) % colors.length] 
+                      }}
+                    ></span>
+                    {categoryName}
+                  </span>
+                  <span>
+                    {amount.toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                    })}
+                  </span>
                 </li>
-              );
-            })}
-          </ul>
-        </>
+              ))}
+            </ul>
+            
+            <div className={styles.totals}>
+              <p>
+                Expenses:{" "}
+                <span className={styles.expense}>
+                  {totalExpenses.toLocaleString()}
+                </span>
+              </p>
+              <p>
+                Income:{" "}
+                <span className={styles.income}>
+                  {totalIncome.toLocaleString()}
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
 };
 
-export default StatisticsTab;
+export default StatisticsTab; 
