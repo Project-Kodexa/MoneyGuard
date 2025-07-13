@@ -23,10 +23,6 @@ const HomeTab = () => {
   // Kategorilerle eşleştirilmiş transaction'ları al
   const transactions = useSelector(selectTransactionsWithCategories);
   
-  // Debug için kategorileri kontrol et (gerekirse açabilirsiniz)
-  // console.log('Categories from store:', categories);
-  // console.log('Transactions with categories:', transactions);
-  
   const [selectedCategory, setSelectedCategory] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState('add');

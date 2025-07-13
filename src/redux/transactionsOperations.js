@@ -43,12 +43,16 @@ export const fetchTransactions = createAsyncThunk(
       }
 
       // Transaction verilerini normalize et - categoryId ekle
-      const normalizedTransactions = transactionsData.map(transaction => ({
-        ...transaction,
-        categoryId: transaction.categoryId || transaction.category || '',
-        category: transaction.category || transaction.categoryId || '' // Geriye uyumluluk için
-      }));
-
+      const normalizedTransactions = transactionsData.map(transaction => {
+        return {
+          ...transaction,
+          // API'den gelen transactionDate alanını date olarak normalize et
+          date: transaction.transactionDate || transaction.date || new Date().toISOString(),
+          categoryId: transaction.categoryId || transaction.category || '',
+          category: transaction.category || transaction.categoryId || '' // Geriye uyumluluk için
+        };
+      });
+      
       thunkAPI.dispatch(setTransactions(normalizedTransactions));
       thunkAPI.dispatch(setError(null)); // Error state'ini temizle
       return normalizedTransactions;
@@ -80,9 +84,7 @@ export const addTransactionThunk = createAsyncThunk(
         apiData.amount = -Math.abs(apiData.amount);
       }
 
-      console.log('Sending to API:', apiData);
       const { data } = await API.post("/transactions", apiData);
-      console.log('API Response:', data);
 
       // API'den dönen veri formatını kontrol et ve normalize et
       let transactionToAdd = data.transaction || data;
@@ -138,17 +140,11 @@ export const updateTransactionThunk = createAsyncThunk(
     try {
       thunkAPI.dispatch(setLoading(true));
 
-      console.log('Update transaction - ID:', id);
-      console.log('Update transaction - Data:', transactionData);
-
       // API update endpoint'i desteklemiyor, bu yüzden delete + create pattern kullanıyoruz
       // 1. Önce eski transaction'ı sil
-      console.log('Deleting old transaction...');
       await API.delete(`/transactions/${id}`);
       
       // 2. Yeni transaction'ı oluştur
-      console.log('Creating new transaction with updated data...');
-      
       // Expense işlemleri için tutarı negatif yap
       const apiData = { ...transactionData };
       if (apiData.type === 'EXPENSE' && apiData.amount > 0) {
@@ -156,7 +152,6 @@ export const updateTransactionThunk = createAsyncThunk(
       }
       
       const { data } = await API.post("/transactions", apiData);
-      console.log('New transaction created:', data);
 
       // API'den dönen veriyi normalize et
       let newTransaction = data.transaction || data;
@@ -225,9 +220,7 @@ export const fetchCategories = createAsyncThunk(
   "transactions/fetchCategories",
   async (_, thunkAPI) => {
     try {
-      console.log('Fetching categories from API...');
       const { data } = await API.get("/transaction-categories");
-      console.log('Categories API response:', data);
       thunkAPI.dispatch(setCategories(data));
       return data;
     } catch (error) {
@@ -281,6 +274,8 @@ export const fetchTransactionsByCategory = createAsyncThunk(
       // Transaction verilerini normalize et - categoryId ekle
       const normalizedTransactions = data.transactions.map(transaction => ({
         ...transaction,
+        // API'den gelen transactionDate alanını date olarak normalize et
+        date: transaction.transactionDate || transaction.date || new Date().toISOString(),
         categoryId: transaction.categoryId || transaction.category || '',
         category: transaction.category || transaction.categoryId || '' // Geriye uyumluluk için
       }));

@@ -39,8 +39,22 @@ const TransactionsItem = ({ transaction, onEdit }) => {
 
   // Tarih formatı: 04.01.23
   const formatDate = (dateString) => {
-    const d = new Date(dateString);
-    return d.toLocaleDateString('en-GB').replace(/\//g, '.');
+    if (!dateString) {
+      return 'N/A';
+    }
+    
+    try {
+      const d = new Date(dateString);
+      
+      // Geçerli bir date mi kontrol et
+      if (isNaN(d.getTime())) {
+        return 'Invalid Date';
+      }
+      
+      return d.toLocaleDateString('en-GB').replace(/\//g, '.');
+    } catch (error) {
+      return 'Invalid Date';
+    }
   };
 
   // Sadece + veya - işareti

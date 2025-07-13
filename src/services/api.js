@@ -34,14 +34,6 @@ API.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
     
-    console.log('API Request:', {
-      method: config.method,
-      url: config.url,
-      baseURL: config.baseURL,
-      fullURL: `${config.baseURL}${config.url}`,
-      data: config.data
-    });
-    
     return config;
   },
   (error) => {
@@ -53,15 +45,6 @@ API.interceptors.request.use(
 API.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.log('API Error:', {
-      status: error.response?.status,
-      statusText: error.response?.statusText,
-      url: error.config?.url,
-      method: error.config?.method,
-      data: error.response?.data,
-      message: error.message
-    });
-    
     if (error.response?.status === 401) {
       // Token geçersiz, localStorage'ı temizle
       localStorage.removeItem('token');

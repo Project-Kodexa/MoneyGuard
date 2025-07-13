@@ -1,6 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import API, { setAuthToken, clearAuthToken } from '../../services/api.js';
 import { setRefreshing } from './authSlice';
+import { clearTransactions } from '../../features/transactions/transactionsSlice';
 
 export const registerThunk = createAsyncThunk(
   'auth/sign-up',
@@ -45,9 +46,6 @@ export const loginThunk = createAsyncThunk(
         name: data.user.username || data.user.name || 'Unknown User', // username'i name'e dönüştür
       };
 
-      console.log('Original API response:', data);
-      console.log('Normalized user data:', normalizedUser);
-
       return {
         token: data.token,
         user: normalizedUser
@@ -73,6 +71,9 @@ export const logoutThunk = createAsyncThunk(
       // Her durumda local state'i temizle
       clearAuthToken();
       localStorage.removeItem('token');
+      
+      // Transactions verilerini de temizle
+      thunkAPI.dispatch(clearTransactions());
     }
     
     return { success: true };

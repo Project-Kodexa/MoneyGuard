@@ -99,8 +99,6 @@ const AddTransactionForm = ({ mode = 'add', transaction = null, onClose }) => {
         comment: data.comment,
       };
       
-      console.log(`${isEditMode ? 'Updating' : 'Sending'} transaction data:`, transactionData);
-      
       if (isEditMode) {
         dispatch(updateTransactionThunk({ id: transaction.id, transactionData }))
           .then(() => {
@@ -258,7 +256,7 @@ const AddTransactionForm = ({ mode = 'add', transaction = null, onClose }) => {
           type="submit"
           className={styles.addTransactionForm__buttonSubmit}
         >
-          ADD
+          {isEditMode ? 'EDIT' : 'ADD'}
         </button>
         <button
           type="button"
