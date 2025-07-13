@@ -11,6 +11,11 @@ const Header = () => {
   const isLoading = useSelector(state => state.auth.isLoading);
   const user = useSelector(state => state.auth.user);
 
+  // Debug için kullanıcı bilgilerini kontrol et
+  console.log('Header - Auth state:', useSelector(state => state.auth));
+  console.log('Header - User object:', user);
+  console.log('Header - User name:', userName);
+
   const handleLogout = async () => {
     try {
       // Redux logout thunk'ını çağır
