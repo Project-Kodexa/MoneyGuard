@@ -43,7 +43,7 @@ const ModalAddTransaction = ({ isOpen, onClose, mode = 'add', transaction = null
           ×
         </button>
 
-        {/* İçerikteki form bileşeni */}
+      
         <AddTransactionForm 
           mode={mode}
           transaction={transaction}
