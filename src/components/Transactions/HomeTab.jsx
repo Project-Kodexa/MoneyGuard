@@ -28,15 +28,12 @@ const HomeTab = () => {
   const [modalMode, setModalMode] = useState('add');
   const [selectedTransaction, setSelectedTransaction] = useState(null);
 
-  // Debug için kategorileri kontrol et
-  console.log('Categories from store:', categories);
+ 
   if (categories && categories.length > 0) {
-    console.log('First category example:', categories[0]);
+    
     // INCOME ve EXPENSE kategorilerini ayır
     const incomeCategories = categories.filter(cat => cat.type === 'INCOME');
     const expenseCategories = categories.filter(cat => cat.type === 'EXPENSE');
-    console.log('Income categories:', incomeCategories);
-    console.log('Expense categories:', expenseCategories);
   }
 
   useEffect(() => {
@@ -48,15 +45,6 @@ const HomeTab = () => {
     }
   }, [dispatch]);
 
-  const handleCategoryFilter = (category) => {
-    setSelectedCategory(category);
-
-    if (category) {
-      dispatch(fetchTransactionsByCategory(category));
-    } else {
-      dispatch(fetchTransactions());
-    }
-  };
 
   const handleOpenAddModal = () => {
     setModalMode('add');
