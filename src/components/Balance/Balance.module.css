@@ -1,6 +1,6 @@
 .balanceCard {
   background: #523b7e99;
-  border-radius: 12px;
+  border-radius: 8px;
   padding: 10px;
   color: white;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
@@ -24,11 +24,11 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   margin-left: 54px;
 }
-
-@media (max-width: 768px) {
+@media (min-width: 768px) and (max-width: 1024px) {
   .balanceContainer {
     width: 336px;
     height: 80px;
+    margin-left: 10%; /* yatayda ortalar */
   }
   .balanceAmount {
     font-size: 24px;
@@ -37,3 +37,17 @@
     margin-top: 12px;
   }
 }
+@media (max-width: 475px) {
+  .balanceContainer {
+    width: 280px;
+    height: 80px;
+    margin: 0 auto; /* yatayda ortalar */
+  }
+  .balanceAmount {
+    font-size: 24px;
+  }
+  .balanceCard {
+    margin-top: 12px;
+  }
+}
+

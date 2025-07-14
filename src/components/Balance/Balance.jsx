@@ -18,9 +18,9 @@ const Balance = () => {
     <div className={styles.balanceContainer}>
       <div className={styles.balanceCard}>
         <h3 className={styles.balanceTitle}>Your Balance</h3>
-        <div className={styles.balanceAmount}>
+        <p className={styles.balanceAmount}>
           {formatCurrency(balance)}
-        </div>
+        </p>
       </div>
     </div>
   );

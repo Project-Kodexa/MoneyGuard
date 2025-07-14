@@ -107,7 +107,6 @@ const StatisticsTab = () => {
       const textX = Math.round((width - ctx.measureText(text).width) / 2);
       const textY = height / 2 - 10;
 
-      console.log("plugin çalıştı");
 
       ctx.fillText(text, textX, textY);
       ctx.save();

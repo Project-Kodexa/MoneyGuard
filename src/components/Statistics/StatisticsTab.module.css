@@ -7,6 +7,9 @@
   overflow-y: auto;
   min-height: 100vh;
   box-sizing: border-box;
+
+    /* scroll için önemli */
+  overflow-y: auto;
 }
 
 .title {
@@ -150,4 +153,16 @@
 
 .scroll::-webkit-scrollbar-thumb:hover {
   background-color: #9e40ba;
+}
+
+
+@media (max-width: 767px) {
+  .container {
+    overflow-y: auto;
+  }
+
+  .chartTableWrapper {
+  max-height: 350px; /* örnek sınır */
+  overflow-y: auto;
+}
 }

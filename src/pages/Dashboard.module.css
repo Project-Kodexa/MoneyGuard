@@ -7,6 +7,7 @@
 
 .dashboardContent {
   display: flex;
+  flex-direction: row; /* varsayılan masaüstü */
   width: 100%;
   max-width: none; /* ❌ 1200px sınır kaldırılıyor */
   margin: 0; /* ❌ Ortalamayı iptal ediyoruz */
@@ -51,12 +52,20 @@
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 767px) {
   .dashboardContent {
     padding: 8px 0;
+    flex-direction: column; /* mobilde dikey hizalama */
   }
   .leftPanel {
     flex-direction: column;
     gap: 12px;
+  }
+}
+@media (max-width: 425px){
+  .rightPanel {
+   display: flex;
+   align-items: center;
+   margin-top: 10%;
   }
 }
