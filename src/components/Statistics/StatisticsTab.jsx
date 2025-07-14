@@ -194,4 +194,4 @@ console.log("plugin çalıştı")
   );
 };
 
-export default StatisticsTab; 
+export default StatisticsTab;

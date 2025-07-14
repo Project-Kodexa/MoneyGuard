@@ -12,7 +12,6 @@ import StatisticsTab from "./components/Statistics/StatisticsTab.jsx";
 import Currency from "./components/Currency/Currency.jsx";
 import HomeTab from "./components/Transactions/HomeTab.jsx";
 
-import { setLoading } from "./redux/globalSlice";
 import { setAuthToken, clearAuthToken } from "./services/api";
 import { refreshThunk } from "./features/auth/authOperations";
 
@@ -63,8 +62,8 @@ const cleanupInvalidDates = () => {
 };
 
 function App() {
-  const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.global.isLoading);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     // Uygulama başladığında bozuk date verilerini temizle
@@ -72,7 +71,6 @@ function App() {
     
     // Sayfa yüklendiğinde token'ı al
     const savedToken = localStorage.getItem("token");
-
     if (savedToken) {
       // Token'ı axios header'a ekle
       setAuthToken(savedToken);
@@ -93,18 +91,14 @@ function App() {
 
   return (
     <div>
-      {/* Yükleniyorsa loader göster */}
       {isLoading && <Loader />}
-
       <BrowserRouter>
         <Routes>
-          {/* Genel erişim için sayfalar */}
           <Route element={<PublicRoute />}>
             <Route path="/register" element={<RegistrationPage />} />
             <Route path="/login" element={<LoginPage />} />
           </Route>
 
-          {/* Giriş yapılması gereken sayfalar */}
           <Route element={<PrivateRoute />}>
             <Route path="/" element={<DashboardPage />}>
               <Route index element={<HomeTab />} />

@@ -1,33 +1,30 @@
 .container {
   padding: 40px;
-  /* background: linear-gradient(135deg, #18022d, #2d0b4e); */
   color: white;
   min-height: 100vh;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: "Segoe UI", sans-serif;
 }
 
 .title {
   font-size: 32px;
   margin-bottom: 30px;
-  text-align: center;
+  margin-left: 100px;
 }
 
 .dateSelector {
   display: flex;
-  gap: 10px;
-  margin-bottom: 30px;
-  justify-content: center;
+  justify-content: flex-end; /* SAĞA YASLAR */
+  gap: 16px;
+  width: 90%; /* gerekli olabilir */
 }
 
 .select {
-  padding: 10px 16px;
+  padding: 15px 35px;
   background-color: #2e1852;
   color: white;
   border: none;
   border-radius: 6px;
   font-size: 16px;
-  outline: none;
-  cursor: pointer;
 }
 
 .select option {
@@ -44,8 +41,10 @@
 }
 
 .chart {
-  width: 320px;
-  height: 320px;
+  width: 400px;
+  height: 400px;
+  margin-right: 600px;
+  margin-top: -50px;
 }
 
 .table {
@@ -53,19 +52,21 @@
 }
 
 .list {
-  list-style: none;
-  padding-left: 0;
-  margin-top: 20px;
+  display: inline-block;
+  justify-content: flex-end;
+  position: relative;
+  top: -360px; /* Listeyi 50 piksel yukarı taşır */
+  left: 290px; /* Listeyi 100 piksel sağa taşır */
 }
 
 .listItem {
+  width: 100%;
   display: flex;
   justify-content: space-between;
-  align-items: center;
   margin-bottom: 12px;
   font-size: 16px;
   background: rgba(255, 255, 255, 0.1);
-  padding: 8px 12px;
+  padding: 8px 15px;
   border-radius: 5px;
 }
 
@@ -83,6 +84,16 @@
   padding: 15px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 8px;
+  justify-content: flex-end;
+  position: relative;
+  top: -360px; /* Listeyi 50 piksel yukarı taşır */
+  left: 290px; /* Listeyi 100 piksel sağa taşır */
+}
+
+.totals {
+  display: flex; /* Flexbox düzenini etkinleştirir */
+  flex-direction: column; /* Öğeleri dikey olarak sıralar */
+  gap: 15px; /* Öğeler arasına 15 piksel boşluk ekler */
 }
 
 .expense {
@@ -102,24 +113,30 @@
   color: #ccc;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .container {
     padding: 20px;
   }
-  
+
   .chartTableWrapper {
     flex-direction: column;
     align-items: center;
   }
-  
+
   .chart {
     width: 280px;
     height: 280px;
   }
-  
+
   .dateSelector {
     flex-direction: column;
     align-items: center;
   }
-} 
+
+  .totals {
+    position: static; /* Responsive için konumu ayarla */
+    left: 0; /* Sol konumu sıfırla */
+    top: 0; /* Üst konumu sıfırla */
+    width: 100%; /* Genişliği tam yap */
+  }
+}

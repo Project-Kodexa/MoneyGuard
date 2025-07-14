@@ -51,7 +51,7 @@ const TransactionsItem = ({ transaction, onEdit }) => {
     if (isNaN(validDate)) return "Invalid Date";
     return validDate.toLocaleDateString("en-GB").replace(/\//g, ".");
   };
-
+  console.log("Rendered Transaction:", transaction);
   // Sadece + veya - işareti
   const getTypeSign = (type) => {
     const normalizedType = type?.toLowerCase();
