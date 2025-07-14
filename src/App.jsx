@@ -90,7 +90,7 @@ function App() {
   }, [dispatch]);
 
   return (
-    <div>
+    <div className="fullscreen">
       {isLoading && <Loader />}
       <BrowserRouter>
         <Routes>

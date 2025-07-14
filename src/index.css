@@ -15,12 +15,17 @@
   --font-family: 'Poppins', sans-serif;
   --second-family: 'Circe', sans-serif;
 }
-/* body {
+body {
   font-family: var(--font-family);
   color: var(--white);
   background-color: #623f8b;
   overflow: hidden;
-} */
+}
+ html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -45,4 +50,10 @@ input {
 }
 input:focus {
   border-bottom: 1px solid var(--white-60);
+}
+
+.fullscreen {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
 }
