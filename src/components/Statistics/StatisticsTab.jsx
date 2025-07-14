@@ -1,21 +1,25 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { Doughnut } from 'react-chartjs-2';
-import { format } from 'date-fns';
-import { fetchTransactions, fetchCategories, fetchStatistics } from '../../redux/transactionsOperations';
-import { 
-  selectExpenseTransactionsByMonth, 
+import React, { useState, useMemo, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { Doughnut } from "react-chartjs-2";
+import { format } from "date-fns";
+import {
+  fetchTransactions,
+  fetchCategories,
+  fetchStatistics,
+} from "../../redux/transactionsOperations";
+import {
+  selectExpenseTransactionsByMonth,
   selectCategoryTotals,
   selectTotalIncome,
-  selectTotalExpenses 
-} from '../../redux/transactionsSelectors';
-import styles from './StatisticsTab.module.css';
+  selectTotalExpenses,
+} from "../../redux/transactionsSelectors";
+import styles from "./StatisticsTab.module.css";
 import {
   Chart as ChartJS,
-  ArcElement,       // Doughnut için gerekli
+  ArcElement, // Doughnut için gerekli
   Tooltip,
   Legend,
-} from 'chart.js';
+} from "chart.js";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -25,19 +29,21 @@ const StatisticsTab = () => {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
 
-  const categories = useSelector((state) => state.transactions.categories || []);
+  const categories = useSelector(
+    (state) => state.transactions.categories || []
+  );
   const filteredTransactions = useSelector((state) =>
     selectExpenseTransactionsByMonth(state, selectedYear, selectedMonth)
   );
 
   // Selector'ları kullan
-  const categorySums = useSelector((state) => 
+  const categorySums = useSelector((state) =>
     selectCategoryTotals(state, selectedYear, selectedMonth)
   );
-  const totalIncome = useSelector((state) => 
+  const totalIncome = useSelector((state) =>
     selectTotalIncome(state, selectedYear, selectedMonth)
   );
-  const totalExpenses = useSelector((state) => 
+  const totalExpenses = useSelector((state) =>
     selectTotalExpenses(state, selectedYear, selectedMonth)
   );
 
@@ -55,8 +61,16 @@ const StatisticsTab = () => {
     return map;
   }, [categories]);
 
-  const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#8BC34A'];
-  
+  const colors = [
+    "#FF6384",
+    "#36A2EB",
+    "#FFCE56",
+    "#4BC0C0",
+    "#9966FF",
+    "#FF9F40",
+    "#8BC34A",
+  ];
+
   const chartData = {
     labels: Object.keys(categorySums),
     datasets: [
@@ -74,27 +88,29 @@ const StatisticsTab = () => {
   const balance = totalIncome - totalExpenses;
 
   // Center text plugin
-const centerTextPlugin = useMemo(() => ({
-  id: "centerText",
-  beforeDraw: (chart) => {
-    const { width, height } = chart;
-    const ctx = chart.ctx;
-    ctx.restore();
+  const centerTextPlugin = useMemo(
+    () => ({
+      id: "centerText",
+      beforeDraw: (chart) => {
+        const { width, height } = chart;
+        const ctx = chart.ctx;
+        ctx.restore();
 
-    const fontSize = (height / 120).toFixed(2);
-    ctx.font = `bold ${fontSize}em 'Segoe UI', sans-serif`;
-    ctx.textBaseline = "middle";
-    ctx.fillStyle = "#fff";
+        const fontSize = (height / 120).toFixed(2);
+        ctx.font = `bold ${fontSize}em 'Segoe UI', sans-serif`;
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = "#fff";
 
-    const text = `$${balance.toFixed(2)}`;
-    const textX = Math.round((width - ctx.measureText(text).width) / 2);
-    const textY = height / 2 - 10;
-console.log("plugin çalıştı")
-    ctx.fillText(text, textX, textY);
-    ctx.save();
-  }
-}), [balance]); // balance değişince yeniden hesaplanmalı
-
+        const text = `$${balance.toFixed(2)}`;
+        const textX = Math.round((width - ctx.measureText(text).width) / 2);
+        const textY = height / 2 - 10;
+        console.log("plugin çalıştı");
+        ctx.fillText(text, textX, textY);
+        ctx.save();
+      },
+    }),
+    [balance]
+  ); // balance değişince yeniden hesaplanmalı
 
   const chartOptions = {
     plugins: {
@@ -102,8 +118,8 @@ console.log("plugin çalıştı")
         display: true,
         position: "bottom",
         labels: {
-          color: "#fff"
-        }
+          color: "#fff",
+        },
       },
     },
     cutout: "70%",
@@ -114,26 +130,30 @@ console.log("plugin çalıştı")
       <h2 className={styles.title}>Statistics</h2>
 
       <div className={styles.dateSelector}>
-        <select className={styles.select}
+        <select
+          className={styles.select}
           value={selectedMonth}
           onChange={(e) => setSelectedMonth(Number(e.target.value))}
         >
-          <option value={0}>All Months</option>
+          <option className={styles.option} value={0}>
+            All Months
+          </option>
           {Array.from({ length: 12 }, (_, i) => (
-            <option key={i} value={i + 1}>
-              {format(new Date(2000, i), 'MMMM')}
+            <option className={styles.option} key={i} value={i + 1}>
+              {format(new Date(2000, i), "MMMM")}
             </option>
           ))}
         </select>
 
-        <select className={styles.select}
+        <select
+          className={styles.select}
           value={selectedYear}
           onChange={(e) => setSelectedYear(Number(e.target.value))}
         >
           {Array.from({ length: 5 }, (_, i) => {
             const year = new Date().getFullYear() - i;
             return (
-              <option key={year} value={year}>
+              <option className={styles.option} key={year} value={year}>
                 {year}
               </option>
             );
@@ -148,7 +168,11 @@ console.log("plugin çalıştı")
       ) : (
         <div className={styles.chartTableWrapper}>
           <div className={styles.chart}>
-            <Doughnut data={chartData} options={chartOptions} plugins={[centerTextPlugin]} />
+            <Doughnut
+              data={chartData}
+              options={chartOptions}
+              plugins={[centerTextPlugin]}
+            />
           </div>
 
           <div className={styles.table}>
@@ -158,8 +182,12 @@ console.log("plugin çalıştı")
                   <span>
                     <span
                       className={styles.colorBox}
-                      style={{ 
-                        backgroundColor: colors[Object.keys(categorySums).indexOf(categoryName) % colors.length] 
+                      style={{
+                        backgroundColor:
+                          colors[
+                            Object.keys(categorySums).indexOf(categoryName) %
+                              colors.length
+                          ],
                       }}
                     ></span>
                     {categoryName}
@@ -172,7 +200,7 @@ console.log("plugin çalıştı")
                 </li>
               ))}
             </ul>
-            
+
             <div className={styles.totals}>
               <p>
                 Expenses:{" "}

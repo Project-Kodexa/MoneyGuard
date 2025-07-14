@@ -1,142 +1,153 @@
 .container {
-  padding: 40px;
-  color: white;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  color: #fff;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  overflow-y: auto;
   min-height: 100vh;
-  font-family: "Segoe UI", sans-serif;
+  box-sizing: border-box;
 }
 
 .title {
-  font-size: 32px;
-  margin-bottom: 30px;
-  margin-left: 100px;
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 1rem;
 }
 
 .dateSelector {
   display: flex;
-  justify-content: flex-end; /* SAĞA YASLAR */
-  gap: 16px;
-  width: 90%; /* gerekli olabilir */
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
 }
 
 .select {
-  padding: 15px 35px;
-  background-color: #2e1852;
-  color: white;
+  background: linear-gradient(
+    0deg,
+    rgba(83, 61, 186, 0.7) 0%,
+    rgba(80, 48, 154, 0.7) 43.14%,
+    rgba(106, 70, 165, 0.525) 73.27%,
+    rgba(133, 93, 175, 0.133) 120.03%
+  );
+  background-color: #40357d;
   border: none;
   border-radius: 6px;
-  font-size: 16px;
+  padding: 10px 15px;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  min-width: 140px;
 }
 
-.select option {
-  background-color: black;
-  color: white;
+.select:hover {
+  color: #ff868d;
 }
 
 .chartTableWrapper {
   display: flex;
-  flex-wrap: wrap;
-  gap: 50px;
+  gap: 40px;
   justify-content: center;
   align-items: flex-start;
+  flex-wrap: wrap;
 }
 
 .chart {
-  width: 400px;
-  height: 400px;
-  margin-right: 600px;
-  margin-top: -50px;
+  flex: 1 1 300px;
+  max-width: 400px;
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .table {
-  min-width: 280px;
+  width: 295px;
+}
+
+@media (min-width: 768px) {
+  .table {
+    width: 336px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .table {
+    width: 395px;
+  }
 }
 
 .list {
-  display: inline-block;
-  justify-content: flex-end;
-  position: relative;
-  top: -360px; /* Listeyi 50 piksel yukarı taşır */
-  left: 290px; /* Listeyi 100 piksel sağa taşır */
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .listItem {
-  width: 100%;
   display: flex;
   justify-content: space-between;
-  margin-bottom: 12px;
-  font-size: 16px;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 8px 15px;
-  border-radius: 5px;
+  align-items: center;
+  padding: 8px;
+  border-bottom: 1px solid #444456;
 }
 
 .colorBox {
-  width: 14px;
-  height: 14px;
-  border-radius: 3px;
+  width: 15px;
+  height: 15px;
   display: inline-block;
   margin-right: 10px;
+  vertical-align: middle;
+  border-radius: 4px;
 }
 
 .totals {
-  margin-top: 20px;
-  font-size: 18px;
-  padding: 15px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  justify-content: flex-end;
-  position: relative;
-  top: -360px; /* Listeyi 50 piksel yukarı taşır */
-  left: 290px; /* Listeyi 100 piksel sağa taşır */
-}
-
-.totals {
-  display: flex; /* Flexbox düzenini etkinleştirir */
-  flex-direction: column; /* Öğeleri dikey olarak sıralar */
-  gap: 15px; /* Öğeler arasına 15 piksel boşluk ekler */
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .expense {
-  color: #ff6384;
-  font-weight: bold;
+  color: #ff868d;
+  font-weight: 600;
 }
 
 .income {
-  color: #ffce56;
-  font-weight: bold;
+  color: #ffb627;
+  font-weight: 600;
 }
 
 .noData {
   text-align: center;
-  padding: 40px;
-  font-size: 18px;
-  color: #ccc;
+  font-size: 1.2rem;
+  color: #aaa;
+  padding: 60px 0;
 }
 
-@media (max-width: 768px) {
-  .container {
-    padding: 20px;
-  }
+.scroll {
+  overflow-y: auto;
+  max-height: calc(100vh - 400px);
+  padding-right: 8px;
+}
 
-  .chartTableWrapper {
-    flex-direction: column;
-    align-items: center;
-  }
+.scroll::-webkit-scrollbar {
+  width: 8px;
+}
 
-  .chart {
-    width: 280px;
-    height: 280px;
-  }
+.scroll::-webkit-scrollbar-track {
+  background-color: #40357d;
+}
 
-  .dateSelector {
-    flex-direction: column;
-    align-items: center;
-  }
+.scroll::-webkit-scrollbar-thumb {
+  background-color: #8212be;
+  border-radius: 4px;
+}
 
-  .totals {
-    position: static; /* Responsive için konumu ayarla */
-    left: 0; /* Sol konumu sıfırla */
-    top: 0; /* Üst konumu sıfırla */
-    width: 100%; /* Genişliği tam yap */
-  }
+.scroll::-webkit-scrollbar-thumb:hover {
+  background-color: #9e40ba;
 }
