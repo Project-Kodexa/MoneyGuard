@@ -74,26 +74,27 @@ const StatisticsTab = () => {
   const balance = totalIncome - totalExpenses;
 
   // Center text plugin
-  const centerTextPlugin = {
-    id: "centerText",
-    beforeDraw: (chart) => {
-      const { width, height } = chart;
-      const ctx = chart.ctx;
-      ctx.restore();
+const centerTextPlugin = useMemo(() => ({
+  id: "centerText",
+  beforeDraw: (chart) => {
+    const { width, height } = chart;
+    const ctx = chart.ctx;
+    ctx.restore();
 
-      const fontSize = (height / 120).toFixed(2);
-      ctx.font = `bold ${fontSize}em 'Segoe UI', sans-serif`;
-      ctx.textBaseline = "middle";
-      ctx.fillStyle = "#fff";
+    const fontSize = (height / 120).toFixed(2);
+    ctx.font = `bold ${fontSize}em 'Segoe UI', sans-serif`;
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = "#fff";
 
-      const text = `$${balance.toFixed(2)}`;
-      const textX = Math.round((width - ctx.measureText(text).width) / 2);
-      const textY = height / 2;
+    const text = `$${balance.toFixed(2)}`;
+    const textX = Math.round((width - ctx.measureText(text).width) / 2);
+    const textY = height / 2 - 10;
+console.log("plugin çalıştı")
+    ctx.fillText(text, textX, textY);
+    ctx.save();
+  }
+}), [balance]); // balance değişince yeniden hesaplanmalı
 
-      ctx.fillText(text, textX, textY);
-      ctx.save();
-    },
-  };
 
   const chartOptions = {
     plugins: {
