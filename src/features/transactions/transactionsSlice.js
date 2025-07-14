@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createSelector } from '@reduxjs/toolkit';
 
 const initialState = {
   transactions: [],
@@ -44,31 +44,35 @@ export const selectTotalExpenses = (state) => {
     .filter(transaction => transaction.type?.toLowerCase() === 'expense')
     .reduce((total, transaction) => total + Math.abs(parseFloat(transaction.amount) || 0), 0);
 };
-
+const getTransactions = (state) => state.transactions.transactions;
+const getCategories = (state) => state.transactions.categories;
 // Selector to get transactions with mapped category names
-export const selectTransactionsWithCategories = (state) => {
-  const { transactions, categories } = state.transactions;
-  
-  if (!categories || categories.length === 0) {
-    // Kategoriler henüz yüklenmemişse, transaction'ları olduğu gibi döndür
-    return transactions.map(transaction => ({
-      ...transaction,
-      categoryName: "Loading...",
-      categoryId: transaction.categoryId || transaction.category
-    }));
+export const selectTransactionsWithCategories = createSelector(
+  [getTransactions, getCategories],
+  (transactions, categories) => {
+    // Eğer kategoriler henüz yüklenmediyse
+    if (!categories || categories.length === 0) {
+      return transactions.map(transaction => ({
+        ...transaction,
+        categoryName: "Loading...",
+        categoryId: transaction.categoryId || transaction.category,
+      }));
+    }
+
+    // Kategoriler yüklendiyse eşleştir
+    return transactions.map(transaction => {
+      const matchedCategory = categories.find(cat =>
+        cat.id === (transaction.categoryId || transaction.category)
+      );
+
+      return {
+        ...transaction,
+        categoryName: matchedCategory?.name || "Unknown",
+        categoryId: matchedCategory?.id || transaction.categoryId || transaction.category,
+      };
+    });
   }
-  
-  return transactions.map(transaction => {
-    const categoryId = transaction.categoryId || transaction.category;
-    const category = categories.find(cat => cat.id === categoryId);
-    
-    return {
-      ...transaction,
-      categoryName: category ? category.name : (categoryId && categoryId.length > 20 ? "Unknown Category" : categoryId || "Unknown"),
-      categoryId: categoryId
-    };
-  });
-};
+);
 
 // Selector to get category name by ID
 export const selectCategoryNameById = (state, categoryId) => {

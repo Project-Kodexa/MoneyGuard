@@ -255,8 +255,7 @@ export const fetchCategories = createAsyncThunk(
     try {
       const { data } = await API.get("/transaction-categories");
       
-      // Debug için API response'unu logla
-      console.log('Categories API Response:', data);
+      
       
       thunkAPI.dispatch(setCategories(data));
       return data;
